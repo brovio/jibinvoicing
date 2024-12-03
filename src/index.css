@@ -4,6 +4,7 @@
 
 @layer base {
   :root {
+    /* Default Light Theme */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -24,6 +25,38 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 262 34% 50%;
     --radius: 0.5rem;
+
+    /* Invoice Theme - Light */
+    --invoice-primary: #6E59A5;
+    --invoice-secondary: #9b87f5;
+    --invoice-accent: #F6F6F7;
+    --invoice-dark: #1A1F2C;
+    --invoice-light: #FFFFFF;
+    --invoice-muted: #8E9196;
+    --invoice-border: #E5E7EB;
+    --invoice-hover: #7E69AB;
+  }
+
+  [data-theme="purple"] {
+    --invoice-primary: #8B5CF6;
+    --invoice-secondary: #A78BFA;
+    --invoice-accent: #F3F4F6;
+    --invoice-dark: #1F2937;
+    --invoice-light: #FFFFFF;
+    --invoice-muted: #9CA3AF;
+    --invoice-border: #E5E7EB;
+    --invoice-hover: #7C3AED;
+  }
+
+  [data-theme="blue"] {
+    --invoice-primary: #3B82F6;
+    --invoice-secondary: #60A5FA;
+    --invoice-accent: #F3F4F6;
+    --invoice-dark: #1F2937;
+    --invoice-light: #FFFFFF;
+    --invoice-muted: #9CA3AF;
+    --invoice-border: #E5E7EB;
+    --invoice-hover: #2563EB;
   }
 
   .dark {
@@ -46,6 +79,16 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 262 34% 50%;
+
+    /* Invoice Theme - Dark */
+    --invoice-primary: #8B5CF6;
+    --invoice-secondary: #A78BFA;
+    --invoice-accent: #374151;
+    --invoice-dark: #F9FAFB;
+    --invoice-light: #1F2937;
+    --invoice-muted: #9CA3AF;
+    --invoice-border: #4B5563;
+    --invoice-hover: #7C3AED;
   }
 }
 
@@ -55,5 +98,25 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Glass effect for cards */
+.glass {
+  @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl;
+}
+
+/* Animations */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
