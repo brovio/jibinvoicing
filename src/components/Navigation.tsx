@@ -1,22 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { 
-  Clock, 
-  Users, 
-  FileText, 
-  Receipt, 
-  UserCircle, 
-  Settings 
-} from "lucide-react";
 
 const navItems = [
-  { path: "/", label: "Dashboard", icon: <Clock className="h-4 w-4" /> },
-  { path: "/timesheets", label: "Timesheets", icon: <Clock className="h-4 w-4" /> },
-  { path: "/clients", label: "Clients", icon: <Users className="h-4 w-4" /> },
-  { path: "/invoice-preview", label: "Invoice Preview", icon: <FileText className="h-4 w-4" /> },
-  { path: "/invoices", label: "Invoices", icon: <Receipt className="h-4 w-4" /> },
-  { path: "/staff", label: "Staff Info", icon: <UserCircle className="h-4 w-4" /> },
-  { path: "/settings", label: "Settings", icon: <Settings className="h-4 w-4" /> }
+  { path: "/", label: "Timesheets" },
+  { path: "/clients", label: "Clients" },
+  { path: "/invoice-preview", label: "Invoice Preview" },
+  { path: "/invoices", label: "Invoices" },
+  { path: "/staff", label: "Staff Info" },
 ];
 
 export const Navigation = () => {
@@ -30,13 +20,12 @@ export const Navigation = () => {
             key={item.path}
             to={item.path}
             className={cn(
-              "px-3 py-1 rounded-md text-sm font-medium transition-colors flex items-center gap-2",
+              "px-3 py-1 rounded-md text-sm font-medium transition-colors",
               location.pathname === item.path
                 ? "bg-primary text-white"
                 : "text-gray-600 hover:bg-gray-100"
             )}
           >
-            {item.icon}
             {item.label}
           </Link>
         ))}
