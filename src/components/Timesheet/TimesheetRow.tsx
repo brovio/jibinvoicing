@@ -10,13 +10,13 @@ interface TimesheetEntry {
 
 export const TimesheetRow = ({ entry }: { entry: TimesheetEntry }) => {
   return (
-    <TableRow>
-      <TableCell>{entry.date}</TableCell>
-      <TableCell>{entry.project}</TableCell>
-      <TableCell>{entry.task}</TableCell>
-      <TableCell className="text-right">{entry.hours}</TableCell>
+    <TableRow className="border-b border-gray-200">
+      <TableCell className="text-gray-900">{entry.date}</TableCell>
+      <TableCell className="text-gray-900">{entry.project}</TableCell>
+      <TableCell className="text-gray-900">{entry.task}</TableCell>
+      <TableCell className="text-gray-900 text-right">{entry.hours}</TableCell>
       <TableCell>
-        <span className={`px-2 py-1 rounded-full text-xs ${
+        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
           entry.status === 'Approved' 
             ? 'bg-green-100 text-green-800' 
             : entry.status === 'Pending' 
