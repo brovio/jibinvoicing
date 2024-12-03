@@ -1,52 +1,42 @@
+import React from "react";
 import { Table, TableBody } from "@/components/ui/table";
-import { useState } from "react";
 import { TimesheetHeader } from "./TimesheetHeader";
 import { TimesheetRow } from "./TimesheetRow";
 
-interface TimesheetEntry {
-  date: string;
-  project: string;
-  task: string;
-  hours: number;
-  status: string;
-}
+export const TimesheetTable = ({ data }: { data: any[] }) => {
+  const [sortConfig, setSortConfig] = React.useState<{ key: string; direction: string } | null>(null);
 
-interface TimesheetTableProps {
-  data: TimesheetEntry[];
-}
-
-export const TimesheetTable = ({ data }: TimesheetTableProps) => {
-  const [sortConfig, setSortConfig] = useState<{
-    key: keyof TimesheetEntry;
-    direction: 'asc' | 'desc';
-  } | null>(null);
-
-  const sortedData = [...data].sort((a, b) => {
-    if (!sortConfig) return 0;
-    
-    const aValue = a[sortConfig.key];
-    const bValue = b[sortConfig.key];
-    
-    if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
-    if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
-    return 0;
-  });
-
-  const requestSort = (key: keyof TimesheetEntry) => {
-    let direction: 'asc' | 'desc' = 'asc';
-    if (sortConfig?.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
+  const requestSort = (key: string) => {
+    let direction = "ascending";
+    if (sortConfig?.key === key && sortConfig.direction === "ascending") {
+      direction = "descending";
     }
     setSortConfig({ key, direction });
   };
 
+  const sortedData = React.useMemo(() => {
+    let sortableItems = [...data];
+    if (sortConfig !== null) {
+      sortableItems.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === "ascending" ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === "ascending" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [data, sortConfig]);
+
   return (
-    <div className="rounded-xl border border-gray-200 overflow-hidden">
+    <div className="rounded-2xl border border-gray-200 overflow-hidden">
       <Table>
         <TimesheetHeader onSort={requestSort} />
         <TableBody>
-          {sortedData.map((entry, index) => (
-            <TimesheetRow key={index} entry={entry} />
+          {sortedData.map((item, index) => (
+            <TimesheetRow key={index} data={item} />
           ))}
         </TableBody>
       </Table>
