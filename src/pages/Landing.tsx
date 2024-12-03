@@ -43,9 +43,9 @@ const projectData = [
 ];
 
 const staffData = [
-  { name: "Lindsay Walton", title: "Front-end Developer", email: "lindsay.walton@example.com", role: "Member" },
-  { name: "Courtney Henry", title: "Designer", email: "courtney.henry@example.com", role: "Admin" },
-  { name: "Tom Cook", title: "Director of Product", email: "tom.cook@example.com", role: "Member" },
+  { name: "Lindsay Walton", title: "Front-end Developer", email: "lindsay.walton@example.com" },
+  { name: "Courtney Henry", title: "Designer", email: "courtney.henry@example.com" },
+  { name: "Tom Cook", title: "Director of Product", email: "tom.cook@example.com" },
 ];
 
 const Landing = () => {
@@ -136,7 +136,6 @@ const Landing = () => {
                 <tr>
                   <th className="text-left text-sm font-semibold text-gray-900 py-2">Name</th>
                   <th className="text-left text-sm font-semibold text-gray-900 py-2">Title</th>
-                  <th className="text-left text-sm font-semibold text-gray-900 py-2">Role</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -144,7 +143,6 @@ const Landing = () => {
                   <tr key={idx}>
                     <td className="whitespace-nowrap py-2 text-sm text-gray-900">{person.name}</td>
                     <td className="whitespace-nowrap py-2 text-sm text-gray-500">{person.title}</td>
-                    <td className="whitespace-nowrap py-2 text-sm text-gray-500">{person.role}</td>
                   </tr>
                 ))}
               </tbody>
