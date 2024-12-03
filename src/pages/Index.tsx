@@ -3,7 +3,6 @@ import { TimesheetTable } from "@/components/Timesheet/TimesheetTable";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 
-// Sample data - this would normally come from the ZIP file
 const sampleData = [
   {
     date: "2024-02-01",
@@ -33,15 +32,15 @@ const Index = () => {
     <div className="max-w-7xl mx-auto">
       <div className="mb-6 flex justify-between items-center">
         <div className="relative w-72">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-white/60" />
           <Input
             placeholder="Search timesheets..."
-            className="pl-8"
+            className="pl-8 bg-white/10 border-white/20 text-white placeholder:text-white/60"
           />
         </div>
         <FileUpload />
       </div>
-      <div className="bg-background rounded-lg shadow-sm p-6">
+      <div className="bg-white rounded-lg shadow-sm p-6">
         <h1 className="text-2xl font-semibold mb-6">Timesheets</h1>
         <TimesheetTable data={sampleData} />
       </div>
