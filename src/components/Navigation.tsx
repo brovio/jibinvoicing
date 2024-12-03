@@ -20,7 +20,7 @@ export const Navigation = () => {
             key={item.path}
             to={item.path}
             className={cn(
-              "px-4 py-1.5 rounded-md text-sm font-medium transition-colors",
+              "px-4 py-1.5 rounded-lg text-sm font-medium transition-colors",
               location.pathname === item.path
                 ? "bg-[#4895EF] text-white"
                 : "text-gray-600 hover:bg-gray-100"
