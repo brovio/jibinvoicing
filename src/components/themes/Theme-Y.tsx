@@ -1,6 +1,6 @@
 import React from 'react';
 import { format } from 'date-fns';
-import { InvoiceTemplateProps } from '../types';
+import { InvoiceTemplateProps } from '../../lib/types';
 
 export const ThemeYTemplate: React.FC<InvoiceTemplateProps> = ({
   invoiceNumber,
