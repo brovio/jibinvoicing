@@ -1,7 +1,7 @@
 import { FileUpload } from "@/components/FileUpload";
 import { TimesheetTable } from "@/components/Timesheet/TimesheetTable";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Upload } from "lucide-react";
 
 const sampleData = [
   {
