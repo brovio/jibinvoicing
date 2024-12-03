@@ -35,15 +35,15 @@ const Index = () => {
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
           <Input
             placeholder="Search timesheets..."
-            className="pl-9 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 rounded-2xl"
+            className="pl-9 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 rounded-md"
           />
         </div>
-        <button className="bg-[#3A0CA3] text-white px-4 py-2 rounded-2xl hover:bg-[#3F37C9] transition-colors flex items-center gap-2 shadow-sm">
+        <button className="bg-[#3A0CA3] text-white px-4 py-2 rounded-md hover:bg-[#3F37C9] transition-colors flex items-center gap-2 shadow-sm">
           <Upload className="h-4 w-4" />
           Upload Timesheet
         </button>
       </div>
-      <div className="bg-white rounded-2xl shadow-sm p-6">
+      <div className="bg-white rounded-md shadow-sm p-6">
         <h1 className="text-2xl font-semibold mb-6 text-gray-900">Timesheets</h1>
         <TimesheetTable data={sampleData} />
       </div>
