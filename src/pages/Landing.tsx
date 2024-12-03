@@ -22,6 +22,24 @@ const projectData = [
     dueDate: "June 7, 2023",
     creator: "Leonard Krasner",
   },
+  {
+    name: "Marketing website redesign",
+    status: "Planning",
+    dueDate: "July 12, 2023",
+    creator: "Tom Cook",
+  },
+  {
+    name: "Annual report",
+    status: "In review",
+    dueDate: "August 1, 2023",
+    creator: "Michael Foster",
+  },
+  {
+    name: "Brand guidelines",
+    status: "Complete",
+    dueDate: "August 15, 2023",
+    creator: "Dries Vincent",
+  }
 ];
 
 const staffData = [
@@ -35,7 +53,7 @@ const Landing = () => {
     <div className="grid grid-cols-12 gap-6">
       {/* Left column - Project Activity */}
       <div className="col-span-5">
-        <Card className="p-6">
+        <Card className="p-6 bg-white h-[calc(100vh-180px)] overflow-y-auto">
           <h2 className="text-lg font-semibold mb-4">Clients/Project Activity Summary</h2>
           <div className="space-y-4">
             {projectData.map((project, idx) => (
@@ -62,7 +80,7 @@ const Landing = () => {
 
       {/* Middle column - Quick Actions */}
       <div className="col-span-3 space-y-6">
-        <Card className="p-6">
+        <Card className="p-6 bg-white">
           <h2 className="text-lg font-semibold mb-4">Clients</h2>
           <div className="space-y-3">
             <Button className="w-full justify-start" variant="outline">
@@ -77,24 +95,40 @@ const Landing = () => {
           </div>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-6 bg-white">
           <h2 className="text-lg font-semibold mb-4">Timesheets</h2>
-          <Link to="/timesheets" className="block">
-            <Button className="w-full">View Timesheets</Button>
-          </Link>
+          <div className="space-y-3">
+            <Button className="w-full justify-start" variant="outline">
+              <Plus className="mr-2 h-4 w-4" /> Add New
+            </Button>
+            <Button className="w-full justify-start" variant="outline">
+              <Upload className="mr-2 h-4 w-4" /> Import
+            </Button>
+            <Button className="w-full justify-start" variant="outline">
+              <Download className="mr-2 h-4 w-4" /> Export
+            </Button>
+          </div>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-6 bg-white">
           <h2 className="text-lg font-semibold mb-4">Invoices</h2>
-          <Link to="/invoices" className="block">
-            <Button className="w-full">View Invoices</Button>
-          </Link>
+          <div className="space-y-3">
+            <Button className="w-full justify-start" variant="outline">
+              <Plus className="mr-2 h-4 w-4" /> Add New
+            </Button>
+            <Button className="w-full justify-start" variant="outline">
+              <Upload className="mr-2 h-4 w-4" /> Import
+            </Button>
+            <Button className="w-full justify-start" variant="outline">
+              <Download className="mr-2 h-4 w-4" /> Export
+            </Button>
+          </div>
         </Card>
       </div>
 
       {/* Right column - Company Info */}
       <div className="col-span-4">
-        <Card className="p-6">
+        <Card className="p-6 bg-white">
           <h2 className="text-lg font-semibold mb-4">Company Info Summary</h2>
           <div className="overflow-hidden">
             <table className="min-w-full divide-y divide-gray-200">
