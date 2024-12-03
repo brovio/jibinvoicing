@@ -16,7 +16,7 @@ export const TimesheetRow = ({ data }: { data: TimesheetEntry }) => {
       <TableCell className="text-gray-900">{data.task}</TableCell>
       <TableCell className="text-gray-900 text-right">{data.hours}</TableCell>
       <TableCell>
-        <span className={`px-2 py-1 rounded-md text-xs font-medium ${
+        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
           data.status === 'Approved' 
             ? 'bg-green-100 text-green-800' 
             : data.status === 'Pending' 
