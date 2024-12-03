@@ -1,6 +1,6 @@
 import { InvoiceTemplateProps } from "@/lib/types";
 
-export const sampleInvoiceData: Partial<InvoiceTemplateProps> = {
+export const sampleInvoiceData: InvoiceTemplateProps = {
   invoiceNumber: "INV-001",
   issueDate: new Date(),
   dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
