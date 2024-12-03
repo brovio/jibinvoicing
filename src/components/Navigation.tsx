@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { path: "/", label: "Timesheets" },
+  { path: "/timesheets", label: "Timesheets" },
   { path: "/clients", label: "Clients" },
   { path: "/invoice-preview", label: "Invoice Preview" },
   { path: "/invoices", label: "Invoices" },
@@ -20,7 +20,7 @@ export const Navigation = () => {
             key={item.path}
             to={item.path}
             className={cn(
-              "px-4 py-1.5 rounded-2xl text-sm font-medium transition-colors",
+              "px-4 py-1.5 rounded-md text-sm font-medium transition-colors",
               location.pathname === item.path
                 ? "bg-[#4895EF] text-white"
                 : "text-gray-600 hover:bg-gray-100"
