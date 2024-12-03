@@ -1,0 +1,87 @@
+:root {
+  /* Default Light Theme */
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 227 84% 60%;      /* #4361EE */
+  --primary-foreground: 210 40% 98%;
+  --secondary: 213 88% 61%;    /* #4895EF */
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 189 97% 62%;       /* #4CC9F0 */
+  --accent-foreground: 222.2 47.4% 11.2%;
+  --destructive: 328 96% 59%;  /* #F72585 */
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 227 84% 60%;         /* #4361EE */
+  --radius: 0.5rem;
+
+  /* Invoice Theme - Light */
+  --invoice-primary: #4361EE;
+  --invoice-secondary: #4895EF;
+  --invoice-accent: #F6F6F7;
+  --invoice-dark: #1A1F2C;
+  --invoice-light: #FFFFFF;
+  --invoice-muted: #8E9196;
+  --invoice-border: #E5E7EB;
+  --invoice-hover: #3F37C9;
+}
+
+[data-theme="purple"] {
+  --invoice-primary: #7209B7;
+  --invoice-secondary: #B5179E;
+  --invoice-accent: #F3F4F6;
+  --invoice-dark: #1F2937;
+  --invoice-light: #FFFFFF;
+  --invoice-muted: #9CA3AF;
+  --invoice-border: #E5E7EB;
+  --invoice-hover: #560BAD;
+}
+
+[data-theme="blue"] {
+  --invoice-primary: #3A0CA3;
+  --invoice-secondary: #3F37C9;
+  --invoice-accent: #F3F4F6;
+  --invoice-dark: #1F2937;
+  --invoice-light: #FFFFFF;
+  --invoice-muted: #9CA3AF;
+  --invoice-border: #E5E7EB;
+  --invoice-hover: #480CA8;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 227 84% 60%;      /* #4361EE */
+  --primary-foreground: 210 40% 98%;
+  --secondary: 213 88% 61%;    /* #4895EF */
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 189 97% 62%;       /* #4CC9F0 */
+  --accent-foreground: 210 40% 98%;
+  --destructive: 328 96% 59%;  /* #F72585 */
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 227 84% 60%;         /* #4361EE */
+
+  /* Invoice Theme - Dark */
+  --invoice-primary: #4361EE;
+  --invoice-secondary: #4895EF;
+  --invoice-accent: #374151;
+  --invoice-dark: #F9FAFB;
+  --invoice-light: #1F2937;
+  --invoice-muted: #9CA3AF;
+  --invoice-border: #4B5563;
+  --invoice-hover: #3F37C9;
+}

@@ -1,5 +1,7 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody } from "@/components/ui/table";
 import { useState } from "react";
+import { TimesheetHeader } from "./TimesheetHeader";
+import { TimesheetRow } from "./TimesheetRow";
 
 interface TimesheetEntry {
   date: string;
@@ -41,59 +43,10 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
   return (
     <div className="rounded-md border">
       <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead 
-              className="cursor-pointer hover:bg-muted/50"
-              onClick={() => requestSort('date')}
-            >
-              Date
-            </TableHead>
-            <TableHead 
-              className="cursor-pointer hover:bg-muted/50"
-              onClick={() => requestSort('project')}
-            >
-              Project
-            </TableHead>
-            <TableHead 
-              className="cursor-pointer hover:bg-muted/50"
-              onClick={() => requestSort('task')}
-            >
-              Task
-            </TableHead>
-            <TableHead 
-              className="cursor-pointer hover:bg-muted/50 text-right"
-              onClick={() => requestSort('hours')}
-            >
-              Hours
-            </TableHead>
-            <TableHead 
-              className="cursor-pointer hover:bg-muted/50"
-              onClick={() => requestSort('status')}
-            >
-              Status
-            </TableHead>
-          </TableRow>
-        </TableHeader>
+        <TimesheetHeader onSort={requestSort} />
         <TableBody>
           {sortedData.map((entry, index) => (
-            <TableRow key={index}>
-              <TableCell>{entry.date}</TableCell>
-              <TableCell>{entry.project}</TableCell>
-              <TableCell>{entry.task}</TableCell>
-              <TableCell className="text-right">{entry.hours}</TableCell>
-              <TableCell>
-                <span className={`px-2 py-1 rounded-full text-xs ${
-                  entry.status === 'Approved' 
-                    ? 'bg-green-100 text-green-800' 
-                    : entry.status === 'Pending' 
-                    ? 'bg-yellow-100 text-yellow-800'
-                    : 'bg-red-100 text-red-800'
-                }`}>
-                  {entry.status}
-                </span>
-              </TableCell>
-            </TableRow>
+            <TimesheetRow key={index} entry={entry} />
           ))}
         </TableBody>
       </Table>
