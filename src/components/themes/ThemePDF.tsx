@@ -1,7 +1,7 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import { format } from 'date-fns';
-import type { Invoice, Client, Company } from '../../../lib/types';
+import { Invoice, Client, Company } from '../../lib/types';
 
 const styles = StyleSheet.create({
   page: {
@@ -193,3 +193,4 @@ const PDFInvoiceTemplate: React.FC<PDFInvoiceTemplateProps> = ({
 );
 
 export default PDFInvoiceTemplate;
+
