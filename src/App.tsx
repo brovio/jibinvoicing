@@ -17,6 +17,7 @@ const App = () => (
         <Layout>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/invoice-preview" element={<div className="p-4">Invoice Preview page - Please share your invoice templates to implement this page.</div>} />
           </Routes>
         </Layout>
       </BrowserRouter>
