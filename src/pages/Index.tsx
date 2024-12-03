@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileUpload } from "@/components/FileUpload";
 import { Button } from "@/components/ui/button";
-import { Plus, Import, Export, Clock, Users, FileText } from "lucide-react";
+import { Plus, Import, Upload, Clock, Users, FileText } from "lucide-react";
 
 const Index = () => {
   return (
@@ -14,7 +14,7 @@ const Index = () => {
           actions={[
             { label: "Add New", icon: <Plus className="h-4 w-4" /> },
             { label: "Import", icon: <Import className="h-4 w-4" /> },
-            { label: "Export", icon: <Export className="h-4 w-4" /> }
+            { label: "Export", icon: <Upload className="h-4 w-4" /> }
           ]}
         />
         <QuickActionCard 
@@ -23,7 +23,7 @@ const Index = () => {
           actions={[
             { label: "Add New", icon: <Plus className="h-4 w-4" /> },
             { label: "Import", icon: <Import className="h-4 w-4" /> },
-            { label: "Export", icon: <Export className="h-4 w-4" /> }
+            { label: "Export", icon: <Upload className="h-4 w-4" /> }
           ]}
         />
         <QuickActionCard 
@@ -31,7 +31,7 @@ const Index = () => {
           icon={<FileText className="h-6 w-6" />}
           actions={[
             { label: "Create New", icon: <Plus className="h-4 w-4" /> },
-            { label: "Export All", icon: <Export className="h-4 w-4" /> }
+            { label: "Export All", icon: <Upload className="h-4 w-4" /> }
           ]}
         />
       </div>
