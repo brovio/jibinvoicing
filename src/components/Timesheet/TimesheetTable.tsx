@@ -3,7 +3,15 @@ import { Table, TableBody } from "@/components/ui/table";
 import { TimesheetHeader } from "./TimesheetHeader";
 import { TimesheetRow } from "./TimesheetRow";
 
-export const TimesheetTable = ({ data }: { data: any[] }) => {
+interface TimesheetEntry {
+  date: string;
+  project: string;
+  task: string;
+  hours: number;
+  status: string;
+}
+
+export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
   const [sortConfig, setSortConfig] = React.useState<{ key: string; direction: string } | null>(null);
 
   const requestSort = (key: string) => {
