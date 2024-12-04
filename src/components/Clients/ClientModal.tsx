@@ -69,16 +69,16 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] bg-[#252A38] border border-gray-800 text-white">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-white">
             {mode === 'add' ? 'Add New Client' : mode === 'edit' ? 'Edit Client' : 'View Client'}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="company">Company Name *</Label>
+              <Label htmlFor="company" className="text-gray-300">Company Name *</Label>
               <Input
                 id="company"
                 name="company"
@@ -86,10 +86,11 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
                 onChange={handleChange}
                 disabled={mode === 'view'}
                 required
+                className="bg-[#1A1F2C] border-gray-700 text-white"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="contactName">Contact Name *</Label>
+              <Label htmlFor="contactName" className="text-gray-300">Contact Name *</Label>
               <Input
                 id="contactName"
                 name="contactName"
@@ -97,10 +98,11 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
                 onChange={handleChange}
                 disabled={mode === 'view'}
                 required
+                className="bg-[#1A1F2C] border-gray-700 text-white"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email *</Label>
+              <Label htmlFor="email" className="text-gray-300">Email *</Label>
               <Input
                 id="email"
                 name="email"
@@ -109,20 +111,22 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
                 onChange={handleChange}
                 disabled={mode === 'view'}
                 required
+                className="bg-[#1A1F2C] border-gray-700 text-white"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="phone" className="text-gray-300">Phone</Label>
               <Input
                 id="phone"
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
                 disabled={mode === 'view'}
+                className="bg-[#1A1F2C] border-gray-700 text-white"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="rate">Rate</Label>
+              <Label htmlFor="rate" className="text-gray-300">Rate</Label>
               <Input
                 id="rate"
                 name="rate"
@@ -130,46 +134,51 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
                 value={formData.rate}
                 onChange={handleChange}
                 disabled={mode === 'view'}
+                className="bg-[#1A1F2C] border-gray-700 text-white"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="currency">Currency</Label>
+              <Label htmlFor="currency" className="text-gray-300">Currency</Label>
               <Input
                 id="currency"
                 name="currency"
                 value={formData.currency}
                 onChange={handleChange}
                 disabled={mode === 'view'}
+                className="bg-[#1A1F2C] border-gray-700 text-white"
               />
             </div>
             <div className="col-span-2 space-y-2">
-              <Label htmlFor="address">Address</Label>
+              <Label htmlFor="address" className="text-gray-300">Address</Label>
               <Input
                 id="address"
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
                 disabled={mode === 'view'}
+                className="bg-[#1A1F2C] border-gray-700 text-white"
               />
             </div>
             <div className="col-span-2 space-y-2">
-              <Label htmlFor="website">Website</Label>
+              <Label htmlFor="website" className="text-gray-300">Website</Label>
               <Input
                 id="website"
                 name="website"
                 value={formData.website}
                 onChange={handleChange}
                 disabled={mode === 'view'}
+                className="bg-[#1A1F2C] border-gray-700 text-white"
               />
             </div>
             <div className="col-span-2 space-y-2">
-              <Label htmlFor="notes">Notes</Label>
+              <Label htmlFor="notes" className="text-gray-300">Notes</Label>
               <Textarea
                 id="notes"
                 name="notes"
                 value={formData.notes}
                 onChange={handleChange}
                 disabled={mode === 'view'}
+                className="bg-[#1A1F2C] border-gray-700 text-white min-h-[100px]"
               />
             </div>
           </div>
