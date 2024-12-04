@@ -80,7 +80,7 @@ const Landing = () => {
 
       {/* Middle column - Quick Actions */}
       <div className="col-span-3 space-y-6">
-        <Card className="p-6 bg-white">
+        <Card className="p-6 bg-white h-[calc((100vh-180px)/3 - 1rem)]">
           <h2 className="text-lg font-semibold mb-4">Clients</h2>
           <div className="space-y-3">
             <Button className="w-full justify-start" variant="outline">
@@ -95,7 +95,7 @@ const Landing = () => {
           </div>
         </Card>
 
-        <Card className="p-6 bg-white">
+        <Card className="p-6 bg-white h-[calc((100vh-180px)/3 - 1rem)]">
           <h2 className="text-lg font-semibold mb-4">Timesheets</h2>
           <div className="space-y-3">
             <Button className="w-full justify-start" variant="outline">
@@ -110,7 +110,7 @@ const Landing = () => {
           </div>
         </Card>
 
-        <Card className="p-6 bg-white">
+        <Card className="p-6 bg-white h-[calc((100vh-180px)/3 - 1rem)]">
           <h2 className="text-lg font-semibold mb-4">Invoices</h2>
           <div className="space-y-3">
             <Button className="w-full justify-start" variant="outline">
@@ -128,7 +128,7 @@ const Landing = () => {
 
       {/* Right column - Company Info */}
       <div className="col-span-4">
-        <Card className="p-6 bg-white">
+        <Card className="p-6 bg-white h-[calc(100vh-180px)]">
           <h2 className="text-lg font-semibold mb-4">Company Info Summary</h2>
           <div className="overflow-hidden">
             <table className="min-w-full divide-y divide-gray-200">
