@@ -18,9 +18,9 @@ export const ThemeYTemplate: React.FC<InvoiceTemplateProps> = ({
   const total = subtotal + vat;
 
   return (
-    <div className="bg-white">
-      <div className="bg-white">
-        <div>
+    <div className="min-h-screen bg-transparent py-8">
+      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+        <div className="p-8">
           {/* Header */}
           <div className="flex justify-between items-start">
             <div className="flex items-center">
@@ -150,7 +150,7 @@ export const ThemeYTemplate: React.FC<InvoiceTemplateProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="text-center bg-white border-t border-gray-200">
+        <div className="text-center p-8 bg-gray-50 border-t border-gray-200">
           <a 
             href="https://brov.io" 
             className="text-black font-bold text-lg tracking-widest hover:text-gray-800 transition-colors"
