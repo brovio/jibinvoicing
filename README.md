@@ -60,6 +60,35 @@ This project is built with .
 - shadcn-ui
 - Tailwind CSS
 
+## Design Guidelines
+
+Our application follows a consistent design system based on the Timesheets page styling:
+
+### Border Radius
+- All external elements use a 10px border radius, including:
+  - Buttons
+  - Input fields
+  - Timesheet elements
+  - Invoice elements
+  - Navigation menu items
+  - New elements added to the system
+
+### White Elements on Blue Backgrounds
+When placing white background elements over blue backgrounds:
+- Use a thin border (1px)
+- Border color: #3f37c9
+- Maintain existing shadows and styles
+
+### Elements Inside White Sections
+Elements contained within white background sections retain their original styling to maintain visual hierarchy and functionality.
+
+### Reference Point
+The Timesheets page serves as the primary reference for:
+- Layout structure
+- Component styling
+- Content organization
+- Visual hierarchy
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/ad4085eb-482f-4c7b-baf8-b281a822810f) and click on Share -> Publish.
