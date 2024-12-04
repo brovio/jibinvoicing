@@ -4,7 +4,11 @@ import { useToast } from "@/components/ui/use-toast";
 import { useRef } from "react";
 import { parseCSV, parseJSON, validateClients, ImportedClient } from "@/utils/importUtils";
 
-export const FileUpload = () => {
+interface FileUploadProps {
+  onImportSuccess: (clients: ImportedClient[]) => void;
+}
+
+export const FileUpload = ({ onImportSuccess }: FileUploadProps) => {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -36,8 +40,7 @@ export const FileUpload = () => {
         }
 
         if (validateClients(clients)) {
-          // Here you would typically send the clients to your backend
-          // For now, we'll just show a success message
+          onImportSuccess(clients);
           toast({
             title: "Import successful",
             description: `Successfully imported ${clients.length} clients`,

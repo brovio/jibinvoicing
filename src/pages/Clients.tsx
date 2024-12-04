@@ -1,10 +1,12 @@
 import { Input } from "@/components/ui/input";
-import { Search, Upload, UserPlus } from "lucide-react";
+import { Search, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ClientsTable } from "@/components/Clients/ClientsTable";
 import { FileUpload } from "@/components/FileUpload";
+import { useState } from "react";
+import { ImportedClient } from "@/utils/importUtils";
 
-const sampleData = [
+const initialData = [
   {
     company: "Google",
     contactName: "John Smith",
@@ -29,20 +31,33 @@ const sampleData = [
 ];
 
 const Clients = () => {
+  const [clients, setClients] = useState(initialData);
+
+  const handleImportSuccess = (importedClients: ImportedClient[]) => {
+    const formattedClients = importedClients.map(client => ({
+      company: client.name,
+      contactName: client.contact,
+      email: client.email,
+      currency: client.currency,
+      rate: client.rate
+    }));
+    setClients(prev => [...prev, ...formattedClients]);
+  };
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="mb-6 flex flex-col gap-6">
         <div className="bg-[#252A38] border border-gray-800 rounded-[10px] p-8">
           <div className="flex flex-col items-center gap-2">
             <div className="w-12 h-12 bg-[#0EA5E9] rounded-[10px] flex items-center justify-center mb-2">
-              <Upload className="w-6 h-6 text-white" />
+              <UserPlus className="w-6 h-6 text-white" />
             </div>
             <h2 className="text-xl font-medium text-white">Import Clients</h2>
             <p className="text-gray-400 text-center max-w-lg">
               Import your clients using CSV or JSON format. Required columns: Company, Contact, Email, Currency, and Rate.
               Additional fields: Phone, Address, Notes, and Website.
             </p>
-            <FileUpload />
+            <FileUpload onImportSuccess={handleImportSuccess} />
           </div>
         </div>
 
@@ -69,7 +84,7 @@ const Clients = () => {
         </div>
       </div>
 
-      <ClientsTable data={sampleData} />
+      <ClientsTable data={clients} />
 
       <div className="mt-4 flex justify-between items-center text-gray-400">
         <span>Showing 1 to 10 of 20 results</span>
