@@ -20,12 +20,18 @@ export const parseCSV = (content: string): ImportedClient[] => {
     .filter(line => line.trim())
     .map(line => {
       const values = line.split(',').map(value => value.trim());
-      const client: Partial<ImportedClient> = {};
+      const client: Record<string, string | number> = {};
       
       headers.forEach((header, index) => {
-        if (header === 'company') client.name = values[index];
-        else if (header === 'contact') client.contact = values[index];
-        else client[header as keyof ImportedClient] = values[index] as any;
+        if (header === 'company') {
+          client.name = values[index];
+        } else if (header === 'contact') {
+          client.contact = values[index];
+        } else if (header === 'rate') {
+          client.rate = parseFloat(values[index]) || 0;
+        } else if (header in ImportedClient.prototype) {
+          client[header] = values[index];
+        }
       });
       
       return client as ImportedClient;
