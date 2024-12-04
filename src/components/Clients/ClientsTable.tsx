@@ -115,6 +115,10 @@ export const ClientsTable = ({
     });
   };
 
+  const handleDeleteDialogOpenChange = (open: boolean) => {
+    setDeleteConfirm(current => ({ ...current, isOpen: open }));
+  };
+
   return (
     <div className="bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">
       <Table>
@@ -147,7 +151,10 @@ export const ClientsTable = ({
         onSave={handleSave}
       />
 
-      <AlertDialog open={deleteConfirm.isOpen} onOpenChange={setDeleteConfirm}>
+      <AlertDialog 
+        open={deleteConfirm.isOpen} 
+        onOpenChange={handleDeleteDialogOpenChange}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
