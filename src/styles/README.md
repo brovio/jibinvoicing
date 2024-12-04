@@ -22,11 +22,18 @@ Import the design system in your components:
 - Use `.card-base` for consistent card styling
 - Always maintain 24px (1.5rem) padding
 - Include a border and subtle shadow
+- Border radius: 10px
 
 ### Buttons
 - Primary: Use `.button-primary` for main actions
 - Outline: Use `.button-outline` for secondary actions
 - Icon buttons: Maintain 16x16px (1rem) icon size
+- Border radius: 10px
+
+### White on Blue Elements
+- Use `.white-on-blue` class for white elements on blue backgrounds
+- Includes thin border (1px) with color #3f37c9
+- Maintains shadow for depth
 
 ### Typography
 - Headings: Use `.heading-lg` for card titles
@@ -41,20 +48,26 @@ Import the design system in your components:
 - Primary: #4895EF (Brand blue)
 - Secondary: #6B7280 (Gray)
 - Accent: #3A0CA3 (Purple)
+- Border on white/blue: #3f37c9
 
 ### Border Radius
-- Cards: 0.75rem (12px)
-- Buttons: 0.5rem (8px)
-- Input fields: 0.375rem (6px)
+- Universal border radius: 10px for all interactive elements
+- Applied to:
+  - Buttons
+  - Input fields
+  - Cards
+  - Navigation items
+  - Tables
+  - Modals
 
 ## Examples
 
 ```jsx
-<div className="card-base">
+<div className="card-base white-on-blue">
   <h2 className="heading-lg">Card Title</h2>
   <p className="text-base">Card content</p>
   <button className="button-primary">Action</button>
 </div>
 ```
 
-For more detailed implementation examples, refer to the Landing page components.
+For more detailed implementation examples, refer to the Timesheets page components.

@@ -7,10 +7,7 @@
 
 :root {
   /* Border Radius */
-  --border-radius-sm: 0.375rem;    /* 6px */
-  --border-radius-md: 0.5rem;      /* 8px */
-  --border-radius-lg: 0.75rem;     /* 12px */
-  --border-radius-xl: 1rem;        /* 16px */
+  --border-radius-base: 0.625rem;    /* 10px */
 
   /* Border Width */
   --border-width-thin: 1px;
@@ -21,6 +18,7 @@
   --border-color-light: #E5E7EB;
   --border-color-medium: #D1D5DB;
   --border-color-dark: #9CA3AF;
+  --border-color-primary: #3f37c9;
 
   /* Spacing */
   --spacing-xs: 0.25rem;   /* 4px */
@@ -53,11 +51,11 @@
 
 /* Utility Classes */
 .card-base {
-  @apply rounded-lg border border-border bg-card p-6 shadow-sm;
+  @apply rounded-[10px] border border-border bg-card p-6 shadow-sm;
 }
 
 .button-base {
-  @apply rounded-md px-4 py-2 font-medium transition-colors duration-200;
+  @apply rounded-[10px] px-4 py-2 font-medium transition-colors duration-200;
 }
 
 .button-primary {
@@ -67,6 +65,10 @@
 .button-outline {
   @apply border border-[--border-color-medium] bg-white text-[--text-secondary] 
          hover:bg-[--bg-gray-50] hover:text-[--text-primary];
+}
+
+.white-on-blue {
+  @apply border border-[--border-color-primary] bg-white shadow-md;
 }
 
 /* Typography */
