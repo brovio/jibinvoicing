@@ -3,6 +3,7 @@ import { Search, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ClientsTable } from "@/components/Clients/ClientsTable";
 import { FileUpload } from "@/components/FileUpload";
+import { ExportButton } from "@/components/ExportButton";
 import { useState } from "react";
 import { ImportedClient } from "@/utils/importUtils";
 
@@ -34,13 +35,15 @@ const Clients = () => {
   const [clients, setClients] = useState(initialData);
 
   const handleImportSuccess = (importedClients: ImportedClient[]) => {
+    console.log('Imported clients:', importedClients); // Debug log
     const formattedClients = importedClients.map(client => ({
       company: client.name,
       contactName: client.contact,
       email: client.email,
       currency: client.currency,
-      rate: client.rate
+      rate: Number(client.rate)
     }));
+    console.log('Formatted clients:', formattedClients); // Debug log
     setClients(prev => [...prev, ...formattedClients]);
   };
 
@@ -52,12 +55,16 @@ const Clients = () => {
             <div className="w-12 h-12 bg-[#0EA5E9] rounded-[10px] flex items-center justify-center mb-2">
               <UserPlus className="w-6 h-6 text-white" />
             </div>
-            <h2 className="text-xl font-medium text-white">Import Clients</h2>
+            <h2 className="text-xl font-medium text-white">Import/Export Clients</h2>
             <p className="text-gray-400 text-center max-w-lg">
               Import your clients using CSV or JSON format. Required columns: Company, Contact, Email, Currency, and Rate.
               Additional fields: Phone, Address, Notes, and Website.
             </p>
-            <FileUpload onImportSuccess={handleImportSuccess} />
+            <div className="flex gap-4">
+              <FileUpload onImportSuccess={handleImportSuccess} />
+              <ExportButton clients={clients} format="csv" />
+              <ExportButton clients={clients} format="json" />
+            </div>
           </div>
         </div>
 

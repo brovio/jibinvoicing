@@ -33,11 +33,13 @@ export const FileUpload = ({ onImportSuccess }: FileUploadProps) => {
       let clients: ImportedClient[] = [];
 
       try {
+        console.log('File content:', content); // Debug log
         if (fileExtension === 'csv') {
           clients = parseCSV(content);
         } else {
           clients = parseJSON(content);
         }
+        console.log('Parsed clients:', clients); // Debug log
 
         if (validateClients(clients)) {
           onImportSuccess(clients);
@@ -51,6 +53,7 @@ export const FileUpload = ({ onImportSuccess }: FileUploadProps) => {
           }
         }
       } catch (error) {
+        console.error('Import error:', error); // Debug log
         toast({
           title: "Import failed",
           description: "There was an error processing your file. Please check the format and try again.",
