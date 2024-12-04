@@ -39,8 +39,8 @@ const Clients = () => {
   const handleImportSuccess = (importedClients: ImportedClient[]) => {
     console.log('Imported clients:', importedClients);
     const formattedClients = importedClients.map(client => ({
-      company: client.name,
-      contactName: client.contact,
+      company: client.company,
+      contactName: client.contactName,
       email: client.email,
       currency: client.currency,
       rate: Number(client.rate)
