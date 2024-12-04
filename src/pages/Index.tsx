@@ -36,7 +36,7 @@ const Index = () => {
       {entries.length === 0 ? (
         <div className="border border-dashed border-[#30363D] rounded-lg p-20">
           <div className="flex flex-col items-center gap-4">
-            <div className="w-12 h-12 bg-[#161B22] rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-[#21262D] rounded-full flex items-center justify-center">
               <Upload className="w-6 h-6 text-[#8B949E]" />
             </div>
             <h3 className="text-xl font-medium text-white">Import Timesheets</h3>
@@ -48,13 +48,13 @@ const Index = () => {
         <>
           <div className="flex items-center gap-4">
             <Input
-              className="flex-1 bg-[#161B22] border-[#30363D] text-white placeholder:text-[#8B949E] h-10"
+              className="flex-1 bg-[#161B22] border-[#30363D] text-white placeholder:text-[#8B949E] h-10 rounded-lg"
               placeholder="Search timesheets..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
             <Select value={selectedProject} onValueChange={setSelectedProject}>
-              <SelectTrigger className="w-[180px] bg-[#161B22] border-[#30363D] text-white">
+              <SelectTrigger className="w-[180px] bg-[#161B22] border-[#30363D] text-white rounded-lg">
                 <SelectValue placeholder="All Projects" />
               </SelectTrigger>
               <SelectContent className="bg-[#161B22] border-[#30363D]">
@@ -64,7 +64,7 @@ const Index = () => {
               </SelectContent>
             </Select>
             <Select value={selectedStaff} onValueChange={setSelectedStaff}>
-              <SelectTrigger className="w-[180px] bg-[#161B22] border-[#30363D] text-white">
+              <SelectTrigger className="w-[180px] bg-[#161B22] border-[#30363D] text-white rounded-lg">
                 <SelectValue placeholder="All Staff" />
               </SelectTrigger>
               <SelectContent className="bg-[#161B22] border-[#30363D]">
@@ -81,7 +81,7 @@ const Index = () => {
             </p>
             <div className="flex items-center gap-4">
               <Select value={entriesPerPage} onValueChange={setEntriesPerPage}>
-                <SelectTrigger className="w-[130px] bg-[#161B22] border-[#30363D] text-white">
+                <SelectTrigger className="w-[130px] bg-[#161B22] border-[#30363D] text-white rounded-lg">
                   <SelectValue placeholder="25 entries" />
                 </SelectTrigger>
                 <SelectContent className="bg-[#161B22] border-[#30363D]">
@@ -96,7 +96,7 @@ const Index = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
-                <button className="p-2 rounded-lg bg-[#0D74E7] text-white">1</button>
+                <button className="p-2 rounded-lg bg-[#0EA5E9] text-white">1</button>
                 <button className="p-2 rounded-lg bg-[#161B22] border border-[#30363D] text-[#8B949E] hover:bg-[#21262D]">2</button>
                 <button className="p-2 rounded-lg bg-[#161B22] border border-[#30363D] text-[#8B949E] hover:bg-[#21262D]">3</button>
                 <button className="p-2 rounded-lg bg-[#161B22] border border-[#30363D] text-[#8B949E] hover:bg-[#21262D]">
