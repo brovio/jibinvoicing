@@ -42,8 +42,12 @@ const Clients = () => {
       company: client.company,
       contactName: client.contactName,
       email: client.email,
+      phone: client.phone || '',
+      address: client.address || '',
       currency: client.currency,
-      rate: Number(client.rate)
+      rate: Number(client.rate),
+      notes: client.notes || '',
+      website: client.website || ''
     }));
     console.log('Formatted clients:', formattedClients);
     setClients(prev => [...prev, ...formattedClients]);
