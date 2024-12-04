@@ -114,44 +114,6 @@
   z-index: 1001;
 }
 
-/* Toast and Alert Dialog styles */
-[role="dialog"][data-state="open"] {
-  background-color: #252A38 !important;
-  border-radius: 10px !important;
-}
-
-[role="alertdialog"] {
-  background-color: #252A38 !important;
-  border-radius: 10px !important;
-  color: white !important;
-}
-
-[role="alertdialog"] button {
-  border-radius: 10px !important;
-}
-
-[role="alertdialog"] button[type="button"] {
-  background-color: #0EA5E9 !important;
-  color: white !important;
-}
-
-.toaster .toast {
-  background-color: #252A38 !important;
-  color: white !important;
-  border-color: #3f3f46 !important;
-  border-radius: 10px !important;
-}
-
-.toaster .toast .title {
-  color: white !important;
-  font-weight: 500 !important;
-}
-
-.toaster .toast .description {
-  color: white !important;
-  opacity: 0.9 !important;
-}
-
 /* Modal styles */
 .dialog-content {
   border-radius: 10px !important;
