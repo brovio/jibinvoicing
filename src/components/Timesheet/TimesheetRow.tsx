@@ -11,9 +11,9 @@ interface TimesheetEntry {
 
 export const TimesheetRow = ({ data }: { data: TimesheetEntry }) => {
   return (
-    <TableRow className="border-b border-gray-700 hover:bg-[#252A38] transition-colors">
+    <TableRow className="border-b border-gray-800 hover:bg-[#2A303F] transition-colors">
       <TableCell className="p-4">
-        <input type="checkbox" className="rounded-sm border-gray-600" />
+        <input type="checkbox" className="rounded-sm border-gray-700" />
       </TableCell>
       <TableCell className="text-gray-300">{data.date}</TableCell>
       <TableCell className="text-gray-300">{data.client}</TableCell>

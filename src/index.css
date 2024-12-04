@@ -9,7 +9,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[#1A1F2C] text-foreground;
   }
 }
 

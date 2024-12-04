@@ -4,16 +4,15 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { path: "/timesheets", label: "Timesheets" },
   { path: "/clients", label: "Clients" },
-  { path: "/invoice-preview", label: "Invoice Preview" },
+  { path: "/invoice-templates", label: "Invoice Templates" },
   { path: "/invoices", label: "Invoices" },
-  { path: "/staff", label: "Staff Info" },
 ];
 
 export const Navigation = () => {
   const location = useLocation();
 
   return (
-    <nav className="h-[50px] bg-white border-b border-gray-200 flex items-center px-4 fixed top-[60px] left-0 right-0 z-40">
+    <nav className="h-[50px] bg-[#1A1F2C] border-b border-gray-800 flex items-center px-4 fixed top-[60px] left-0 right-0 z-40">
       <div className="flex gap-4">
         {navItems.map((item) => (
           <Link
@@ -22,8 +21,8 @@ export const Navigation = () => {
             className={cn(
               "px-4 py-1.5 rounded-[10px] text-sm font-medium transition-colors",
               location.pathname === item.path
-                ? "bg-[#4895EF] text-white"
-                : "text-gray-600 hover:bg-gray-100"
+                ? "bg-[#0EA5E9] text-white"
+                : "text-gray-400 hover:bg-gray-800"
             )}
           >
             {item.label}
