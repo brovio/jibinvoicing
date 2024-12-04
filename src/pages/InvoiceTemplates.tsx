@@ -1,11 +1,14 @@
 import { Input } from "@/components/ui/input";
-import { Search, Upload } from "lucide-react";
+import { Search, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ThemeYTemplate from "@/components/themes/Theme-Y";
 import PeekoTemplate from "@/components/themes/Theme-peeko";
 import { sampleInvoiceData } from "@/data/sampleInvoiceData";
+import { useState } from "react";
 
 const InvoiceTemplates = () => {
+  const [selectedTemplate, setSelectedTemplate] = useState<number | null>(null);
+
   const templates = [
     {
       name: "Theme Y",
@@ -63,8 +66,11 @@ const InvoiceTemplates = () => {
         <div className="grid grid-cols-3 gap-6 p-6">
           {templates.map((template, index) => (
             <div key={index} className="group relative">
-              <div className="aspect-[8.5/11] bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                <div className="transform scale-[0.2] origin-top-left absolute top-0 left-0 w-[500%] h-[500%]">
+              <div 
+                className="invoice-preview"
+                onClick={() => setSelectedTemplate(index)}
+              >
+                <div className="invoice-container">
                   <template.component {...sampleInvoiceData} />
                 </div>
               </div>
@@ -76,6 +82,20 @@ const InvoiceTemplates = () => {
           ))}
         </div>
       </div>
+
+      {selectedTemplate !== null && (
+        <div className="invoice-modal" onClick={() => setSelectedTemplate(null)}>
+          <div className="invoice-modal-content" onClick={e => e.stopPropagation()}>
+            <button 
+              className="close-button"
+              onClick={() => setSelectedTemplate(null)}
+            >
+              <X size={20} />
+            </button>
+            {templates[selectedTemplate].component({...sampleInvoiceData})}
+          </div>
+        </div>
+      )}
 
       <div className="mt-4 flex justify-between items-center text-gray-400">
         <span>Showing 1 to 3 of 3 results</span>
