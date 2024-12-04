@@ -1,0 +1,96 @@
+/* Design System Guidelines
+ * This file serves as a reference for our application's design tokens and patterns
+ * 
+ * Usage:
+ * Import this file in your components to maintain consistent styling
+ */
+
+:root {
+  /* Border Radius */
+  --border-radius-sm: 0.375rem;    /* 6px */
+  --border-radius-md: 0.5rem;      /* 8px */
+  --border-radius-lg: 0.75rem;     /* 12px */
+  --border-radius-xl: 1rem;        /* 16px */
+
+  /* Border Width */
+  --border-width-thin: 1px;
+  --border-width-medium: 2px;
+  --border-width-thick: 4px;
+
+  /* Border Colors */
+  --border-color-light: #E5E7EB;
+  --border-color-medium: #D1D5DB;
+  --border-color-dark: #9CA3AF;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;   /* 4px */
+  --spacing-sm: 0.5rem;    /* 8px */
+  --spacing-md: 1rem;      /* 16px */
+  --spacing-lg: 1.5rem;    /* 24px */
+  --spacing-xl: 2rem;      /* 32px */
+
+  /* Colors */
+  --primary-blue: #4895EF;
+  --primary-blue-hover: #3A7BC7;
+  --secondary-gray: #6B7280;
+  --accent-purple: #3A0CA3;
+  
+  /* Background Colors */
+  --bg-white: #FFFFFF;
+  --bg-gray-50: #F9FAFB;
+  --bg-gray-100: #F3F4F6;
+
+  /* Text Colors */
+  --text-primary: #111827;
+  --text-secondary: #4B5563;
+  --text-muted: #6B7280;
+
+  /* Shadow */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+/* Utility Classes */
+.card-base {
+  @apply rounded-lg border border-border bg-card p-6 shadow-sm;
+}
+
+.button-base {
+  @apply rounded-md px-4 py-2 font-medium transition-colors duration-200;
+}
+
+.button-primary {
+  @apply bg-[--primary-blue] text-white hover:bg-[--primary-blue-hover];
+}
+
+.button-outline {
+  @apply border border-[--border-color-medium] bg-white text-[--text-secondary] 
+         hover:bg-[--bg-gray-50] hover:text-[--text-primary];
+}
+
+/* Typography */
+.heading-lg {
+  @apply text-lg font-semibold text-[--text-primary];
+}
+
+.text-base {
+  @apply text-sm text-[--text-secondary];
+}
+
+.text-muted {
+  @apply text-sm text-[--text-muted];
+}
+
+/* Layout */
+.grid-layout {
+  @apply grid gap-6;
+}
+
+.flex-center {
+  @apply flex items-center justify-center;
+}
+
+.flex-between {
+  @apply flex items-center justify-between;
+}
