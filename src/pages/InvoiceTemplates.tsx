@@ -26,6 +26,7 @@ const InvoiceTemplates = () => {
 
   return (
     <div className="max-w-7xl mx-auto">
+      {/* Import and Search Section */}
       <div className="mb-6 flex flex-col gap-6">
         <div className="bg-[#252A38] border border-gray-800 rounded-[10px] p-8 text-center">
           <div className="flex flex-col items-center gap-2">
@@ -79,6 +80,7 @@ const InvoiceTemplates = () => {
         </div>
       </div>
 
+      {/* Pagination Section */}
       <div className="mt-4 flex justify-between items-center text-gray-400">
         <span>Showing 1 to 3 of 3 results</span>
         <div className="flex items-center gap-2">
