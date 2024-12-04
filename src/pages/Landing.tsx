@@ -28,32 +28,20 @@ const projectData = [
     dueDate: "July 12, 2023",
     creator: "Tom Cook",
   },
-  {
-    name: "Annual report",
-    status: "In review",
-    dueDate: "August 1, 2023",
-    creator: "Michael Foster",
-  },
-  {
-    name: "Brand guidelines",
-    status: "Complete",
-    dueDate: "August 15, 2023",
-    creator: "Dries Vincent",
-  }
 ];
 
 const staffData = [
-  { name: "Lindsay Walton", email: "lindsay.walton@example.com" },
-  { name: "Courtney Henry", email: "courtney.henry@example.com" },
-  { name: "Tom Cook", email: "tom.cook@example.com" },
+  { name: "Lindsay Walton", role: "Front-end Developer" },
+  { name: "Courtney Henry", role: "Designer" },
+  { name: "Tom Cook", role: "Director of Product" },
 ];
 
 const Landing = () => {
   return (
-    <div className="grid grid-cols-12 gap-6">
+    <div className="grid grid-cols-12 gap-6 h-[calc(100vh-2rem)]">
       {/* Left column - Project Activity */}
-      <div className="col-span-5">
-        <Card className="p-6 bg-white h-[calc(100vh-180px)]">
+      <div className="col-span-4">
+        <Card className="p-6 bg-white h-full">
           <h2 className="text-lg font-semibold mb-4">Clients/Project Activity Summary</h2>
           <div className="space-y-4">
             {projectData.map((project, idx) => (
@@ -78,9 +66,10 @@ const Landing = () => {
         </Card>
       </div>
 
-      {/* Middle column - Quick Actions */}
-      <div className="col-span-3 space-y-6">
-        <Card className="p-6 bg-white h-[calc((100vh-180px-3rem)/3)]">
+      {/* Right section - 2x2 grid */}
+      <div className="col-span-8 grid grid-cols-2 gap-6">
+        {/* Clients */}
+        <Card className="p-6 bg-white">
           <h2 className="text-lg font-semibold mb-4">Clients</h2>
           <div className="space-y-3">
             <Button className="w-full justify-start" variant="outline">
@@ -95,7 +84,24 @@ const Landing = () => {
           </div>
         </Card>
 
-        <Card className="p-6 bg-white h-[calc((100vh-180px-3rem)/3)]">
+        {/* Invoices */}
+        <Card className="p-6 bg-white">
+          <h2 className="text-lg font-semibold mb-4">Invoices</h2>
+          <div className="space-y-3">
+            <Button className="w-full justify-start" variant="outline">
+              <Plus className="mr-2 h-4 w-4" /> Add New
+            </Button>
+            <Button className="w-full justify-start" variant="outline">
+              <Upload className="mr-2 h-4 w-4" /> Import
+            </Button>
+            <Button className="w-full justify-start" variant="outline">
+              <Download className="mr-2 h-4 w-4" /> Export
+            </Button>
+          </div>
+        </Card>
+
+        {/* Timesheets */}
+        <Card className="p-6 bg-white">
           <h2 className="text-lg font-semibold mb-4">Timesheets</h2>
           <div className="space-y-3">
             <Button className="w-full justify-start" variant="outline">
@@ -110,43 +116,16 @@ const Landing = () => {
           </div>
         </Card>
 
-        <Card className="p-6 bg-white h-[calc((100vh-180px-3rem)/3)]">
-          <h2 className="text-lg font-semibold mb-4">Invoices</h2>
-          <div className="space-y-3">
-            <Button className="w-full justify-start" variant="outline">
-              <Plus className="mr-2 h-4 w-4" /> Add New
-            </Button>
-            <Button className="w-full justify-start" variant="outline">
-              <Upload className="mr-2 h-4 w-4" /> Import
-            </Button>
-            <Button className="w-full justify-start" variant="outline">
-              <Download className="mr-2 h-4 w-4" /> Export
-            </Button>
-          </div>
-        </Card>
-      </div>
-
-      {/* Right column - Company Info */}
-      <div className="col-span-4">
-        <Card className="p-6 bg-white h-[calc(100vh-180px)]">
+        {/* Company Info Summary */}
+        <Card className="p-6 bg-white">
           <h2 className="text-lg font-semibold mb-4">Company Info Summary</h2>
-          <div className="overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead>
-                <tr>
-                  <th className="text-left text-sm font-semibold text-gray-900 py-2">Name</th>
-                  <th className="text-left text-sm font-semibold text-gray-900 py-2">Email</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {staffData.map((person, idx) => (
-                  <tr key={idx}>
-                    <td className="whitespace-nowrap py-2 text-sm text-gray-900">{person.name}</td>
-                    <td className="whitespace-nowrap py-2 text-sm text-gray-500">{person.email}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="space-y-4">
+            {staffData.map((person, idx) => (
+              <div key={idx} className="flex justify-between items-center">
+                <span className="text-sm font-medium">{person.name}</span>
+                <span className="text-sm text-gray-500">{person.role}</span>
+              </div>
+            ))}
           </div>
         </Card>
       </div>
