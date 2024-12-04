@@ -1,30 +1,37 @@
 import { TableCell, TableRow } from "@/components/ui/table";
+import { Eye, FileEdit, Trash2 } from "lucide-react";
 
 interface TimesheetEntry {
   date: string;
   project: string;
+  client: string;
   task: string;
   hours: number;
-  status: string;
 }
 
 export const TimesheetRow = ({ data }: { data: TimesheetEntry }) => {
   return (
-    <TableRow className="border-b border-gray-200">
-      <TableCell className="text-gray-900">{data.date}</TableCell>
-      <TableCell className="text-gray-900">{data.project}</TableCell>
-      <TableCell className="text-gray-900">{data.task}</TableCell>
-      <TableCell className="text-gray-900 text-right">{data.hours}</TableCell>
+    <TableRow className="border-b border-gray-700 hover:bg-[#252A38] transition-colors">
+      <TableCell className="p-4">
+        <input type="checkbox" className="rounded-sm border-gray-600" />
+      </TableCell>
+      <TableCell className="text-gray-300">{data.date}</TableCell>
+      <TableCell className="text-gray-300">{data.client}</TableCell>
+      <TableCell className="text-gray-300">{data.project}</TableCell>
+      <TableCell className="text-gray-300">{data.task}</TableCell>
+      <TableCell className="text-gray-300 text-right">{data.hours}</TableCell>
       <TableCell>
-        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-          data.status === 'Approved' 
-            ? 'bg-green-100 text-green-800' 
-            : data.status === 'Pending' 
-            ? 'bg-yellow-100 text-yellow-800'
-            : 'bg-red-100 text-red-800'
-        }`}>
-          {data.status}
-        </span>
+        <div className="flex items-center gap-2 justify-end">
+          <button className="p-1 hover:bg-gray-700 rounded-md transition-colors">
+            <Eye className="w-4 h-4 text-gray-400" />
+          </button>
+          <button className="p-1 hover:bg-gray-700 rounded-md transition-colors">
+            <FileEdit className="w-4 h-4 text-gray-400" />
+          </button>
+          <button className="p-1 hover:bg-gray-700 rounded-md transition-colors">
+            <Trash2 className="w-4 h-4 text-gray-400" />
+          </button>
+        </div>
       </TableCell>
     </TableRow>
   );
