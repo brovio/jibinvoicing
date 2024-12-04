@@ -142,8 +142,14 @@
   border-radius: 10px !important;
 }
 
+.toaster .toast .title {
+  color: white !important;
+  font-weight: 500 !important;
+}
+
 .toaster .toast .description {
   color: white !important;
+  opacity: 0.9 !important;
 }
 
 /* Modal styles */
