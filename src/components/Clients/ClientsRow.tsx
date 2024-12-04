@@ -1,5 +1,5 @@
 import { TableCell, TableRow } from "@/components/ui/table";
-import { Eye, FileEdit, Trash2 } from "lucide-react";
+import { FileEdit, Trash2 } from "lucide-react";
 
 interface ClientEntry {
   company: string;
@@ -40,19 +40,38 @@ export const ClientsRow = ({
           onChange={(e) => onSelect(e.target.checked)}
         />
       </TableCell>
-      <TableCell className="text-gray-300">{data.company}</TableCell>
-      <TableCell className="text-gray-300">{data.contactName}</TableCell>
-      <TableCell className="text-gray-300">{data.email}</TableCell>
-      <TableCell className="text-gray-300">{data.currency}</TableCell>
-      <TableCell className="text-gray-300 text-right">{data.rate}</TableCell>
+      <TableCell 
+        className="text-gray-300 cursor-pointer hover:text-white"
+        onClick={() => onView(data)}
+      >
+        {data.company}
+      </TableCell>
+      <TableCell 
+        className="text-gray-300 cursor-pointer hover:text-white"
+        onClick={() => onView(data)}
+      >
+        {data.contactName}
+      </TableCell>
+      <TableCell 
+        className="text-gray-300 cursor-pointer hover:text-white"
+        onClick={() => onView(data)}
+      >
+        {data.email}
+      </TableCell>
+      <TableCell 
+        className="text-gray-300 cursor-pointer hover:text-white"
+        onClick={() => onView(data)}
+      >
+        {data.currency}
+      </TableCell>
+      <TableCell 
+        className="text-gray-300 text-right cursor-pointer hover:text-white"
+        onClick={() => onView(data)}
+      >
+        {data.rate}
+      </TableCell>
       <TableCell>
         <div className="flex items-center gap-2 justify-end">
-          <button 
-            className="p-1 hover:bg-gray-700 rounded-md transition-colors"
-            onClick={() => onView(data)}
-          >
-            <Eye className="w-4 h-4 text-gray-400" />
-          </button>
           <button 
             className="p-1 hover:bg-gray-700 rounded-md transition-colors"
             onClick={() => onEdit(data)}
