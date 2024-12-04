@@ -9,7 +9,6 @@ interface TimesheetEntry {
   client: string;
   task: string;
   hours: number;
-  status: string;
 }
 
 export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
