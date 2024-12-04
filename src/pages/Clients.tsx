@@ -6,6 +6,7 @@ import { FileUpload } from "@/components/FileUpload";
 import { ExportButton } from "@/components/ExportButton";
 import { useState } from "react";
 import { ImportedClient } from "@/utils/importUtils";
+import { ClientModal } from "@/components/Clients/ClientModal";
 
 const initialData = [
   {
@@ -33,9 +34,10 @@ const initialData = [
 
 const Clients = () => {
   const [clients, setClients] = useState(initialData);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const handleImportSuccess = (importedClients: ImportedClient[]) => {
-    console.log('Imported clients:', importedClients); // Debug log
+    console.log('Imported clients:', importedClients);
     const formattedClients = importedClients.map(client => ({
       company: client.name,
       contactName: client.contact,
@@ -43,8 +45,22 @@ const Clients = () => {
       currency: client.currency,
       rate: Number(client.rate)
     }));
-    console.log('Formatted clients:', formattedClients); // Debug log
+    console.log('Formatted clients:', formattedClients);
     setClients(prev => [...prev, ...formattedClients]);
+  };
+
+  const handleClientAdded = (newClient: any) => {
+    setClients(prev => [...prev, newClient]);
+  };
+
+  const handleClientUpdated = (updatedClient: any) => {
+    setClients(prev => prev.map(client => 
+      client.company === updatedClient.company ? updatedClient : client
+    ));
+  };
+
+  const handleClientDeleted = (deletedClient: any) => {
+    setClients(prev => prev.filter(client => client.company !== deletedClient.company));
   };
 
   return (
@@ -83,7 +99,10 @@ const Clients = () => {
             <select className="bg-[#252A38] border border-gray-800 text-gray-400 rounded-[10px] px-4 py-2">
               <option>All Job Type</option>
             </select>
-            <Button className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white gap-2 rounded-[10px]">
+            <Button 
+              className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white gap-2 rounded-[10px]"
+              onClick={() => setIsAddModalOpen(true)}
+            >
               <UserPlus className="h-4 w-4" />
               Add Client
             </Button>
@@ -91,7 +110,19 @@ const Clients = () => {
         </div>
       </div>
 
-      <ClientsTable data={clients} />
+      <ClientsTable 
+        data={clients}
+        onClientAdded={handleClientAdded}
+        onClientUpdated={handleClientUpdated}
+        onClientDeleted={handleClientDeleted}
+      />
+
+      <ClientModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSave={handleClientAdded}
+        mode="add"
+      />
 
       <div className="mt-4 flex justify-between items-center text-gray-400">
         <span>Showing 1 to 10 of 20 results</span>
