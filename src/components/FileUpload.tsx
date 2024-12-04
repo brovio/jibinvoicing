@@ -70,7 +70,7 @@ export const FileUpload = () => {
       />
       <Button
         onClick={() => fileInputRef.current?.click()}
-        className="gap-2"
+        className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white gap-2 rounded-[10px]"
       >
         <Upload className="h-4 w-4" />
         Import Clients (CSV/JSON)
