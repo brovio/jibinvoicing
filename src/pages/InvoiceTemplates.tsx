@@ -64,7 +64,7 @@ const InvoiceTemplates = () => {
           {templates.map((template, index) => (
             <div key={index} className="group relative">
               <div className="aspect-[8.5/11] bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                <div className="absolute inset-0">
+                <div className="absolute inset-0 m-[2%]">
                   <div className="transform scale-[0.235] origin-top-left absolute top-0 left-0 w-[425%] h-[425%]">
                     <template.component {...sampleInvoiceData} />
                   </div>
