@@ -6,6 +6,7 @@ import { TimesheetRow } from "./TimesheetRow";
 interface TimesheetEntry {
   date: string;
   project: string;
+  client: string;
   task: string;
   hours: number;
   status: string;
