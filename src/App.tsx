@@ -10,7 +10,7 @@ import Clients from "./pages/Clients";
 import InvoiceTemplates from "./pages/InvoiceTemplates";
 import ThemeYTemplate from "./components/themes/Theme-Y";
 import { sampleInvoiceData } from "./data/sampleInvoiceData";
-import { useState } from "react";
+import React, { useState } from "react";
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient({
