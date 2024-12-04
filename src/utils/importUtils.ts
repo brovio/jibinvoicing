@@ -1,48 +1,71 @@
 import { toast } from "@/components/ui/use-toast";
 
 export interface ImportedClient {
-  name: string;
-  contact: string;
+  company: string;
+  contactName: string;
   email: string;
-  phone: string;
-  address: string;
+  phone?: string;
+  address?: string;
   rate: number;
   currency: string;
-  notes: string;
-  website: string;
+  notes?: string;
+  website?: string;
 }
 
 export const parseCSV = (content: string): ImportedClient[] => {
-  const lines = content.split('\n');
-  const headers = lines[0].split(',').map(header => header.trim().toLowerCase());
-  
-  return lines.slice(1)
-    .filter(line => line.trim())
-    .map(line => {
-      const values = line.split(',').map(value => value.trim());
-      const client: Partial<ImportedClient> = {};
-      
-      headers.forEach((header, index) => {
-        if (header === 'company') {
-          client.name = values[index];
-        } else if (header === 'contact') {
-          client.contact = values[index];
-        } else if (header === 'rate') {
-          client.rate = parseFloat(values[index]) || 0;
-        } else if (['email', 'phone', 'address', 'currency', 'notes', 'website'].includes(header)) {
-          (client as any)[header] = values[index];
-        }
+  try {
+    const lines = content.split('\n');
+    const headers = lines[0].split(',').map(header => header.trim().toLowerCase());
+    
+    if (!headers.includes('company') || !headers.includes('contactname') || !headers.includes('email')) {
+      toast({
+        title: "Invalid CSV format",
+        description: "CSV must include company, contactName, and email columns",
+        variant: "destructive",
       });
-      
-      return client as ImportedClient;
+      return [];
+    }
+
+    return lines.slice(1)
+      .filter(line => line.trim())
+      .map(line => {
+        const values = line.split(',').map(value => value.trim());
+        const client: Partial<ImportedClient> = {};
+        
+        headers.forEach((header, index) => {
+          if (header === 'company') {
+            client.company = values[index];
+          } else if (header === 'contactname') {
+            client.contactName = values[index];
+          } else if (header === 'rate') {
+            client.rate = parseFloat(values[index]) || 0;
+          } else if (['email', 'phone', 'address', 'currency', 'notes', 'website'].includes(header)) {
+            (client as any)[header] = values[index];
+          }
+        });
+        
+        return client as ImportedClient;
+      });
+  } catch (error) {
+    toast({
+      title: "Error parsing CSV",
+      description: "Please check your CSV format and try again",
+      variant: "destructive",
     });
+    return [];
+  }
 };
 
 export const parseJSON = (content: string): ImportedClient[] => {
   try {
     const data = JSON.parse(content);
     if (!Array.isArray(data)) {
-      throw new Error('JSON must contain an array of clients');
+      toast({
+        title: "Invalid JSON format",
+        description: "File must contain an array of clients",
+        variant: "destructive",
+      });
+      return [];
     }
     return data;
   } catch (error) {
@@ -56,18 +79,23 @@ export const parseJSON = (content: string): ImportedClient[] => {
 };
 
 export const validateClients = (clients: ImportedClient[]): boolean => {
-  const requiredFields = ['name', 'contact', 'email', 'currency', 'rate'];
-  
+  if (!clients.length) {
+    toast({
+      title: "Validation Error",
+      description: "No valid clients found in the file",
+      variant: "destructive",
+    });
+    return false;
+  }
+
   for (const client of clients) {
-    for (const field of requiredFields) {
-      if (!client[field as keyof ImportedClient]) {
-        toast({
-          title: "Validation Error",
-          description: `Missing required field: ${field}`,
-          variant: "destructive",
-        });
-        return false;
-      }
+    if (!client.company || !client.contactName || !client.email || !client.currency || client.rate === undefined) {
+      toast({
+        title: "Validation Error",
+        description: "All clients must have company, contactName, email, currency, and rate fields",
+        variant: "destructive",
+      });
+      return false;
     }
     
     if (isNaN(Number(client.rate))) {
