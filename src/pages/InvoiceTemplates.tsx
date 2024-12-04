@@ -1,8 +1,29 @@
 import { Input } from "@/components/ui/input";
 import { Search, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ThemeYTemplate from "@/components/themes/Theme-Y";
+import PeekoTemplate from "@/components/themes/Theme-peeko";
+import { sampleInvoiceData } from "@/data/sampleInvoiceData";
 
 const InvoiceTemplates = () => {
+  const templates = [
+    {
+      name: "Theme Y",
+      component: ThemeYTemplate,
+      description: "Modern and professional invoice template"
+    },
+    {
+      name: "Peeko",
+      component: PeekoTemplate,
+      description: "Clean and minimal invoice design"
+    },
+    {
+      name: "Classic",
+      component: ThemeYTemplate,
+      description: "Traditional business invoice layout"
+    }
+  ];
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="mb-6 flex flex-col gap-6">
@@ -40,10 +61,19 @@ const InvoiceTemplates = () => {
 
       <div className="bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">
         <div className="grid grid-cols-3 gap-6 p-6">
-          {/* Template previews will go here */}
-          <div className="aspect-[8.5/11] bg-white rounded-lg shadow-lg"></div>
-          <div className="aspect-[8.5/11] bg-white rounded-lg shadow-lg"></div>
-          <div className="aspect-[8.5/11] bg-white rounded-lg shadow-lg"></div>
+          {templates.map((template, index) => (
+            <div key={index} className="group relative">
+              <div className="aspect-[8.5/11] bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div className="transform scale-[0.2] origin-top-left absolute top-0 left-0 w-[500%] h-[500%]">
+                  <template.component {...sampleInvoiceData} />
+                </div>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <h3 className="text-white font-medium">{template.name}</h3>
+                <p className="text-gray-200 text-sm">{template.description}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
