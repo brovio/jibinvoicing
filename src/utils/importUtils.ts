@@ -20,7 +20,7 @@ export const parseCSV = (content: string): ImportedClient[] => {
     .filter(line => line.trim())
     .map(line => {
       const values = line.split(',').map(value => value.trim());
-      const client: Record<string, string | number> = {};
+      const client: Partial<ImportedClient> = {};
       
       headers.forEach((header, index) => {
         if (header === 'company') {
@@ -29,8 +29,8 @@ export const parseCSV = (content: string): ImportedClient[] => {
           client.contact = values[index];
         } else if (header === 'rate') {
           client.rate = parseFloat(values[index]) || 0;
-        } else if (header in ImportedClient.prototype) {
-          client[header] = values[index];
+        } else if (['email', 'phone', 'address', 'currency', 'notes', 'website'].includes(header)) {
+          (client as any)[header] = values[index];
         }
       });
       
