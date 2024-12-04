@@ -63,9 +63,9 @@ const InvoiceTemplates = () => {
         <div className="grid grid-cols-3 gap-6 p-6">
           {templates.map((template, index) => (
             <div key={index} className="group relative">
-              <div className="aspect-[8.5/11] bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+              <div className="aspect-[1/1.4142] bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
                 <div className="absolute inset-0 m-[2%]">
-                  <div className="transform scale-[0.235] origin-top-left absolute top-0 left-0 w-[425%] h-[425%]">
+                  <div className="transform scale-[0.18] origin-top-left absolute top-0 left-0 w-[550%] h-[550%]">
                     <template.component {...sampleInvoiceData} />
                   </div>
                 </div>
