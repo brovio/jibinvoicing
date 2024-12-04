@@ -1,3 +1,4 @@
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,18 +11,17 @@ import Clients from "./pages/Clients";
 import InvoiceTemplates from "./pages/InvoiceTemplates";
 import ThemeYTemplate from "./components/themes/Theme-Y";
 import { sampleInvoiceData } from "./data/sampleInvoiceData";
-import React, { useState } from "react";
 
-const App = () => {
-  const [queryClient] = useState(() => new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 5 * 60 * 1000,
-        retry: 1,
-      },
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+      retry: 1,
     },
-  }));
+  },
+});
 
+const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
