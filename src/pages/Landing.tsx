@@ -43,9 +43,9 @@ const projectData = [
 ];
 
 const staffData = [
-  { name: "Lindsay Walton", title: "Front-end Developer", email: "lindsay.walton@example.com" },
-  { name: "Courtney Henry", title: "Designer", email: "courtney.henry@example.com" },
-  { name: "Tom Cook", title: "Director of Product", email: "tom.cook@example.com" },
+  { name: "Lindsay Walton", email: "lindsay.walton@example.com" },
+  { name: "Courtney Henry", email: "courtney.henry@example.com" },
+  { name: "Tom Cook", email: "tom.cook@example.com" },
 ];
 
 const Landing = () => {
@@ -53,7 +53,7 @@ const Landing = () => {
     <div className="grid grid-cols-12 gap-6">
       {/* Left column - Project Activity */}
       <div className="col-span-5">
-        <Card className="p-6 bg-white h-[calc(100vh-180px)] overflow-y-auto">
+        <Card className="p-6 bg-white h-[calc(100vh-180px)]">
           <h2 className="text-lg font-semibold mb-4">Clients/Project Activity Summary</h2>
           <div className="space-y-4">
             {projectData.map((project, idx) => (
@@ -80,7 +80,7 @@ const Landing = () => {
 
       {/* Middle column - Quick Actions */}
       <div className="col-span-3 space-y-6">
-        <Card className="p-6 bg-white h-[calc((100vh-180px)/3 - 1rem)]">
+        <Card className="p-6 bg-white h-[calc((100vh-180px-3rem)/3)]">
           <h2 className="text-lg font-semibold mb-4">Clients</h2>
           <div className="space-y-3">
             <Button className="w-full justify-start" variant="outline">
@@ -95,7 +95,7 @@ const Landing = () => {
           </div>
         </Card>
 
-        <Card className="p-6 bg-white h-[calc((100vh-180px)/3 - 1rem)]">
+        <Card className="p-6 bg-white h-[calc((100vh-180px-3rem)/3)]">
           <h2 className="text-lg font-semibold mb-4">Timesheets</h2>
           <div className="space-y-3">
             <Button className="w-full justify-start" variant="outline">
@@ -110,7 +110,7 @@ const Landing = () => {
           </div>
         </Card>
 
-        <Card className="p-6 bg-white h-[calc((100vh-180px)/3 - 1rem)]">
+        <Card className="p-6 bg-white h-[calc((100vh-180px-3rem)/3)]">
           <h2 className="text-lg font-semibold mb-4">Invoices</h2>
           <div className="space-y-3">
             <Button className="w-full justify-start" variant="outline">
@@ -135,14 +135,14 @@ const Landing = () => {
               <thead>
                 <tr>
                   <th className="text-left text-sm font-semibold text-gray-900 py-2">Name</th>
-                  <th className="text-left text-sm font-semibold text-gray-900 py-2">Title</th>
+                  <th className="text-left text-sm font-semibold text-gray-900 py-2">Email</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {staffData.map((person, idx) => (
                   <tr key={idx}>
                     <td className="whitespace-nowrap py-2 text-sm text-gray-900">{person.name}</td>
-                    <td className="whitespace-nowrap py-2 text-sm text-gray-500">{person.title}</td>
+                    <td className="whitespace-nowrap py-2 text-sm text-gray-500">{person.email}</td>
                   </tr>
                 ))}
               </tbody>
