@@ -69,7 +69,7 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] bg-[#252A38] border border-gray-800 text-white">
+      <DialogContent className="sm:max-w-[600px] bg-[#252A38] border border-gray-800 text-white dialog-content">
         <DialogHeader>
           <DialogTitle className="text-white">
             {mode === 'add' ? 'Add New Client' : mode === 'edit' ? 'Edit Client' : 'View Client'}
