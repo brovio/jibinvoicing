@@ -11,25 +11,25 @@ interface TimesheetEntry {
 
 export const TimesheetRow = ({ data }: { data: TimesheetEntry }) => {
   return (
-    <TableRow className="border-b border-gray-700 hover:bg-[#252A38] transition-colors">
+    <TableRow className="border-b border-[#30363D] hover:bg-[#21262D] transition-colors">
       <TableCell className="p-4">
-        <input type="checkbox" className="rounded-sm border-gray-700" />
+        <input type="checkbox" className="rounded-sm border-[#30363D]" />
       </TableCell>
-      <TableCell className="text-gray-300">{data.date}</TableCell>
-      <TableCell className="text-gray-300">{data.client}</TableCell>
-      <TableCell className="text-gray-300">{data.project}</TableCell>
-      <TableCell className="text-gray-300">{data.task}</TableCell>
-      <TableCell className="text-gray-300 text-right">{data.hours}</TableCell>
+      <TableCell className="text-white">{data.date}</TableCell>
+      <TableCell className="text-white">{data.client}</TableCell>
+      <TableCell className="text-white">{data.project}</TableCell>
+      <TableCell className="text-white">{data.task}</TableCell>
+      <TableCell className="text-white text-right">{data.hours}</TableCell>
       <TableCell>
         <div className="flex items-center gap-2 justify-end">
-          <button className="p-1 hover:bg-gray-700 rounded-md transition-colors">
-            <Eye className="w-4 h-4 text-gray-400" />
+          <button className="p-1 hover:bg-[#30363D] rounded-md transition-colors">
+            <Eye className="w-4 h-4 text-[#8B949E]" />
           </button>
-          <button className="p-1 hover:bg-gray-700 rounded-md transition-colors">
-            <FileEdit className="w-4 h-4 text-gray-400" />
+          <button className="p-1 hover:bg-[#30363D] rounded-md transition-colors">
+            <FileEdit className="w-4 h-4 text-[#8B949E]" />
           </button>
-          <button className="p-1 hover:bg-gray-700 rounded-md transition-colors">
-            <Trash2 className="w-4 h-4 text-gray-400" />
+          <button className="p-1 hover:bg-[#30363D] rounded-md transition-colors">
+            <Trash2 className="w-4 h-4 text-[#8B949E]" />
           </button>
         </div>
       </TableCell>

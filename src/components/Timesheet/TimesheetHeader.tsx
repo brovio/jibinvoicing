@@ -7,41 +7,41 @@ interface TimesheetHeaderProps {
 export const TimesheetHeader = ({ onSort }: TimesheetHeaderProps) => {
   return (
     <TableHeader>
-      <TableRow className="border-b border-gray-700 hover:bg-transparent">
+      <TableRow className="border-b border-[#30363D] hover:bg-transparent">
         <TableHead className="w-[40px] p-4">
-          <input type="checkbox" className="rounded-sm border-gray-700" />
+          <input type="checkbox" className="rounded-sm border-[#30363D]" />
         </TableHead>
         <TableHead 
-          className="text-gray-400 font-medium cursor-pointer hover:bg-[#252A38] transition-colors"
+          className="text-[#8B949E] font-medium cursor-pointer hover:bg-[#21262D] transition-colors"
           onClick={() => onSort('date')}
         >
           Date
         </TableHead>
         <TableHead 
-          className="text-gray-400 font-medium cursor-pointer hover:bg-[#252A38] transition-colors"
+          className="text-[#8B949E] font-medium cursor-pointer hover:bg-[#21262D] transition-colors"
           onClick={() => onSort('client')}
         >
           Client
         </TableHead>
         <TableHead 
-          className="text-gray-400 font-medium cursor-pointer hover:bg-[#252A38] transition-colors"
+          className="text-[#8B949E] font-medium cursor-pointer hover:bg-[#21262D] transition-colors"
           onClick={() => onSort('project')}
         >
           Project
         </TableHead>
         <TableHead 
-          className="text-gray-400 font-medium cursor-pointer hover:bg-[#252A38] transition-colors"
+          className="text-[#8B949E] font-medium cursor-pointer hover:bg-[#21262D] transition-colors"
           onClick={() => onSort('task')}
         >
           Task
         </TableHead>
         <TableHead 
-          className="text-gray-400 font-medium cursor-pointer hover:bg-[#252A38] transition-colors text-right"
+          className="text-[#8B949E] font-medium cursor-pointer hover:bg-[#21262D] transition-colors text-right"
           onClick={() => onSort('hours')}
         >
           Hours
         </TableHead>
-        <TableHead className="text-gray-400 font-medium w-[100px] text-right">
+        <TableHead className="text-[#8B949E] font-medium w-[100px] text-right">
           Actions
         </TableHead>
       </TableRow>

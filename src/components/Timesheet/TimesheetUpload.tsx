@@ -37,7 +37,7 @@ export const TimesheetUpload = ({ onImportSuccess }: TimesheetUploadProps) => {
       />
       <Button
         onClick={() => fileInputRef.current?.click()}
-        className="bg-blue-500 hover:bg-blue-600 text-white gap-2 rounded-lg px-6"
+        className="bg-[#0D74E7] hover:bg-[#0D74E7]/90 text-white gap-2 rounded-lg px-6"
       >
         Browse Files
       </Button>
