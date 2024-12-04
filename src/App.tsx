@@ -10,34 +10,44 @@ import Clients from "./pages/Clients";
 import InvoiceTemplates from "./pages/InvoiceTemplates";
 import ThemeYTemplate from "./components/themes/Theme-Y";
 import { sampleInvoiceData } from "./data/sampleInvoiceData";
+import { useState } from "react";
 
-const queryClient = new QueryClient();
+const App = () => {
+  const [queryClient] = useState(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 5 * 60 * 1000,
+        retry: 1,
+      },
+    },
+  }));
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/timesheets" element={<Index />} />
-            <Route path="/clients" element={<Clients />} />
-            <Route path="/invoice-templates" element={<InvoiceTemplates />} />
-            <Route 
-              path="/invoice-preview" 
-              element={
-                <div className="p-4">
-                  <ThemeYTemplate {...sampleInvoiceData} />
-                </div>
-              } 
-            />
-          </Routes>
-        </Layout>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/timesheets" element={<Index />} />
+              <Route path="/clients" element={<Clients />} />
+              <Route path="/invoice-templates" element={<InvoiceTemplates />} />
+              <Route 
+                path="/invoice-preview" 
+                element={
+                  <div className="p-4">
+                    <ThemeYTemplate {...sampleInvoiceData} />
+                  </div>
+                } 
+              />
+            </Routes>
+          </Layout>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
