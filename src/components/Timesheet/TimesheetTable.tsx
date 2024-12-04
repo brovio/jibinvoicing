@@ -39,7 +39,7 @@ export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
   }, [data, sortConfig]);
 
   return (
-    <div className="rounded-[10px] border border-[#3f37c9] bg-white shadow-md overflow-hidden">
+    <div className="rounded-2xl border border-gray-200 overflow-hidden">
       <Table>
         <TimesheetHeader onSort={requestSort} />
         <TableBody>
