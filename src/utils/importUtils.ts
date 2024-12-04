@@ -33,14 +33,34 @@ export const parseCSV = (content: string): ImportedClient[] => {
         const client: Partial<ImportedClient> = {};
         
         headers.forEach((header, index) => {
-          if (header === 'company') {
-            client.company = values[index];
-          } else if (header === 'contactname') {
-            client.contactName = values[index];
-          } else if (header === 'rate') {
-            client.rate = parseFloat(values[index]) || 0;
-          } else if (['email', 'phone', 'address', 'currency', 'notes', 'website'].includes(header)) {
-            (client as any)[header] = values[index];
+          switch(header) {
+            case 'company':
+              client.company = values[index];
+              break;
+            case 'contactname':
+              client.contactName = values[index];
+              break;
+            case 'email':
+              client.email = values[index];
+              break;
+            case 'phone':
+              client.phone = values[index];
+              break;
+            case 'address':
+              client.address = values[index];
+              break;
+            case 'rate':
+              client.rate = parseFloat(values[index]) || 0;
+              break;
+            case 'currency':
+              client.currency = values[index];
+              break;
+            case 'notes':
+              client.notes = values[index];
+              break;
+            case 'website':
+              client.website = values[index];
+              break;
           }
         });
         
@@ -67,7 +87,19 @@ export const parseJSON = (content: string): ImportedClient[] => {
       });
       return [];
     }
-    return data;
+
+    // Map the JSON data to match our ImportedClient interface
+    return data.map(item => ({
+      company: item.company,
+      contactName: item.contactName,
+      email: item.email,
+      phone: item.phone,
+      address: item.address,
+      rate: parseFloat(item.rate) || 0,
+      currency: item.currency,
+      notes: item.notes,
+      website: item.website
+    }));
   } catch (error) {
     toast({
       title: "Error parsing JSON",

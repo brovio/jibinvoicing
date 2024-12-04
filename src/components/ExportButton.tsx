@@ -6,8 +6,12 @@ interface Client {
   company: string;
   contactName: string;
   email: string;
+  phone?: string;
+  address?: string;
   currency: string;
   rate: number;
+  notes?: string;
+  website?: string;
 }
 
 interface ExportButtonProps {
@@ -19,9 +23,9 @@ export const ExportButton = ({ clients, format }: ExportButtonProps) => {
   const { toast } = useToast();
 
   const exportToCSV = (clients: Client[]) => {
-    const headers = ['company,contactName,email,currency,rate'];
+    const headers = ['company,contactName,email,phone,address,currency,rate,notes,website'];
     const csvRows = clients.map(client => 
-      `${client.company},${client.contactName},${client.email},${client.currency},${client.rate}`
+      `${client.company || ''},${client.contactName || ''},${client.email || ''},${client.phone || ''},${client.address || ''},${client.currency || ''},${client.rate || ''},${client.notes || ''},${client.website || ''}`
     );
     const csvContent = [headers, ...csvRows].join('\n');
     return csvContent;
