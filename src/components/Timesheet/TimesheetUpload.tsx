@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Upload } from "lucide-react";
 import { useRef } from "react";
 import { processZipFile, TimesheetEntry } from "@/utils/timesheetUtils";
 
@@ -38,10 +37,9 @@ export const TimesheetUpload = ({ onImportSuccess }: TimesheetUploadProps) => {
       />
       <Button
         onClick={() => fileInputRef.current?.click()}
-        className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white gap-2 rounded-[10px]"
+        className="bg-blue-500 hover:bg-blue-600 text-white gap-2 rounded-lg px-6"
       >
-        <Upload className="h-4 w-4" />
-        Import Timesheets (ZIP)
+        Browse Files
       </Button>
     </>
   );
