@@ -20,34 +20,7 @@ const Index = () => {
   const [entriesPerPage, setEntriesPerPage] = useState("25");
 
   const handleImportSuccess = (newEntries: TimesheetEntry[]) => {
-    // Create a map to store "in" entries
-    const inEntriesMap = new Map();
-    
-    // First pass: Store all "in" entries in the map
-    newEntries.forEach(entry => {
-      if (entry.entryType?.toLowerCase() === 'in') {
-        inEntriesMap.set(entry.time, entry);
-      }
-    });
-    
-    // Second pass: Merge "out" entries' notes with their corresponding "in" entries
-    newEntries.forEach(entry => {
-      if (entry.entryType?.toLowerCase() === 'out' && entry.tasks) {
-        const correspondingInEntry = inEntriesMap.get(entry.time);
-        if (correspondingInEntry) {
-          correspondingInEntry.tasks = correspondingInEntry.tasks
-            ? `${correspondingInEntry.tasks}; ${entry.tasks}`
-            : entry.tasks;
-        }
-      }
-    });
-    
-    // Filter out "out" entries and keep only "in" entries or entries without entryType
-    const filteredEntries = newEntries.filter(entry => 
-      entry.entryType?.toLowerCase() !== 'out'
-    );
-    
-    setEntries(prev => [...prev, ...filteredEntries]);
+    setEntries(prev => [...prev, ...newEntries]);
   };
 
   const tableData = entries.map(entry => ({
