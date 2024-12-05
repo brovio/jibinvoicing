@@ -34,7 +34,7 @@ const processCSVContent = (content: string): TimesheetEntry[] => {
   const lines = content.split('\n');
   const headers = lines[0].toLowerCase().split(',').map(h => h.trim());
   const entries: TimesheetEntry[] = [];
-  let previousInEntry: Partial<TimesheetEntry> | null = null;
+  let currentInEntry: Partial<TimesheetEntry> | null = null;
 
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i].trim();
@@ -68,11 +68,11 @@ const processCSVContent = (content: string): TimesheetEntry[] => {
         case 'break type':
           entry.breakType = value;
           break;
-        case 'project':
+        case 'activity':
           entry.project = value;
           break;
         case 'client':
-          entry.client = value || entry.project || '';
+          entry.client = value || 'Unassigned';
           break;
         case 'notes':
           entry.tasks = value;
@@ -80,28 +80,23 @@ const processCSVContent = (content: string): TimesheetEntry[] => {
       }
     });
 
-    // Handle task notes merging
-    if (entry.entryType?.toLowerCase() === 'out' || entry.entryType?.toLowerCase() === 'startbreak') {
-      if (previousInEntry && entry.tasks) {
-        previousInEntry.tasks = previousInEntry.tasks 
-          ? `${previousInEntry.tasks}; ${entry.tasks}`
+    // Handle merging of "out" entries with their corresponding "in" entries
+    if (entry.entryType?.toLowerCase() === 'out') {
+      if (currentInEntry && entry.tasks) {
+        currentInEntry.tasks = currentInEntry.tasks 
+          ? `${currentInEntry.tasks}; ${entry.tasks}`
           : entry.tasks;
       }
-      continue;
+      // Add the out entry as a separate entry
+      entries.push(entry as TimesheetEntry);
+      currentInEntry = null;
+    } else if (entry.entryType?.toLowerCase() === 'in') {
+      currentInEntry = entry;
+      entries.push(entry as TimesheetEntry);
+    } else {
+      // Add all other types of entries
+      entries.push(entry as TimesheetEntry);
     }
-
-    // Skip entries with 0 duration unless it's a StartBreak
-    if (entry.duration === 0 && entry.entryType?.toLowerCase() !== 'startbreak') {
-      continue;
-    }
-
-    // Use client as primary source, fallback to project
-    if (!entry.client) {
-      entry.client = entry.project || `ask-${entry.staffMember}`;
-    }
-
-    previousInEntry = entry;
-    entries.push(entry as TimesheetEntry);
   }
 
   return entries;
