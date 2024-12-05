@@ -9,11 +9,6 @@ interface TimesheetEntry {
   client: string;
   task: string;
   hours: number;
-  staffMember?: string;
-  entryType?: string;
-  time?: string;
-  break?: string;
-  breakType?: string;
 }
 
 export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
