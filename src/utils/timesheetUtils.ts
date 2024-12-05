@@ -34,7 +34,7 @@ const processCSVContent = (content: string): TimesheetEntry[] => {
   const lines = content.split('\n');
   const headers = lines[0].toLowerCase().split(',').map(h => h.trim());
   const entries: TimesheetEntry[] = [];
-  let currentInEntry: Partial<TimesheetEntry> | null = null;
+  const inEntriesMap = new Map<string, TimesheetEntry>();
 
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i].trim();
@@ -69,7 +69,7 @@ const processCSVContent = (content: string): TimesheetEntry[] => {
           entry.breakType = value;
           break;
         case 'activity':
-          entry.project = value;
+          entry.project = value;  // Using activity column for project
           break;
         case 'client':
           entry.client = value || 'Unassigned';
@@ -80,21 +80,23 @@ const processCSVContent = (content: string): TimesheetEntry[] => {
       }
     });
 
-    // Handle merging of "out" entries with their corresponding "in" entries
-    if (entry.entryType?.toLowerCase() === 'out') {
-      if (currentInEntry && entry.tasks) {
-        currentInEntry.tasks = currentInEntry.tasks 
-          ? `${currentInEntry.tasks}; ${entry.tasks}`
+    // Create a unique key for matching in/out entries
+    const entryKey = `${entry.date}-${entry.staffMember}-${entry.time}`;
+
+    if (entry.entryType?.toLowerCase() === 'out' && entry.tasks) {
+      // If there's a matching 'in' entry, append the notes
+      const matchingInEntry = inEntriesMap.get(entryKey);
+      if (matchingInEntry) {
+        matchingInEntry.tasks = matchingInEntry.tasks 
+          ? `${matchingInEntry.tasks}; ${entry.tasks}`
           : entry.tasks;
       }
-      // Add the out entry as a separate entry
-      entries.push(entry as TimesheetEntry);
-      currentInEntry = null;
     } else if (entry.entryType?.toLowerCase() === 'in') {
-      currentInEntry = entry;
+      // Store 'in' entries in the map and add to final entries
+      inEntriesMap.set(entryKey, entry as TimesheetEntry);
       entries.push(entry as TimesheetEntry);
-    } else {
-      // Add all other types of entries
+    } else if (entry.entryType?.toLowerCase() !== 'out') {
+      // Add all other types of entries except 'out'
       entries.push(entry as TimesheetEntry);
     }
   }
