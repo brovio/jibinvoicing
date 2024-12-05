@@ -29,6 +29,11 @@ const Index = () => {
     project: entry.project,
     task: entry.tasks,
     hours: entry.duration,
+    staffMember: entry.staffMember,
+    entryType: entry.entryType,
+    time: entry.time,
+    break: entry.break,
+    breakType: entry.breakType,
   }));
 
   return (
