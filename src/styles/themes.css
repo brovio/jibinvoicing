@@ -27,6 +27,16 @@
   --dashboard-hover: #2A303F;
   --dashboard-text: #9CA3AF;
   --dashboard-primary: #0EA5E9;
+
+  /* Invoice theme colors */
+  --invoice-primary: #0EA5E9;
+  --invoice-secondary: #252A38;
+  --invoice-accent: #374151;
+  --invoice-dark: #1A1F2C;
+  --invoice-light: #FFFFFF;
+  --invoice-muted: #9CA3AF;
+  --invoice-border: #374151;
+  --invoice-hover: #2A303F;
 }
 
 .dark {
