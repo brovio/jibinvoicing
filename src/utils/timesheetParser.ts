@@ -1,4 +1,4 @@
-interface TimesheetEntry {
+export interface TimesheetEntry {
   date: string;
   project: string;
   client: string;
