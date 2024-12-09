@@ -4,7 +4,7 @@ import { Search, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ExportButton } from "@/components/ExportButton";
 import { useRef, useState } from "react";
-import { processTimesheetZip, TimesheetEntry } from "@/utils/timesheetParser";
+import { processTimesheetZip, TimesheetEntry, parseTimesheetCSV } from "@/utils/timesheetParser";
 import { showImportSuccessToast, showImportErrorToast } from "@/utils/toastUtils";
 
 const sampleData = [
@@ -42,13 +42,21 @@ const Timesheets = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    if (file.type !== 'application/zip') {
-      showImportErrorToast('Please upload a ZIP file');
-      return;
-    }
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
 
     try {
-      const entries = await processTimesheetZip(file);
+      let entries: TimesheetEntry[] = [];
+
+      if (fileExtension === 'zip') {
+        entries = await processTimesheetZip(file);
+      } else if (fileExtension === 'csv') {
+        const text = await file.text();
+        entries = parseTimesheetCSV(text);
+      } else {
+        showImportErrorToast('Please upload a ZIP or CSV file');
+        return;
+      }
+
       setTimesheetData(entries);
       showImportSuccessToast(entries.length);
       
@@ -77,7 +85,7 @@ const Timesheets = () => {
             <div className="flex gap-4">
               <input
                 type="file"
-                accept=".zip"
+                accept=".zip,.csv"
                 onChange={handleFileChange}
                 className="hidden"
                 ref={fileInputRef}
@@ -87,7 +95,7 @@ const Timesheets = () => {
                 className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white gap-2 rounded-[10px]"
               >
                 <Upload className="h-4 w-4" />
-                Import Timesheets (ZIP)
+                Import Timesheets (ZIP/CSV)
               </Button>
               <ExportButton format="csv" clients={[]} />
               <ExportButton format="json" clients={[]} />

@@ -16,7 +16,7 @@ export interface TimesheetEntry {
 
 export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
   const lines = csvContent.trim().split('\n');
-  const headers = lines[0].split(',');
+  const headers = lines[0].toLowerCase().split(',').map(h => h.trim());
   
   return lines.slice(1).map(line => {
     const values = line.split(',');
@@ -24,40 +24,30 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
     
     headers.forEach((header, index) => {
       const value = values[index]?.trim();
-      switch(header.trim().toLowerCase()) {
+      switch(header) {
         case 'date':
           entry.date = value;
           break;
-        case 'activity':
         case 'project':
           entry.project = value;
           break;
         case 'client':
           entry.client = value;
           break;
-        case 'notes':
         case 'task':
+        case 'notes':
           entry.task = value;
           break;
-        case 'duration':
         case 'hours':
+        case 'duration':
           entry.hours = parseFloat(value) || 0;
           break;
-        case 'full name':
+        case 'status':
+          entry.status = value || 'Pending';
+          break;
         case 'staff name':
+        case 'full name':
           entry.staffName = value;
-          break;
-        case 'entrytype':
-          entry.entryType = value;
-          break;
-        case 'time':
-          entry.time = value;
-          break;
-        case 'break':
-          entry.break = value?.toLowerCase() === 'yes';
-          break;
-        case 'break type':
-          entry.breakType = value;
           break;
       }
     });
@@ -67,7 +57,7 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
     entry.client = entry.client || 'Unspecified Client';
     entry.task = entry.task || 'General Task';
     entry.hours = entry.hours || 0;
-    entry.status = 'Pending';
+    entry.status = entry.status || 'Pending';
 
     return entry as TimesheetEntry;
   });
@@ -78,20 +68,25 @@ export const processTimesheetZip = async (zipFile: File): Promise<TimesheetEntry
     const zip = new JSZip();
     const zipContent = await zip.loadAsync(zipFile);
     
-    // Find the first CSV file in the ZIP
-    const csvFile = Object.values(zipContent.files).find(file => 
+    // Find all CSV files in the ZIP
+    const csvFiles = Object.values(zipContent.files).filter(file => 
       file.name.toLowerCase().endsWith('.csv')
     );
 
-    if (!csvFile) {
-      throw new Error('No CSV file found in the ZIP archive');
+    if (csvFiles.length === 0) {
+      throw new Error('No CSV files found in the ZIP archive');
     }
 
-    // Read the CSV content
-    const csvContent = await csvFile.async('string');
-    console.log('CSV Content:', csvContent); // Debug log
+    // Process all CSV files and combine their entries
+    const allEntries: TimesheetEntry[] = [];
     
-    return parseTimesheetCSV(csvContent);
+    for (const csvFile of csvFiles) {
+      const csvContent = await csvFile.async('string');
+      const entries = parseTimesheetCSV(csvContent);
+      allEntries.push(...entries);
+    }
+
+    return allEntries;
   } catch (error) {
     console.error('Error processing ZIP file:', error);
     throw new Error('Invalid timesheet format');
