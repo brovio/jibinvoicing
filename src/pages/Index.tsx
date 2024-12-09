@@ -2,6 +2,7 @@ import { TimesheetTable } from "@/components/Timesheet/TimesheetTable";
 import { Input } from "@/components/ui/input";
 import { Search, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ExportButton } from "@/components/ExportButton";
 
 const sampleData = [
   {
@@ -34,16 +35,23 @@ const Index = () => {
   return (
     <div className="max-w-7xl mx-auto">
       <div className="mb-6 flex flex-col gap-6">
-        <div className="bg-[#252A38] border border-gray-800 rounded-[10px] p-8 text-center">
+        <div className="bg-[#252A38] border border-gray-800 rounded-[10px] p-8">
           <div className="flex flex-col items-center gap-2">
-            <div className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center mb-2">
-              <Upload className="w-6 h-6 text-gray-400" />
+            <div className="w-12 h-12 rounded-[10px] flex items-center justify-center mb-2">
+              <Upload className="w-6 h-6 text-white" />
             </div>
-            <h2 className="text-xl font-medium text-white">Import Timesheets</h2>
-            <p className="text-gray-400">Drag and drop your CSV file here, or click to browse</p>
-            <Button className="mt-4 bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white">
-              Browse Files
-            </Button>
+            <h2 className="text-xl font-medium text-white">Import/Export Timesheets</h2>
+            <p className="text-gray-400 text-center max-w-lg">
+              Import your timesheets using CSV or JSON format. Required columns: Date, Project, Client, Task, and Hours.
+            </p>
+            <div className="flex gap-4">
+              <Button className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white gap-2 rounded-[10px]">
+                <Upload className="h-4 w-4" />
+                Import Timesheets (CSV/JSON)
+              </Button>
+              <ExportButton format="csv" clients={[]} />
+              <ExportButton format="json" clients={[]} />
+            </div>
           </div>
         </div>
 
