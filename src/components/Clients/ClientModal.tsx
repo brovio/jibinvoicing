@@ -6,11 +6,11 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect } from "react";
 import { showErrorToast, showClientSavedToast } from "@/utils/toastUtils";
+import { BasicInfoFields } from "./FormFields/BasicInfoFields";
+import { ContactFields } from "./FormFields/ContactFields";
+import { BillingFields } from "./FormFields/BillingFields";
 
 interface ClientModalProps {
   isOpen: boolean;
@@ -74,110 +74,9 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="company" className="text-gray-300">Company Name *</Label>
-              <Input
-                id="company"
-                name="company"
-                value={formData.company}
-                onChange={handleChange}
-                disabled={mode === 'view'}
-                required
-                className="bg-[#1A1F2C] border-gray-700 text-white"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="contactName" className="text-gray-300">Contact Name *</Label>
-              <Input
-                id="contactName"
-                name="contactName"
-                value={formData.contactName}
-                onChange={handleChange}
-                disabled={mode === 'view'}
-                required
-                className="bg-[#1A1F2C] border-gray-700 text-white"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-gray-300">Email *</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                disabled={mode === 'view'}
-                required
-                className="bg-[#1A1F2C] border-gray-700 text-white"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="phone" className="text-gray-300">Phone</Label>
-              <Input
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                disabled={mode === 'view'}
-                className="bg-[#1A1F2C] border-gray-700 text-white"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="rate" className="text-gray-300">Rate</Label>
-              <Input
-                id="rate"
-                name="rate"
-                type="number"
-                value={formData.rate}
-                onChange={handleChange}
-                disabled={mode === 'view'}
-                className="bg-[#1A1F2C] border-gray-700 text-white"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="currency" className="text-gray-300">Currency</Label>
-              <Input
-                id="currency"
-                name="currency"
-                value={formData.currency}
-                onChange={handleChange}
-                disabled={mode === 'view'}
-                className="bg-[#1A1F2C] border-gray-700 text-white"
-              />
-            </div>
-            <div className="col-span-2 space-y-2">
-              <Label htmlFor="address" className="text-gray-300">Address</Label>
-              <Input
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                disabled={mode === 'view'}
-                className="bg-[#1A1F2C] border-gray-700 text-white"
-              />
-            </div>
-            <div className="col-span-2 space-y-2">
-              <Label htmlFor="website" className="text-gray-300">Website</Label>
-              <Input
-                id="website"
-                name="website"
-                value={formData.website}
-                onChange={handleChange}
-                disabled={mode === 'view'}
-                className="bg-[#1A1F2C] border-gray-700 text-white"
-              />
-            </div>
-            <div className="col-span-2 space-y-2">
-              <Label htmlFor="notes" className="text-gray-300">Notes</Label>
-              <Textarea
-                id="notes"
-                name="notes"
-                value={formData.notes}
-                onChange={handleChange}
-                disabled={mode === 'view'}
-                className="bg-[#1A1F2C] border-gray-700 text-white min-h-[100px]"
-              />
-            </div>
+            <BasicInfoFields formData={formData} handleChange={handleChange} mode={mode} />
+            <ContactFields formData={formData} handleChange={handleChange} mode={mode} />
+            <BillingFields formData={formData} handleChange={handleChange} mode={mode} />
           </div>
           <DialogFooter>
             {mode !== 'view' && (
