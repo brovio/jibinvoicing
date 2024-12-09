@@ -2,7 +2,7 @@ import { Separator } from "@/components/ui/separator";
 
 export const Footer = () => {
   return (
-    <footer className="mt-auto px-6 py-4">
+    <footer className="w-full mt-auto">
       <Separator className="bg-dashboard-border" />
       <div className="flex justify-center py-4">
         <a
