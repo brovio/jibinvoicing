@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
   const [sortConfig, setSortConfig] = React.useState<{ key: string; direction: string } | null>(null);
   const [selectedEntry, setSelectedEntry] = useState<TimesheetEntry | null>(null);
-  const [selectedRowIndex, setSelectedRowIndex] = useState<number | undefined>(undefined);
   const [isModalOpen, setIsModalOpen] = useState(false);
   
   // Filter states
@@ -69,9 +68,8 @@ export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
     return filteredItems;
   }, [data, sortConfig, clientFilter, projectFilter, minHours, maxHours]);
 
-  const handleView = (entry: TimesheetEntry, index: number) => {
+  const handleView = (entry: TimesheetEntry) => {
     setSelectedEntry(entry);
-    setSelectedRowIndex(index + 1); // Add 1 to account for header row
     setIsModalOpen(true);
     console.log("Viewing entry:", entry);
   };
@@ -127,7 +125,7 @@ export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
               <TimesheetRow 
                 key={index} 
                 data={item} 
-                onView={(entry) => handleView(entry, index)}
+                onView={(entry) => handleView(entry)}
                 onEdit={(entry) => console.log("Edit entry:", entry)}
                 onDelete={(entry) => console.log("Delete entry:", entry)}
               />
@@ -140,7 +138,6 @@ export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         entry={selectedEntry}
-        rowIndex={selectedRowIndex}
       />
     </div>
   );

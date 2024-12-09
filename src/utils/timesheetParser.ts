@@ -92,8 +92,12 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
         if (isEmptyRow(values)) return null;
 
         const getValue = (headerName: string): string => {
-          const index = headers.indexOf(headerName);
-          return index !== -1 && values[index] ? values[index].trim() : '';
+          const headerIndex = headers.findIndex(h => 
+            h === headerName || 
+            (headerName === 'full name' && h === 'name') ||
+            (headerName === 'notes' && h === 'task')
+          );
+          return headerIndex !== -1 && values[headerIndex] ? values[headerIndex].trim() : '';
         };
 
         // Get date from the first column
@@ -103,19 +107,22 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
           return null;
         }
 
+        // Get the original row number from the CSV data if available
+        const originalRowNumber = getValue('row') || (index + 2).toString();
+
         const entry: TimesheetEntry = {
           date: dateValue,
-          staffName: getValue('full name'),
+          staffName: getValue('name') || getValue('full name') || '',
           client: getValue('client') || 'Unspecified',
           project: getValue('project') || 'Unspecified',
-          task: getValue('notes'),
-          hours: parseFloat(getValue('duration')) || 0,
+          task: getValue('task') || getValue('notes') || '',
+          hours: parseFloat(getValue('duration') || getValue('hours') || '0') || 0,
           status: 'Pending',
           time: getValue('time'),
           entryType: getValue('entry type'),
           break: getValue('break')?.toLowerCase() === 'true',
           breakType: getValue('break type'),
-          rowNumber: index + 2 // Adding 2 to account for 0-based index and header row
+          rowNumber: parseInt(originalRowNumber, 10)
         };
 
         // Log entry for debugging
