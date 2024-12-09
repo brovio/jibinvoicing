@@ -3,10 +3,12 @@ import { Table, TableBody } from "@/components/ui/table";
 import { TimesheetHeader } from "./TimesheetHeader";
 import { TimesheetRow } from "./TimesheetRow";
 import { TimesheetEntry } from "@/utils/timesheetParser";
+import { TimesheetModal } from "./TimesheetModal";
 
 export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
   const [sortConfig, setSortConfig] = React.useState<{ key: string; direction: string } | null>(null);
   const [selectedEntry, setSelectedEntry] = useState<TimesheetEntry | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const requestSort = (key: string) => {
     let direction = "ascending";
@@ -34,7 +36,7 @@ export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
 
   const handleView = (entry: TimesheetEntry) => {
     setSelectedEntry(entry);
-    // TODO: Open modal when implemented
+    setIsModalOpen(true);
     console.log("Viewing entry:", entry);
   };
 
@@ -54,6 +56,11 @@ export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
           ))}
         </TableBody>
       </Table>
+      <TimesheetModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        entry={selectedEntry}
+      />
     </div>
   );
 };
