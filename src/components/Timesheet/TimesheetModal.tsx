@@ -10,9 +10,10 @@ interface TimesheetModalProps {
   isOpen: boolean;
   onClose: () => void;
   entry: TimesheetEntry | null;
+  rowIndex?: number;
 }
 
-export const TimesheetModal = ({ isOpen, onClose, entry }: TimesheetModalProps) => {
+export const TimesheetModal = ({ isOpen, onClose, entry, rowIndex }: TimesheetModalProps) => {
   if (!entry) return null;
 
   return (
@@ -23,6 +24,10 @@ export const TimesheetModal = ({ isOpen, onClose, entry }: TimesheetModalProps) 
         </DialogHeader>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm text-gray-400">Row Number</label>
+              <p className="text-white">{rowIndex !== undefined ? rowIndex + 1 : 'N/A'}</p>
+            </div>
             <div>
               <label className="text-sm text-gray-400">Date</label>
               <p className="text-white">{entry.date}</p>
@@ -47,12 +52,6 @@ export const TimesheetModal = ({ isOpen, onClose, entry }: TimesheetModalProps) 
               <div>
                 <label className="text-sm text-gray-400">Staff Name</label>
                 <p className="text-white">{entry.staffName}</p>
-              </div>
-            )}
-            {entry.status && (
-              <div>
-                <label className="text-sm text-gray-400">Status</label>
-                <p className="text-white">{entry.status}</p>
               </div>
             )}
           </div>

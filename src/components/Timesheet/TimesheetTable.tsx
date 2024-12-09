@@ -8,6 +8,7 @@ import { TimesheetModal } from "./TimesheetModal";
 export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
   const [sortConfig, setSortConfig] = React.useState<{ key: string; direction: string } | null>(null);
   const [selectedEntry, setSelectedEntry] = useState<TimesheetEntry | null>(null);
+  const [selectedRowIndex, setSelectedRowIndex] = useState<number | undefined>(undefined);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const requestSort = (key: string) => {
@@ -34,8 +35,9 @@ export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
     return sortableItems;
   }, [data, sortConfig]);
 
-  const handleView = (entry: TimesheetEntry) => {
+  const handleView = (entry: TimesheetEntry, index: number) => {
     setSelectedEntry(entry);
+    setSelectedRowIndex(index);
     setIsModalOpen(true);
     console.log("Viewing entry:", entry);
   };
@@ -49,7 +51,7 @@ export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
             <TimesheetRow 
               key={index} 
               data={item} 
-              onView={handleView}
+              onView={(entry) => handleView(entry, index)}
               onEdit={(entry) => console.log("Edit entry:", entry)}
               onDelete={(entry) => console.log("Delete entry:", entry)}
             />
@@ -60,6 +62,7 @@ export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         entry={selectedEntry}
+        rowIndex={selectedRowIndex}
       />
     </div>
   );
