@@ -30,10 +30,9 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         dashboard: {
-          card: "var(--dashboard-card)",
-          border: "var(--dashboard-border)",
-          hover: "var(--dashboard-hover)",
-          primary: "var(--dashboard-primary)",
+          card: "#252A38",
+          border: "#374151",
+          hover: "#2A303F",
         },
         invoice: {
           primary: "var(--invoice-primary)",
