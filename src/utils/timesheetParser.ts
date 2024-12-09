@@ -15,13 +15,15 @@ export interface TimesheetEntry {
 }
 
 const parseCSVLine = (line: string): string[] => {
-  if (Array.isArray(line)) {
-    return line.map(item => item?.toString().trim() || '');
-  }
-
   const result: string[] = [];
   let current = '';
   let inQuotes = false;
+  
+  // Handle case where the entire line is a single string with commas
+  if (line.startsWith('"') && line.endsWith('"')) {
+    const parts = line.slice(1, -1).split(',');
+    return parts.map(part => part.trim());
+  }
   
   for (let i = 0; i < line.length; i++) {
     const char = line[i];
@@ -63,67 +65,60 @@ const isValidDate = (dateStr: string): boolean => {
 }
 
 const isEmptyRow = (values: string[]): boolean => {
-  return values.every(value => !value || value.trim() === '');
+  // Check if all values in the row are empty or just whitespace
+  return !values.some(value => value && value.trim() !== '');
 }
 
 export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
   try {
     // Split content into lines and remove empty lines
-    const lines = csvContent.split('\n').filter(line => line.trim());
+    const lines = csvContent.split('\n')
+      .map(line => line.trim())
+      .filter(line => line.length > 0);
     
+    if (lines.length === 0) return [];
+
     // Get headers from first line and normalize them
     const headers = parseCSVLine(lines[0]).map(header => 
-      header.trim().toLowerCase().replace(/['"]/g, '')
+      header.toLowerCase().replace(/['"]/g, '').trim()
     );
-
-    console.log('CSV Headers:', headers);
 
     // Process data rows (skip header row)
     return lines.slice(1)
-      .map(line => parseCSVLine(line))
-      .filter(values => !isEmptyRow(values))
-      .map((values, rowIndex) => {
-        console.log(`Processing row ${rowIndex + 2}:`, values); // Add 2 to account for 1-based indexing and header row
+      .map(line => {
+        const values = parseCSVLine(line);
+        if (isEmptyRow(values)) return null;
 
-        const getValueByHeader = (headerName: string): string => {
-          const index = headers.findIndex(h => h.includes(headerName.toLowerCase()));
-          return index !== -1 ? values[index]?.trim() || '' : '';
+        const getValue = (headerName: string): string => {
+          const index = headers.findIndex(h => h === headerName.toLowerCase());
+          return index !== -1 && values[index] ? values[index].trim() : '';
         };
 
-        // Try to find a valid date
-        let dateValue = getValueByHeader('date');
+        // Find the date value
+        let dateValue = getValue('date');
         if (!isValidDate(dateValue)) {
-          for (const value of values) {
-            if (value && isValidDate(value.split(' ')[0])) {
-              dateValue = value.split(' ')[0];
-              break;
-            }
-          }
+          // Try the first column as a fallback
+          dateValue = values[0] && isValidDate(values[0]) ? values[0] : '';
         }
 
-        if (!dateValue) {
-          console.log(`No valid date found in row ${rowIndex + 2}`);
-          return null;
-        }
-
-        // Look for project name in both specific project column and task name column
-        const projectName = getValueByHeader('project name') || 
-                          getValueByHeader('project') || 
-                          getValueByHeader('task name') || '';
+        if (!dateValue) return null;
 
         const entry: TimesheetEntry = {
           date: dateValue,
-          client: getValueByHeader('client') || getValueByHeader('company') || '',
-          project: projectName,
-          task: getValueByHeader('task description') || getValueByHeader('notes') || getValueByHeader('task') || '',
-          hours: parseFloat(getValueByHeader('duration')) || parseFloat(getValueByHeader('hours')) || 0,
+          staffName: getValue('staff name'),
+          client: getValue('client'),
+          project: getValue('project'),
+          task: getValue('task description') || getValue('task'),
+          hours: parseFloat(getValue('duration') || getValue('hours')) || 0,
           status: 'Pending',
-          staffName: getValueByHeader('staff name') || getValueByHeader('name') || '',
-          entryType: getValueByHeader('entry type') || getValueByHeader('type') || '',
-          time: getValueByHeader('time') || '',
-          break: getValueByHeader('break')?.toLowerCase() === 'true',
-          breakType: getValueByHeader('break type') || ''
+          time: getValue('time'),
+          entryType: getValue('entry type'),
+          break: getValue('break')?.toLowerCase() === 'true',
+          breakType: getValue('break type')
         };
+
+        // Validate that we have at least the required fields
+        if (!entry.date || !entry.client || !entry.project) return null;
 
         return entry;
       })
