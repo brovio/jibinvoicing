@@ -51,14 +51,18 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
         formattedDate = new Date().toISOString().split('T')[0];
       }
 
-      // Get client from the organization name
-      const client = getValue('organization') || 'Unspecified Client';
-
-      // Get project - try different possible project columns
-      let project = getValue('project name');
-      if (!project) {
-        project = getValue('project') || 'Unspecified Project';
+      // Get client with proper fallback logic
+      let client = getValue('client');
+      if (!client || client === '') {
+        client = getValue('project');
       }
+      // If both client and project are empty, leave it as an empty string
+      if (!client) {
+        client = '';
+      }
+
+      // Get project name
+      const project = getValue('project') || '';
 
       // Get task description
       const task = getValue('task description') || getValue('notes') || 'General Task';
