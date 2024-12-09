@@ -1,68 +1,70 @@
 /* Design System Guidelines
- * This file serves as a reference for our application's design tokens and patterns
- * Based on the Timesheets page styling
+ * Based on the updated UI from the provided images
  */
 
 :root {
-  /* Border Radius */
-  --border-radius-base: 10px;    /* New consistent border radius */
-  
-  /* Border Styles */
-  --border-width-thin: 1px;
-  --border-width-medium: 2px;
-  --border-width-thick: 4px;
-  
   /* Colors */
-  --primary-blue: #4895EF;
-  --primary-blue-dark: #3f37c9;
-  --secondary-gray: #6B7280;
-  --accent-purple: #3A0CA3;
-  
-  /* Background Colors */
-  --bg-white: #FFFFFF;
-  --bg-gray-50: #F9FAFB;
-  --bg-gray-100: #F3F4F6;
-  
-  /* Text Colors */
-  --text-primary: #111827;
-  --text-secondary: #4B5563;
+  --app-background: #1A1F2C;
+  --card-background: #252A38;
+  --primary-blue: #0EA5E9;
+  --border-color: #1f2937;
+  --text-primary: #FFFFFF;
+  --text-secondary: #9CA3AF;
   --text-muted: #6B7280;
   
-  /* Shadow */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  /* Border Radius */
+  --border-radius-base: 10px;
+  
+  /* Border Styles */
+  --border-width: 1px;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  
+  /* Font Sizes */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  
+  /* Spacing */
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
 }
 
 /* Base Styles */
-.white-on-blue {
-  @apply bg-white border border-[#3f37c9] shadow-md rounded-[10px];
+.app-container {
+  @apply min-h-screen bg-[var(--app-background)];
 }
 
-/* Utility Classes */
 .card-base {
-  @apply rounded-[10px] border border-border bg-card p-6 shadow-sm;
+  @apply bg-[var(--card-background)] border border-[var(--border-color)] rounded-[var(--border-radius-base)];
 }
 
 .button-base {
-  @apply rounded-[10px] px-4 py-2 font-medium transition-colors duration-200;
+  @apply bg-[var(--primary-blue)] text-white rounded-[var(--border-radius-base)] px-4 py-2 hover:bg-[var(--primary-blue)]/90;
 }
 
 .input-base {
-  @apply rounded-[10px] border border-input bg-background px-3 py-2;
+  @apply bg-[var(--card-background)] border border-[var(--border-color)] rounded-[var(--border-radius-base)] px-4 py-2 text-white placeholder:text-gray-500;
 }
 
 /* Typography */
 .heading-lg {
-  @apply text-lg font-semibold text-[--text-primary];
+  @apply text-xl font-semibold text-white;
 }
 
 .text-base {
-  @apply text-sm text-[--text-secondary];
+  @apply text-sm text-[var(--text-secondary)];
 }
 
 .text-muted {
-  @apply text-sm text-[--text-muted];
+  @apply text-sm text-[var(--text-muted)];
 }
 
 /* Layout */
@@ -76,4 +78,30 @@
 
 .flex-between {
   @apply flex items-center justify-between;
+}
+
+/* Table Styles */
+.table-container {
+  @apply overflow-hidden rounded-[var(--border-radius-base)];
+}
+
+.table-header {
+  @apply text-left py-3 px-4 text-[var(--text-muted)] font-medium text-sm;
+}
+
+.table-cell {
+  @apply py-3 px-4 text-[var(--text-primary)];
+}
+
+.table-row {
+  @apply border-b border-[var(--border-color)];
+}
+
+/* Form Elements */
+.select-base {
+  @apply bg-[var(--card-background)] border border-[var(--border-color)] text-[var(--text-secondary)] rounded-[var(--border-radius-base)] px-4 py-2;
+}
+
+.search-input {
+  @apply pl-9 bg-[var(--card-background)] border-[var(--border-color)] text-white placeholder:text-[var(--text-muted)] rounded-[var(--border-radius-base)];
 }
