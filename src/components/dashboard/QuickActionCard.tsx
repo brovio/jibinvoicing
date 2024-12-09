@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Plus, Upload, Download } from "lucide-react";
 
 interface QuickActionCardProps {
@@ -8,15 +9,18 @@ export const QuickActionCard = ({ title }: QuickActionCardProps) => {
   return (
     <div className="dashboard-card">
       <h2 className="text-lg font-semibold mb-4 text-white">{title}</h2>
-      <div className="space-y-3">
-        <button className="btn-secondary w-full flex items-center">
-          <Plus className="mr-2 h-4 w-4" /> Add New
+      <div className="space-y-4">
+        <button className="btn-primary w-full">
+          <Plus className="h-4 w-4" />
+          Add {title}
         </button>
-        <button className="btn-secondary w-full flex items-center">
-          <Upload className="mr-2 h-4 w-4" /> Import
+        <button className="btn-secondary w-full">
+          <Upload className="h-4 w-4" />
+          Import {title}
         </button>
-        <button className="btn-secondary w-full flex items-center">
-          <Download className="mr-2 h-4 w-4" /> Export
+        <button className="btn-secondary w-full">
+          <Download className="h-4 w-4" />
+          Export {title}
         </button>
       </div>
     </div>
