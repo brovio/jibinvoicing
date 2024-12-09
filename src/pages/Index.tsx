@@ -42,12 +42,12 @@ const Index = () => {
             </div>
             <h2 className="text-xl font-medium text-white">Import/Export Timesheets</h2>
             <p className="text-gray-400 text-center max-w-lg">
-              Import your timesheets using CSV or JSON format. Required columns: Date, Project, Client, Task, and Hours.
+              Import your timesheets using CSV or ZIP format. Required columns: Date, Project, Client, Task, and Hours.
             </p>
             <div className="flex gap-4">
               <Button className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white gap-2 rounded-[10px]">
                 <Upload className="h-4 w-4" />
-                Import Timesheets (CSV/JSON)
+                Import Timesheets (CSV/ZIP)
               </Button>
               <ExportButton format="csv" clients={[]} />
               <ExportButton format="json" clients={[]} />
