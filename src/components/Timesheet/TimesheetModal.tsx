@@ -25,13 +25,21 @@ export const TimesheetModal = ({ isOpen, onClose, entry, rowIndex }: TimesheetMo
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-sm text-gray-400">Row Number</label>
-              <p className="text-white">{rowIndex !== undefined ? rowIndex + 2 : 'N/A'}</p>
-            </div>
-            <div>
               <label className="text-sm text-gray-400">Date</label>
               <p className="text-white">{entry.date}</p>
             </div>
+            {entry.time && (
+              <div>
+                <label className="text-sm text-gray-400">Time</label>
+                <p className="text-white">{entry.time}</p>
+              </div>
+            )}
+            {entry.staffName && (
+              <div>
+                <label className="text-sm text-gray-400">Staff Name</label>
+                <p className="text-white">{entry.staffName}</p>
+              </div>
+            )}
             <div>
               <label className="text-sm text-gray-400">Hours</label>
               <p className="text-white">{entry.hours}</p>
@@ -44,28 +52,6 @@ export const TimesheetModal = ({ isOpen, onClose, entry, rowIndex }: TimesheetMo
               <label className="text-sm text-gray-400">Project</label>
               <p className="text-white">{entry.project}</p>
             </div>
-            <div className="col-span-2">
-              <label className="text-sm text-gray-400">Task</label>
-              <p className="text-white">{entry.task}</p>
-            </div>
-            {entry.staffName && (
-              <div>
-                <label className="text-sm text-gray-400">Staff Name</label>
-                <p className="text-white">{entry.staffName}</p>
-              </div>
-            )}
-            {entry.time && (
-              <div>
-                <label className="text-sm text-gray-400">Time</label>
-                <p className="text-white">{entry.time}</p>
-              </div>
-            )}
-            {entry.entryType && (
-              <div>
-                <label className="text-sm text-gray-400">Entry Type</label>
-                <p className="text-white">{entry.entryType}</p>
-              </div>
-            )}
             <div>
               <label className="text-sm text-gray-400">Break</label>
               <p className="text-white">{entry.break ? 'Yes' : 'No'}</p>
@@ -76,6 +62,20 @@ export const TimesheetModal = ({ isOpen, onClose, entry, rowIndex }: TimesheetMo
                 <p className="text-white">{entry.breakType}</p>
               </div>
             )}
+            <div>
+              <label className="text-sm text-gray-400">Row Number</label>
+              <p className="text-white">{rowIndex !== undefined ? rowIndex + 2 : 'N/A'}</p>
+            </div>
+            {entry.entryType && (
+              <div>
+                <label className="text-sm text-gray-400">Entry Type</label>
+                <p className="text-white">{entry.entryType}</p>
+              </div>
+            )}
+            <div className="col-span-2">
+              <label className="text-sm text-gray-400">Task</label>
+              <p className="text-white">{entry.task}</p>
+            </div>
           </div>
         </div>
       </DialogContent>
