@@ -16,7 +16,7 @@ export interface TimesheetEntry {
 
 export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
   const lines = csvContent.trim().split('\n');
-  const headers = lines[0].split(',').map(h => h.trim());
+  const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
   
   // Create a map of column indices for faster lookup
   const columnMap = headers.reduce((acc: Record<string, number>, header, index) => {
@@ -24,65 +24,86 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
     return acc;
   }, {});
 
-  return lines.slice(1).map(line => {
-    // Split the line, handling quoted values that might contain commas
-    const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
-      .map(val => val.trim().replace(/^"|"$/g, ''));
-    
-    const entry: Record<string, any> = {
-      status: 'Pending' // Default status
-    };
+  console.log('CSV Headers:', headers);
+  console.log('Column Map:', columnMap);
 
-    // Helper function to get value by column name
-    const getValue = (columnName: string): string => {
-      const index = columnMap[columnName.toLowerCase()];
-      return index !== undefined ? values[index]?.trim() || '' : '';
-    };
+  return lines.slice(1)
+    .filter(line => line.trim())
+    .map(line => {
+      // Split the line, handling quoted values that might contain commas
+      const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
+        .map(val => val.trim().replace(/^"|"$/g, ''));
 
-    // Date
-    entry.date = getValue('Date');
-    if (!entry.date || entry.date === '') {
-      entry.date = new Date().toISOString().split('T')[0];
-    }
+      console.log('Processing line values:', values);
 
-    // Client (with Project fallback)
-    entry.client = getValue('Client');
-    if (!entry.client || entry.client === '') {
-      entry.client = getValue('Project') || 'Unspecified Client';
-    }
+      // Helper function to get value by column name
+      const getValue = (columnName: string): string => {
+        const index = columnMap[columnName.toLowerCase()];
+        return index !== undefined ? values[index]?.trim() || '' : '';
+      };
 
-    // Project (from Activity)
-    entry.project = getValue('Activity') || 'Unspecified Project';
+      // Parse date from the Date column
+      const rawDate = getValue('date');
+      console.log('Raw date value:', rawDate);
+      let formattedDate = '';
+      try {
+        const date = new Date(rawDate);
+        formattedDate = date.toISOString().split('T')[0];
+      } catch (error) {
+        console.error('Error parsing date:', error);
+        formattedDate = new Date().toISOString().split('T')[0];
+      }
 
-    // Task (from Notes)
-    entry.task = getValue('Notes') || 'General Task';
+      // Get client (with Project fallback)
+      let client = getValue('client');
+      if (!client) {
+        client = getValue('project') || 'Unspecified Client';
+      }
 
-    // Hours (from Duration)
-    const duration = getValue('Duration');
-    entry.hours = parseFloat(duration) || 0;
+      // Get project from Activity
+      const project = getValue('activity') || 'Unspecified Project';
 
-    // Additional fields for modal
-    entry.staffName = getValue('Full Name');
-    entry.entryType = getValue('EntryType');
-    entry.time = getValue('Time');
-    entry.break = getValue('Break').toLowerCase() === 'true';
-    entry.breakType = getValue('Break Type');
+      // Get task from Notes
+      const task = getValue('notes') || 'General Task';
 
-    // Validate and ensure required fields have values
-    return {
-      date: entry.date,
-      client: entry.client,
-      project: entry.project,
-      task: entry.task,
-      hours: entry.hours,
-      status: entry.status,
-      staffName: entry.staffName,
-      entryType: entry.entryType,
-      time: entry.time,
-      break: entry.break,
-      breakType: entry.breakType
-    } as TimesheetEntry;
-  });
+      // Parse duration/hours
+      const duration = getValue('duration');
+      const hours = parseFloat(duration) || 0;
+
+      // Additional fields for modal
+      const staffName = getValue('full name');
+      const entryType = getValue('entrytype');
+      const time = getValue('time');
+      const breakValue = getValue('break').toLowerCase() === 'true';
+      const breakType = getValue('break type');
+
+      console.log('Parsed entry:', {
+        date: formattedDate,
+        client,
+        project,
+        task,
+        hours,
+        staffName,
+        entryType,
+        time,
+        break: breakValue,
+        breakType
+      });
+
+      return {
+        date: formattedDate,
+        client,
+        project,
+        task,
+        hours,
+        status: 'Pending',
+        staffName,
+        entryType,
+        time,
+        break: breakValue,
+        breakType
+      };
+    });
 };
 
 export const processTimesheetZip = async (zipFile: File): Promise<TimesheetEntry[]> => {
