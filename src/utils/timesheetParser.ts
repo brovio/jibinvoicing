@@ -9,7 +9,7 @@ export interface TimesheetEntry {
   project: string;
   task: string;
   hours: number;
-  status: string;
+  status?: string;
   break?: boolean;
   breakType?: string;
   rowNumber: number;
@@ -48,6 +48,11 @@ const parseCSVLine = (line: string): string[] => {
   return result;
 }
 
+const findColumnIndex = (headers: string[], possibleNames: string[]): number => {
+  const headerLower = headers.map(h => h.toLowerCase().trim());
+  return headerLower.findIndex(h => possibleNames.some(name => h === name.toLowerCase()));
+};
+
 export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
   try {
     // Split content into lines and remove empty lines
@@ -57,9 +62,21 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
     
     if (lines.length === 0) return [];
 
-    // Get headers
+    // Get headers and find column indices
     const headers = parseCSVLine(lines[0]);
     console.log('Headers found:', headers);
+
+    // Find column indices based on specified mappings
+    const dateIndex = findColumnIndex(headers, ['Date']);
+    const clientIndex = findColumnIndex(headers, ['Client']);
+    const projectIndex = findColumnIndex(headers, ['Activity']);
+    const taskIndex = findColumnIndex(headers, ['Notes']);
+    const hoursIndex = findColumnIndex(headers, ['Duration']);
+    const staffNameIndex = findColumnIndex(headers, ['Full Name']);
+    const entryTypeIndex = findColumnIndex(headers, ['EntryType']);
+    const timeIndex = findColumnIndex(headers, ['Time']);
+    const breakIndex = findColumnIndex(headers, ['Break']);
+    const breakTypeIndex = findColumnIndex(headers, ['Break Type']);
 
     // Process data rows (skip header row)
     const entries = lines.slice(1)
@@ -67,54 +84,27 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
         const actualRowNumber = index + 2; // +2 because we start at 1 and skip header
         const values = parseCSVLine(line);
         
-        // Store all columns as raw data
+        // Get client value with fallback logic
+        let clientValue = values[clientIndex] || '';
+        if (!clientValue.trim()) {
+          clientValue = values[projectIndex] || '-';
+        }
+
         const entry: TimesheetEntry = {
-          date: '',
-          client: 'Unspecified',
-          project: 'Unspecified',
-          task: '',
-          hours: 0,
+          date: values[dateIndex] || '',
+          client: clientValue,
+          project: values[projectIndex] || '',
+          task: values[taskIndex] || '',
+          hours: parseFloat(values[hoursIndex]) || 0,
+          staffName: values[staffNameIndex] || '',
+          entryType: values[entryTypeIndex] || '',
+          time: values[timeIndex] || '',
+          break: values[breakIndex]?.toLowerCase() === 'yes',
+          breakType: values[breakTypeIndex] || '-',
           status: 'Pending',
           rowNumber: actualRowNumber,
           rawColumns: values
         };
-
-        // Map known columns while preserving all raw data
-        headers.forEach((header, colIndex) => {
-          const value = values[colIndex] || '';
-          const headerLower = header.toLowerCase().trim();
-
-          if (headerLower.includes('date')) {
-            entry.date = value;
-          }
-          if (headerLower.includes('time')) {
-            entry.time = value;
-          }
-          if (headerLower.includes('name')) {
-            entry.staffName = value;
-          }
-          if (headerLower.includes('client')) {
-            entry.client = value || 'Unspecified';
-          }
-          if (headerLower.includes('project')) {
-            entry.project = value || 'Unspecified';
-          }
-          if (headerLower.includes('task') || headerLower.includes('notes')) {
-            entry.task = value;
-          }
-          if (headerLower.includes('hours') || headerLower.includes('duration')) {
-            entry.hours = parseFloat(value) || 0;
-          }
-          if (headerLower.includes('break')) {
-            entry.break = value.toLowerCase() === 'true' || value.toLowerCase() === 'yes';
-          }
-          if (headerLower.includes('break type')) {
-            entry.breakType = value;
-          }
-          if (headerLower.includes('entry type')) {
-            entry.entryType = value;
-          }
-        });
 
         console.log(`Processing row ${actualRowNumber}:`, entry);
         return entry;
