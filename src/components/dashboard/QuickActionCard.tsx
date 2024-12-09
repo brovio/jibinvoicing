@@ -51,6 +51,11 @@ export const QuickActionCard = ({ title }: QuickActionCardProps) => {
               <Download className="h-4 w-4 mr-2" />
               Export {title}
             </button>
+            <Link to="/invoices" className="mt-auto">
+              <button className="w-full border border-dashboard-primary bg-transparent text-dashboard-primary hover:bg-dashboard-primary/10 rounded-[10px] px-4 py-2 transition-colors duration-200">
+                View Invoices Page
+              </button>
+            </Link>
           </>
         )}
         {title !== "Clients" && title !== "Timesheets" && title !== "Invoices" && (
@@ -63,6 +68,13 @@ export const QuickActionCard = ({ title }: QuickActionCardProps) => {
               <Download className="h-4 w-4 mr-2" />
               Export {title}
             </button>
+            {title === "Invoice Templates" && (
+              <Link to="/invoice-templates" className="mt-auto">
+                <button className="w-full border border-dashboard-primary bg-transparent text-dashboard-primary hover:bg-dashboard-primary/10 rounded-[10px] px-4 py-2 transition-colors duration-200">
+                  View Invoice Templates
+                </button>
+              </Link>
+            )}
           </>
         )}
       </div>
