@@ -23,7 +23,13 @@ const parseCSVLine = (line: string): string[] => {
     const char = line[i];
     
     if (char === '"') {
-      inQuotes = !inQuotes;
+      if (inQuotes && line[i + 1] === '"') {
+        // Handle escaped quotes
+        current += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
       continue;
     }
     
@@ -59,8 +65,7 @@ const isValidDate = (dateStr: string): boolean => {
 }
 
 const isEmptyRow = (values: string[]): boolean => {
-  // Check if all values in the row are empty or just whitespace
-  return !values.some(value => value && value.trim() !== '');
+  return values.every(value => !value || value.trim() === '');
 }
 
 export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
@@ -77,20 +82,25 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
       header.toLowerCase().replace(/['"]/g, '').trim()
     );
 
+    console.log('Headers found:', headers);
+
     // Process data rows (skip header row)
-    return lines.slice(1)
-      .map(line => {
+    const entries = lines.slice(1)
+      .map((line, index) => {
         const values = parseCSVLine(line);
         if (isEmptyRow(values)) return null;
 
         const getValue = (headerName: string): string => {
-          const index = headers.findIndex(h => h === headerName.toLowerCase());
+          const index = headers.indexOf(headerName);
           return index !== -1 && values[index] ? values[index].trim() : '';
         };
 
-        // Get date from the first column (index 0)
+        // Get date from the first column
         const dateValue = values[0];
-        if (!dateValue || !isValidDate(dateValue)) return null;
+        if (!dateValue || !isValidDate(dateValue)) {
+          console.log('Invalid date found:', dateValue);
+          return null;
+        }
 
         const entry: TimesheetEntry = {
           date: dateValue,
@@ -106,12 +116,21 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
           breakType: getValue('break type')
         };
 
-        // Validate that we have at least the required fields
-        if (!entry.date || !entry.client || !entry.project) return null;
+        // Log entry for debugging
+        console.log(`Processing row ${index + 2}:`, entry);
+
+        // Validate required fields
+        if (!entry.date || !entry.client || !entry.project) {
+          console.log('Missing required fields in row:', index + 2);
+          return null;
+        }
 
         return entry;
       })
       .filter((entry): entry is TimesheetEntry => entry !== null);
+
+    console.log('Total valid entries processed:', entries.length);
+    return entries;
 
   } catch (error) {
     console.error('Error parsing CSV:', error);
