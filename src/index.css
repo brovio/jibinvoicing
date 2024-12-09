@@ -35,46 +35,46 @@
 
 /* Dashboard card styles */
 .dashboard-card {
-  @apply bg-[#252A38] border border-[#374151] rounded-[10px] p-6;
+  @apply bg-dashboard-card border border-dashboard-border rounded-[10px] p-6;
 }
 
 /* Button styles */
 .btn-primary {
-  @apply bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white rounded-[10px] px-4 py-2 transition-colors duration-200 flex items-center justify-center;
+  @apply bg-dashboard-primary hover:bg-dashboard-primary/90 text-white rounded-[10px] px-4 py-2 transition-colors duration-200 flex items-center justify-center;
 }
 
 .btn-secondary {
-  @apply bg-[#252A38] border border-[#374151] text-white hover:bg-[#2A303F] rounded-[10px] px-4 py-2 transition-colors duration-200 flex items-center justify-center;
+  @apply bg-dashboard-card border border-dashboard-border text-white hover:bg-dashboard-hover rounded-[10px] px-4 py-2 transition-colors duration-200 flex items-center justify-center;
 }
 
 .btn-ghost {
-  @apply bg-transparent hover:bg-[#2A303F] text-gray-400 hover:text-white rounded-[10px] px-4 py-2 transition-colors duration-200;
+  @apply bg-transparent hover:bg-dashboard-hover text-gray-400 hover:text-white rounded-[10px] px-4 py-2 transition-colors duration-200;
 }
 
 .btn-icon {
-  @apply w-8 h-8 flex items-center justify-center rounded-[10px] bg-transparent hover:bg-[#2A303F] text-gray-400 hover:text-white transition-colors duration-200;
+  @apply w-8 h-8 flex items-center justify-center rounded-[10px] bg-transparent hover:bg-dashboard-hover text-gray-400 hover:text-white transition-colors duration-200;
 }
 
 /* Input and select styles */
 .input-field {
-  @apply bg-[#252A38] border border-[#374151] text-white placeholder:text-gray-500 rounded-[10px] px-4 py-2;
+  @apply bg-dashboard-card border border-dashboard-border text-white placeholder:text-gray-500 rounded-[10px] px-4 py-2;
 }
 
 .select-field {
-  @apply bg-[#252A38] border border-[#374151] text-gray-400 rounded-[10px] px-4 py-2;
+  @apply bg-dashboard-card border border-dashboard-border text-gray-400 rounded-[10px] px-4 py-2;
 }
 
 /* Table styles */
 .table-container {
-  @apply bg-[#252A38] rounded-[10px] overflow-hidden border border-[#374151];
+  @apply bg-dashboard-card rounded-[10px] overflow-hidden border border-dashboard-border;
 }
 
 .table-header {
-  @apply text-gray-400 font-medium cursor-pointer hover:bg-[#2A303F] transition-colors;
+  @apply text-gray-400 font-medium cursor-pointer hover:bg-dashboard-hover transition-colors;
 }
 
 .table-row {
-  @apply border-b border-[#374151] hover:bg-[#2A303F] transition-colors;
+  @apply border-b border-dashboard-border hover:bg-dashboard-hover transition-colors;
 }
 
 .table-cell {
@@ -83,5 +83,5 @@
 
 /* Dropdown styles */
 select {
-  @apply bg-[#252A38] border border-[#374151] text-gray-400 rounded-[10px] px-4 py-2 appearance-none cursor-pointer hover:bg-[#2A303F] transition-colors duration-200;
+  @apply bg-dashboard-card border border-dashboard-border text-gray-400 rounded-[10px] px-4 py-2 appearance-none cursor-pointer hover:bg-dashboard-hover transition-colors duration-200;
 }
