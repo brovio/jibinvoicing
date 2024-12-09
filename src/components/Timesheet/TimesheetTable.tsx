@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Table, TableBody } from "@/components/ui/table";
 import { TimesheetHeader } from "./TimesheetHeader";
 import { TimesheetRow } from "./TimesheetRow";
@@ -6,6 +6,7 @@ import { TimesheetEntry } from "@/utils/timesheetParser";
 
 export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
   const [sortConfig, setSortConfig] = React.useState<{ key: string; direction: string } | null>(null);
+  const [selectedEntry, setSelectedEntry] = useState<TimesheetEntry | null>(null);
 
   const requestSort = (key: string) => {
     let direction = "ascending";
@@ -31,13 +32,25 @@ export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
     return sortableItems;
   }, [data, sortConfig]);
 
+  const handleView = (entry: TimesheetEntry) => {
+    setSelectedEntry(entry);
+    // TODO: Open modal when implemented
+    console.log("Viewing entry:", entry);
+  };
+
   return (
     <div className="bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">
       <Table>
         <TimesheetHeader onSort={requestSort} />
         <TableBody>
           {sortedData.map((item, index) => (
-            <TimesheetRow key={index} data={item} />
+            <TimesheetRow 
+              key={index} 
+              data={item} 
+              onView={handleView}
+              onEdit={(entry) => console.log("Edit entry:", entry)}
+              onDelete={(entry) => console.log("Delete entry:", entry)}
+            />
           ))}
         </TableBody>
       </Table>
