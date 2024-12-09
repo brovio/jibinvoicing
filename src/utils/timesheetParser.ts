@@ -15,6 +15,11 @@ export interface TimesheetEntry {
 }
 
 const parseCSVLine = (line: string): string[] => {
+  // If the line starts with a comma, it's likely malformed
+  if (line.startsWith(',')) {
+    line = ' ' + line; // Add a space to ensure proper splitting
+  }
+  
   const result: string[] = [];
   let current = '';
   let inQuotes = false;
@@ -54,6 +59,12 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
 
     // Process data rows (skip header row)
     return lines.slice(1).map((line, index) => {
+      // Check if the line is a malformed single string containing multiple values
+      if (line.includes('Desktop,Desktop') && line.startsWith(',')) {
+        console.log(`Skipping malformed row ${index + 2}:`, line);
+        return null;
+      }
+
       const values = parseCSVLine(line);
       console.log(`Processing row ${index + 2}:`, values);
 
@@ -64,8 +75,12 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
         return value && value.trim() ? value.trim() : '-';
       };
 
+      // Validate date format
+      const dateValue = getValueOrDefault('date');
+      const isValidDate = /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateValue);
+
       const entry: TimesheetEntry = {
-        date: getValueOrDefault('date'),
+        date: isValidDate ? dateValue : '-',
         client: getValueOrDefault('client'),
         project: getValueOrDefault('project'),
         task: getValueOrDefault('notes') !== '-' ? getValueOrDefault('notes') : getValueOrDefault('task'),
@@ -85,7 +100,9 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
       };
 
       return entry;
-    });
+    })
+    .filter(entry => entry !== null); // Remove any null entries from malformed rows
+
   } catch (error) {
     console.error('Error parsing CSV:', error);
     throw new Error('Failed to parse CSV file');
