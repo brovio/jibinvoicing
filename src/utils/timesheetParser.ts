@@ -14,13 +14,39 @@ export interface TimesheetEntry {
   breakType?: string;
 }
 
+const parseCSVLine = (line: string): string[] => {
+  const result: string[] = [];
+  let current = '';
+  let inQuotes = false;
+  
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    
+    if (char === '"') {
+      inQuotes = !inQuotes;
+      continue;
+    }
+    
+    if (char === ',' && !inQuotes) {
+      result.push(current.trim());
+      current = '';
+      continue;
+    }
+    
+    current += char;
+  }
+  
+  result.push(current.trim());
+  return result;
+}
+
 export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
   try {
     // Split content into lines and remove empty lines
     const lines = csvContent.split('\n').filter(line => line.trim());
     
     // Get headers from first line and normalize them
-    const headers = lines[0].split(',').map(header => 
+    const headers = parseCSVLine(lines[0]).map(header => 
       header.trim().toLowerCase().replace(/['"]/g, '')
     );
 
@@ -28,24 +54,34 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
 
     // Process data rows (skip header row)
     return lines.slice(1).map((line, index) => {
-      // Split the line by comma, but preserve commas within quotes
-      const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
-        .map(val => val.trim().replace(/^"|"$/g, ''));
-
+      const values = parseCSVLine(line);
       console.log(`Processing row ${index + 2}:`, values);
 
+      const getValueOrDefault = (columnName: string): string => {
+        const index = headers.indexOf(columnName);
+        if (index === -1) return '-';
+        const value = values[index];
+        return value && value.trim() ? value.trim() : '-';
+      };
+
       const entry: TimesheetEntry = {
-        date: values[headers.indexOf('date')] || new Date().toISOString().split('T')[0],
-        client: values[headers.indexOf('client')] || '-',
-        project: values[headers.indexOf('project')] || '-',
-        task: values[headers.indexOf('task')] || values[headers.indexOf('notes')] || 'General Task',
-        hours: parseFloat(values[headers.indexOf('hours')]) || 0,
+        date: getValueOrDefault('date'),
+        client: getValueOrDefault('client'),
+        project: getValueOrDefault('project'),
+        task: getValueOrDefault('notes') !== '-' ? getValueOrDefault('notes') : getValueOrDefault('task'),
+        hours: parseFloat(getValueOrDefault('hours')) || 0,
         status: 'Pending',
-        staffName: values[headers.indexOf('staff name')] || values[headers.indexOf('staffname')] || '-',
-        entryType: values[headers.indexOf('entry type')] || values[headers.indexOf('entrytype')] || '',
-        time: values[headers.indexOf('time')] || '',
-        break: values[headers.indexOf('break')]?.toLowerCase() === 'true',
-        breakType: values[headers.indexOf('break type')] || values[headers.indexOf('breaktype')] || ''
+        staffName: getValueOrDefault('staff name') !== '-' ? 
+                  getValueOrDefault('staff name') : 
+                  getValueOrDefault('staffname'),
+        entryType: getValueOrDefault('entry type') !== '-' ? 
+                  getValueOrDefault('entry type') : 
+                  getValueOrDefault('entrytype'),
+        time: getValueOrDefault('time'),
+        break: getValueOrDefault('break').toLowerCase() === 'true',
+        breakType: getValueOrDefault('break type') !== '-' ? 
+                  getValueOrDefault('break type') : 
+                  getValueOrDefault('breaktype')
       };
 
       return entry;
