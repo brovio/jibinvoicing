@@ -40,7 +40,11 @@
 
 /* Button styles */
 .btn-primary {
-  @apply bg-dashboard-primary hover:bg-dashboard-primary/90 text-white rounded-[10px] px-4 py-2 transition-colors duration-200 flex items-center justify-center;
+  @apply bg-dashboard-primary text-white rounded-[10px] px-4 py-2 transition-colors duration-200 flex items-center justify-center;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
 }
 
 .btn-secondary {
