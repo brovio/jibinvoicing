@@ -19,12 +19,6 @@ const parseCSVLine = (line: string): string[] => {
   let current = '';
   let inQuotes = false;
   
-  // Handle case where the entire line is a single string with commas
-  if (line.startsWith('"') && line.endsWith('"')) {
-    const parts = line.slice(1, -1).split(',');
-    return parts.map(part => part.trim());
-  }
-  
   for (let i = 0; i < line.length; i++) {
     const char = line[i];
     
@@ -94,22 +88,17 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
           return index !== -1 && values[index] ? values[index].trim() : '';
         };
 
-        // Find the date value
-        let dateValue = getValue('date');
-        if (!isValidDate(dateValue)) {
-          // Try the first column as a fallback
-          dateValue = values[0] && isValidDate(values[0]) ? values[0] : '';
-        }
-
-        if (!dateValue) return null;
+        // Get date from the first column (index 0)
+        const dateValue = values[0];
+        if (!dateValue || !isValidDate(dateValue)) return null;
 
         const entry: TimesheetEntry = {
           date: dateValue,
-          staffName: getValue('staff name'),
+          staffName: getValue('full name'),
           client: getValue('client'),
           project: getValue('project'),
-          task: getValue('task description') || getValue('task'),
-          hours: parseFloat(getValue('duration') || getValue('hours')) || 0,
+          task: getValue('notes'),
+          hours: parseFloat(getValue('duration')) || 0,
           status: 'Pending',
           time: getValue('time'),
           entryType: getValue('entry type'),
