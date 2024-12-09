@@ -44,6 +44,8 @@ export const ClientsTable = ({
 }: ClientsTableProps) => {
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: string } | null>(null);
   const [selectedClients, setSelectedClients] = useState<Set<string>>(new Set());
+  const [rateFilter, setRateFilter] = useState("");
+  const [currencyFilter, setCurrencyFilter] = useState("");
   const [modalState, setModalState] = useState<{
     isOpen: boolean;
     mode: 'add' | 'edit' | 'view';
@@ -61,8 +63,35 @@ export const ClientsTable = ({
     setSortConfig({ key, direction });
   };
 
+  const filterData = (items: ClientEntry[]) => {
+    return items.filter(item => {
+      // Apply rate filter
+      if (rateFilter) {
+        const [min, max] = rateFilter.split('-').map(Number);
+        if (max) {
+          if (item.rate < min || item.rate > max) return false;
+        } else {
+          // Handle "151+" case
+          if (item.rate < min) return false;
+        }
+      }
+
+      // Apply currency filter
+      if (currencyFilter && item.currency !== currencyFilter) {
+        return false;
+      }
+
+      return true;
+    });
+  };
+
   const sortedData = React.useMemo(() => {
     let sortableItems = [...data];
+    
+    // Apply filters first
+    sortableItems = filterData(sortableItems);
+    
+    // Then apply sorting
     if (sortConfig !== null) {
       sortableItems.sort((a, b) => {
         if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -75,7 +104,7 @@ export const ClientsTable = ({
       });
     }
     return sortableItems;
-  }, [data, sortConfig]);
+  }, [data, sortConfig, rateFilter, currencyFilter]);
 
   const handleSelectAll = (selectAll: boolean) => {
     if (selectAll) {
@@ -124,6 +153,8 @@ export const ClientsTable = ({
         onImportSuccess={handleImportSuccess}
         clients={data}
         onAddClick={() => setModalState({ isOpen: true, mode: 'add' })}
+        onRateFilterChange={setRateFilter}
+        onCurrencyFilterChange={setCurrencyFilter}
       />
 
       <div className="bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">
