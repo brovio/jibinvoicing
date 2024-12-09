@@ -3,8 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Search, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ExportButton } from "@/components/ExportButton";
-import { useRef } from "react";
-import { parseTimesheetCSV } from "@/utils/timesheetParser";
+import { useRef, useState } from "react";
+import { processTimesheetZip, TimesheetEntry } from "@/utils/timesheetParser";
 import { showImportSuccessToast, showImportErrorToast } from "@/utils/toastUtils";
 
 const sampleData = [
@@ -34,8 +34,9 @@ const sampleData = [
   }
 ];
 
-const Index = () => {
+const Timesheets = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [timesheetData, setTimesheetData] = useState<TimesheetEntry[]>(sampleData);
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -47,31 +48,16 @@ const Index = () => {
     }
 
     try {
-      // For now, let's just read the first CSV file we find in the ZIP
-      const arrayBuffer = await file.arrayBuffer();
-      const blob = new Blob([arrayBuffer], { type: 'application/zip' });
-      
-      // Log the file contents for debugging
-      console.log('ZIP file received:', file.name);
-      console.log('File size:', file.size);
-      
-      // TODO: Implement ZIP extraction
-      // For now, we'll use sample data to test the parser
-      const sampleCSVContent = `Date,Full Name,EntryType,Time,Duration,Break,Break Type,Activity,Client,Notes
-2024-03-20,John Doe,In,09:00,8,No,,Website Development,Google,Frontend Tasks
-2024-03-20,Jane Smith,Out,17:00,8,Yes,Lunch,Mobile App,Apple,Backend Development`;
-      
-      const parsedEntries = parseTimesheetCSV(sampleCSVContent);
-      console.log('Parsed timesheet entries:', parsedEntries);
-      
-      showImportSuccessToast(parsedEntries.length);
+      const entries = await processTimesheetZip(file);
+      setTimesheetData(entries);
+      showImportSuccessToast(entries.length);
       
       // Reset file input
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
     } catch (error) {
-      console.error('Error processing ZIP file:', error);
+      console.error('Error importing timesheets:', error);
       showImportErrorToast();
     }
   };
@@ -128,7 +114,7 @@ const Index = () => {
         </div>
       </div>
 
-      <TimesheetTable data={sampleData} />
+      <TimesheetTable data={timesheetData} />
 
       <div className="mt-4 flex justify-between items-center text-gray-400">
         <span>Showing 1 to 10 of 20 results</span>
@@ -159,4 +145,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Timesheets;

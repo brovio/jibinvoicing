@@ -1,3 +1,5 @@
+import JSZip from 'jszip';
+
 export interface TimesheetEntry {
   date: string;
   project: string;
@@ -21,7 +23,7 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
     const entry: Record<string, any> = {};
     
     headers.forEach((header, index) => {
-      const value = values[index];
+      const value = values[index]?.trim();
       switch(header.trim().toLowerCase()) {
         case 'date':
           entry.date = value;
@@ -52,7 +54,7 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
           entry.time = value;
           break;
         case 'break':
-          entry.break = value.toLowerCase() === 'yes';
+          entry.break = value?.toLowerCase() === 'yes';
           break;
         case 'break type':
           entry.breakType = value;
@@ -69,4 +71,29 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
 
     return entry as TimesheetEntry;
   });
+};
+
+export const processTimesheetZip = async (zipFile: File): Promise<TimesheetEntry[]> => {
+  try {
+    const zip = new JSZip();
+    const zipContent = await zip.loadAsync(zipFile);
+    
+    // Find the first CSV file in the ZIP
+    const csvFile = Object.values(zipContent.files).find(file => 
+      file.name.toLowerCase().endsWith('.csv')
+    );
+
+    if (!csvFile) {
+      throw new Error('No CSV file found in the ZIP archive');
+    }
+
+    // Read the CSV content
+    const csvContent = await csvFile.async('string');
+    console.log('CSV Content:', csvContent); // Debug log
+    
+    return parseTimesheetCSV(csvContent);
+  } catch (error) {
+    console.error('Error processing ZIP file:', error);
+    throw new Error('Invalid timesheet format');
+  }
 };
