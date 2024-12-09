@@ -29,7 +29,6 @@ const InvoiceTemplates = () => {
       try {
         const content = await file.text();
         const templates = JSON.parse(content);
-        // Here you would process the imported templates
         toast({
           title: "Import successful",
           description: "Invoice templates have been imported successfully",
@@ -47,7 +46,29 @@ const InvoiceTemplates = () => {
 
   const handleExport = () => {
     try {
-      const data = JSON.stringify(templates, null, 2);
+      // Create a deep copy of the template data without the component property
+      const exportData = templates.map(template => ({
+        name: template.name,
+        description: template.description,
+        // Include any template-specific configuration or styling here
+        config: {
+          colors: {
+            primary: '#0EA5E9',
+            secondary: '#252A38',
+            accent: '#374151'
+          },
+          fonts: {
+            primary: 'Inter',
+            secondary: 'system-ui'
+          },
+          spacing: {
+            padding: '2rem',
+            gap: '1.5rem'
+          }
+        }
+      }));
+
+      const data = JSON.stringify(exportData, null, 2);
       const blob = new Blob([data], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -89,7 +110,7 @@ const InvoiceTemplates = () => {
                 className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white gap-2 rounded-[10px]"
               >
                 <Upload className="h-4 w-4" />
-                Import Templates (JSON)
+                Import Templates
               </Button>
               <Button 
                 onClick={handleExport}
