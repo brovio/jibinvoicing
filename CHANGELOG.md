@@ -10,9 +10,13 @@
   - Interactive table with clickable rows for viewing client details
   - Bulk selection capabilities for clients
   - Search and filter functionality for clients list
+- Timesheet management functionality
+  - Import timesheets from ZIP files with CSV content
+  - Parse specific timesheet format with mapped fields:
+    - Basic fields: Date, Project, Client, Tasks, Hours
+    - Additional fields: Staff Name, Entry Type, Time, Break status, Break Type
 
 ### Work in Progress
-- Timesheet management functionality
 - Invoice template system
 - Dashboard overview
 
