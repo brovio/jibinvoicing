@@ -5,37 +5,14 @@ import { UserPlus } from "lucide-react";
 import { FileUpload } from "@/components/FileUpload";
 import { ExportButton } from "@/components/ExportButton";
 import { Button } from "@/components/ui/button";
+import backupClients from "@/data/default-clients.json";
 
 const STORAGE_KEY = 'stored_clients';
-
-const initialData = [
-  {
-    company: "Google",
-    contactName: "John Smith",
-    email: "john@google.com",
-    currency: "USD",
-    rate: 150,
-  },
-  {
-    company: "Microsoft",
-    contactName: "Jane Doe",
-    email: "jane@microsoft.com",
-    currency: "EUR",
-    rate: 140,
-  },
-  {
-    company: "Apple",
-    contactName: "Bob Wilson",
-    email: "bob@apple.com",
-    currency: "GBP",
-    rate: 160,
-  }
-];
 
 const Clients = () => {
   const [clients, setClients] = useState(() => {
     const storedClients = localStorage.getItem(STORAGE_KEY);
-    return storedClients ? JSON.parse(storedClients) : initialData;
+    return storedClients ? JSON.parse(storedClients) : backupClients.clients;
   });
 
   useEffect(() => {
