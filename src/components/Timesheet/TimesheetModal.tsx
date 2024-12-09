@@ -24,7 +24,7 @@ export const TimesheetModal = ({ isOpen, onClose, entry }: TimesheetModalProps) 
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-[#252A38] border border-gray-800 text-white">
+      <DialogContent className="bg-[#252A38] border border-gray-800 text-white max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-white">Timesheet Entry Details</DialogTitle>
         </DialogHeader>
@@ -74,6 +74,18 @@ export const TimesheetModal = ({ isOpen, onClose, entry }: TimesheetModalProps) 
               <label className="text-sm text-gray-400">Task</label>
               <p className="text-white">{displayValue(entry.task)}</p>
             </div>
+            {entry.rawColumns && (
+              <div className="col-span-2">
+                <label className="text-sm text-gray-400">Raw Data (Columns A-S)</label>
+                <div className="bg-[#1E2330] p-4 rounded-md mt-2 overflow-x-auto">
+                  <pre className="text-xs text-gray-300 whitespace-pre-wrap">
+                    {entry.rawColumns.map((col, idx) => 
+                      `${String.fromCharCode(65 + idx)}: ${displayValue(col)}\n`
+                    )}
+                  </pre>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </DialogContent>
