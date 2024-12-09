@@ -35,7 +35,7 @@
 
 /* Dashboard card styles */
 .dashboard-card {
-  @apply bg-[#252A38] border border-gray-800 rounded-[10px] p-6;
+  @apply bg-dashboard-card border border-dashboard-border rounded-[10px] p-6;
 }
 
 /* Button styles */
@@ -45,24 +45,24 @@
 
 /* Input and select styles */
 .input-field {
-  @apply bg-[#252A38] border border-gray-800 text-white placeholder:text-gray-500 rounded-[10px];
+  @apply bg-dashboard-card border border-dashboard-border text-white placeholder:text-gray-500 rounded-[10px];
 }
 
 .select-field {
-  @apply bg-[#252A38] border border-gray-800 text-gray-400 rounded-[10px] px-4 py-2;
+  @apply bg-dashboard-card border border-dashboard-border text-gray-400 rounded-[10px] px-4 py-2;
 }
 
 /* Table styles */
 .table-container {
-  @apply bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800;
+  @apply bg-dashboard-card rounded-[10px] overflow-hidden border border-dashboard-border;
 }
 
 .table-header {
-  @apply text-gray-400 font-medium cursor-pointer hover:bg-[#2A303F] transition-colors;
+  @apply text-gray-400 font-medium cursor-pointer hover:bg-dashboard-hover transition-colors;
 }
 
 .table-row {
-  @apply border-b border-gray-800 hover:bg-[#2A303F] transition-colors;
+  @apply border-b border-dashboard-border hover:bg-dashboard-hover transition-colors;
 }
 
 .table-cell {
