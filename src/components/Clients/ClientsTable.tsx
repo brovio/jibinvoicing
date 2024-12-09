@@ -112,10 +112,16 @@ export const ClientsTable = ({
     showClientDeletedToast(client.company);
   };
 
+  const handleImportSuccess = (importedClients: ClientEntry[]) => {
+    importedClients.forEach(client => {
+      onClientAdded?.(client);
+    });
+  };
+
   return (
     <>
       <TableActions
-        onImportSuccess={onClientAdded}
+        onImportSuccess={handleImportSuccess}
         clients={data}
         onAddClick={() => setModalState({ isOpen: true, mode: 'add' })}
       />
