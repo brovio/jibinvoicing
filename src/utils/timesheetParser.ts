@@ -25,7 +25,6 @@ const parseCSVLine = (line: string): string[] => {
     
     if (char === '"') {
       if (inQuotes && line[i + 1] === '"') {
-        // Handle escaped quotes
         current += '"';
         i++;
       } else {
@@ -69,6 +68,14 @@ const isEmptyRow = (values: string[]): boolean => {
   return values.every(value => !value || value.trim() === '');
 }
 
+const findHeaderIndex = (headers: string[], possibleNames: string[]): number => {
+  for (const name of possibleNames) {
+    const index = headers.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
+    if (index !== -1) return index;
+  }
+  return -1;
+}
+
 export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
   try {
     // Split content into lines and remove empty lines
@@ -78,61 +85,60 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
     
     if (lines.length === 0) return [];
 
-    // Get headers from first line and normalize them
+    // Get headers and normalize them
     const headers = parseCSVLine(lines[0]).map(header => 
       header.toLowerCase().replace(/['"]/g, '').trim()
     );
 
     console.log('Headers found:', headers);
 
+    // Find critical column indices
+    const dateIndex = findHeaderIndex(headers, ['date']);
+    const nameIndex = findHeaderIndex(headers, ['name', 'full name', 'staff name']);
+    const clientIndex = findHeaderIndex(headers, ['client']);
+    const projectIndex = findHeaderIndex(headers, ['project']);
+    const taskIndex = findHeaderIndex(headers, ['task', 'notes']);
+    const hoursIndex = findHeaderIndex(headers, ['hours', 'duration']);
+    const timeIndex = findHeaderIndex(headers, ['time']);
+    const breakIndex = findHeaderIndex(headers, ['break']);
+    const breakTypeIndex = findHeaderIndex(headers, ['break type']);
+    const entryTypeIndex = findHeaderIndex(headers, ['entry type']);
+
     // Process data rows (skip header row)
     const entries = lines.slice(1)
       .map((line, index) => {
+        const actualRowNumber = index + 2; // +2 because we start at 1 and skip header
         const values = parseCSVLine(line);
-        if (isEmptyRow(values)) return null;
-
-        const getValue = (headerName: string): string => {
-          const headerIndex = headers.findIndex(h => 
-            h === headerName || 
-            (headerName === 'full name' && h === 'name') ||
-            (headerName === 'notes' && h === 'task')
-          );
-          return headerIndex !== -1 && values[headerIndex] ? values[headerIndex].trim() : '';
-        };
-
-        // Get date from the first column
-        const dateValue = values[0];
-        if (!dateValue || !isValidDate(dateValue)) {
-          console.log('Invalid date found:', line);
+        
+        if (isEmptyRow(values)) {
+          console.log(`Skipping empty row ${actualRowNumber}`);
           return null;
         }
 
-        // Get the original row number from the CSV data if available
-        const originalRowNumber = getValue('row') || (index + 2).toString();
+        // Get date value
+        const dateValue = dateIndex !== -1 ? values[dateIndex] : values[0];
+        if (!dateValue || !isValidDate(dateValue)) {
+          console.log(`Invalid date in row ${actualRowNumber}:`, line);
+          return null;
+        }
 
         const entry: TimesheetEntry = {
           date: dateValue,
-          staffName: getValue('name') || getValue('full name') || '',
-          client: getValue('client') || 'Unspecified',
-          project: getValue('project') || 'Unspecified',
-          task: getValue('task') || getValue('notes') || '',
-          hours: parseFloat(getValue('duration') || getValue('hours') || '0') || 0,
+          staffName: nameIndex !== -1 ? values[nameIndex] : '',
+          client: clientIndex !== -1 ? (values[clientIndex] || 'Unspecified') : 'Unspecified',
+          project: projectIndex !== -1 ? (values[projectIndex] || 'Unspecified') : 'Unspecified',
+          task: taskIndex !== -1 ? values[taskIndex] : '',
+          hours: hoursIndex !== -1 ? parseFloat(values[hoursIndex] || '0') : 0,
           status: 'Pending',
-          time: getValue('time'),
-          entryType: getValue('entry type'),
-          break: getValue('break')?.toLowerCase() === 'true',
-          breakType: getValue('break type'),
-          rowNumber: parseInt(originalRowNumber, 10)
+          time: timeIndex !== -1 ? values[timeIndex] : '',
+          entryType: entryTypeIndex !== -1 ? values[entryTypeIndex] : '',
+          break: breakIndex !== -1 ? values[breakIndex]?.toLowerCase() === 'true' : false,
+          breakType: breakTypeIndex !== -1 ? values[breakTypeIndex] : '',
+          rowNumber: actualRowNumber
         };
 
         // Log entry for debugging
-        console.log(`Processing row ${entry.rowNumber}:`, entry);
-
-        // Only validate date field
-        if (!entry.date) {
-          console.log('Missing date in row:', entry.rowNumber);
-          return null;
-        }
+        console.log(`Processing row ${actualRowNumber}:`, entry);
 
         return entry;
       })
