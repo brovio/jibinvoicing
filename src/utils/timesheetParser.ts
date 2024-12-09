@@ -20,6 +20,18 @@ const parseCSVLine = (line: string): string[] => {
     return line.map(item => item?.toString().trim() || '');
   }
 
+  // If the line is a single string containing multiple values separated by commas
+  if (typeof line === 'string' && line.includes(',Desktop,Desktop,')) {
+    // Split the string by commas and extract the date value
+    const parts = line.split(',');
+    for (let i = 0; i < parts.length; i++) {
+      if (parts[i].includes('/')) {
+        // Found a date-like string, reconstruct the line with this as the date
+        return [`${parts[i]}`, ...Array(20).fill('')];
+      }
+    }
+  }
+
   const result: string[] = [];
   let current = '';
   let inQuotes = false;
@@ -46,6 +58,13 @@ const parseCSVLine = (line: string): string[] => {
 }
 
 const isValidDate = (dateStr: string): boolean => {
+  if (!dateStr) return false;
+  
+  // Extract date part if it includes time
+  if (dateStr.includes(' ')) {
+    dateStr = dateStr.split(' ')[0];
+  }
+  
   // Check if it matches MM/DD/YYYY format
   const dateRegex = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
   if (!dateRegex.test(dateStr)) return false;
@@ -83,13 +102,18 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
       // Get the date value and validate it
       let dateValue = getValueOrDefault('date');
       if (!isValidDate(dateValue)) {
-        // Try to find a valid date in the row
-        for (let i = 0; i < values.length; i++) {
-          if (isValidDate(values[i])) {
-            dateValue = values[i];
+        // Try to find a valid date in any column
+        for (const value of values) {
+          if (isValidDate(value)) {
+            dateValue = value.split(' ')[0]; // Take only the date part if there's a time
             break;
           }
         }
+      }
+
+      // If still no valid date found, mark as invalid
+      if (!isValidDate(dateValue)) {
+        dateValue = 'Invalid Date';
       }
 
       const entry: TimesheetEntry = {
