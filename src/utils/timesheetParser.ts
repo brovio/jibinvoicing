@@ -82,40 +82,47 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
     return lines.slice(1)
       .map(line => parseCSVLine(line))
       .filter(values => !isEmptyRow(values))
-      .map((values, index) => {
-        console.log(`Processing row ${index + 1}:`, values);
+      .map((values, rowIndex) => {
+        console.log(`Processing row ${rowIndex + 2}:`, values); // Add 2 to account for 1-based indexing and header row
 
         const getValueByHeader = (headerName: string): string => {
-          const index = headers.indexOf(headerName);
+          const index = headers.findIndex(h => h.includes(headerName.toLowerCase()));
           return index !== -1 ? values[index]?.trim() || '' : '';
         };
 
         // Try to find a valid date
-        let dateValue = '';
-        for (const value of values) {
-          if (value && isValidDate(value.split(' ')[0])) {
-            dateValue = value.split(' ')[0];
-            break;
+        let dateValue = getValueByHeader('date');
+        if (!isValidDate(dateValue)) {
+          for (const value of values) {
+            if (value && isValidDate(value.split(' ')[0])) {
+              dateValue = value.split(' ')[0];
+              break;
+            }
           }
         }
 
         if (!dateValue) {
-          console.log(`No valid date found in row ${index + 1}`);
+          console.log(`No valid date found in row ${rowIndex + 2}`);
           return null;
         }
+
+        // Look for project name in both specific project column and task name column
+        const projectName = getValueByHeader('project name') || 
+                          getValueByHeader('project') || 
+                          getValueByHeader('task name') || '';
 
         const entry: TimesheetEntry = {
           date: dateValue,
           client: getValueByHeader('client') || getValueByHeader('company') || '',
-          project: getValueByHeader('project') || '',
-          task: getValueByHeader('task') || getValueByHeader('notes') || '',
-          hours: parseFloat(getValueByHeader('hours')) || 0,
+          project: projectName,
+          task: getValueByHeader('task description') || getValueByHeader('notes') || getValueByHeader('task') || '',
+          hours: parseFloat(getValueByHeader('duration')) || parseFloat(getValueByHeader('hours')) || 0,
           status: 'Pending',
-          staffName: getValueByHeader('staff name') || getValueByHeader('staffname') || '',
-          entryType: getValueByHeader('entry type') || getValueByHeader('entrytype') || '',
+          staffName: getValueByHeader('staff name') || getValueByHeader('name') || '',
+          entryType: getValueByHeader('entry type') || getValueByHeader('type') || '',
           time: getValueByHeader('time') || '',
           break: getValueByHeader('break')?.toLowerCase() === 'true',
-          breakType: getValueByHeader('break type') || getValueByHeader('breaktype') || ''
+          breakType: getValueByHeader('break type') || ''
         };
 
         return entry;
