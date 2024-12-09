@@ -26,7 +26,7 @@ export const TimesheetModal = ({ isOpen, onClose, entry, rowIndex }: TimesheetMo
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-sm text-gray-400">Row Number</label>
-              <p className="text-white">{rowIndex !== undefined ? rowIndex + 1 : 'N/A'}</p>
+              <p className="text-white">{rowIndex !== undefined ? rowIndex + 2 : 'N/A'}</p>
             </div>
             <div>
               <label className="text-sm text-gray-400">Date</label>
@@ -52,6 +52,28 @@ export const TimesheetModal = ({ isOpen, onClose, entry, rowIndex }: TimesheetMo
               <div>
                 <label className="text-sm text-gray-400">Staff Name</label>
                 <p className="text-white">{entry.staffName}</p>
+              </div>
+            )}
+            {entry.time && (
+              <div>
+                <label className="text-sm text-gray-400">Time</label>
+                <p className="text-white">{entry.time}</p>
+              </div>
+            )}
+            {entry.entryType && (
+              <div>
+                <label className="text-sm text-gray-400">Entry Type</label>
+                <p className="text-white">{entry.entryType}</p>
+              </div>
+            )}
+            <div>
+              <label className="text-sm text-gray-400">Break</label>
+              <p className="text-white">{entry.break ? 'Yes' : 'No'}</p>
+            </div>
+            {entry.breakType && (
+              <div>
+                <label className="text-sm text-gray-400">Break Type</label>
+                <p className="text-white">{entry.breakType}</p>
               </div>
             )}
           </div>
