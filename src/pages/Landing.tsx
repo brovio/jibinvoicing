@@ -40,7 +40,9 @@ const Landing = () => {
     <div className="grid grid-cols-12 gap-6 h-[calc(100vh-2rem)]">
       {/* Left column - Project Activity */}
       <div className="col-span-4">
-        <ProjectActivity projects={projectData} />
+        <div className="bg-dashboard-card border-dashboard-card rounded-[10px] p-6">
+          <ProjectActivity projects={projectData} />
+        </div>
       </div>
 
       {/* Right section - 2x2 grid */}
@@ -48,7 +50,9 @@ const Landing = () => {
         <QuickActionCard title="Clients" />
         <QuickActionCard title="Invoices" />
         <QuickActionCard title="Timesheets" />
-        <CompanyInfo staff={staffData} />
+        <div className="bg-dashboard-card border-dashboard-card rounded-[10px] p-6">
+          <CompanyInfo staff={staffData} />
+        </div>
       </div>
     </div>
   );

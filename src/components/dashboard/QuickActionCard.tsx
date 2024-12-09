@@ -7,7 +7,7 @@ interface QuickActionCardProps {
 
 export const QuickActionCard = ({ title }: QuickActionCardProps) => {
   return (
-    <div className="dashboard-card">
+    <div className="bg-dashboard-card border-dashboard-card rounded-[10px] p-6">
       <h2 className="text-lg font-semibold mb-4 text-white">{title}</h2>
       <div className="space-y-4">
         <button className="btn-primary w-full">
