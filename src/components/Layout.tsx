@@ -7,8 +7,8 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
     <div className="min-h-screen bg-[#1A1F2C] flex flex-col">
       <Header />
       <Navigation />
-      <main className="pt-[130px] px-6 pb-6 flex-grow">
-        <div className="h-full pb-6">
+      <main className="pt-[130px] px-6 flex-grow">
+        <div className="h-full">
           {children}
         </div>
       </main>
