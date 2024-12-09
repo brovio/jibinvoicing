@@ -9,7 +9,7 @@ interface CompanyInfoProps {
 
 export const CompanyInfo = ({ staff }: CompanyInfoProps) => {
   return (
-    <div className="dashboard-card">
+    <div>
       <h2 className="text-lg font-semibold mb-4 text-white">Company Info Summary</h2>
       <div className="space-y-4">
         {staff.map((person, idx) => (

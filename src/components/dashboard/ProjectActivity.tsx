@@ -13,7 +13,7 @@ interface ProjectActivityProps {
 
 export const ProjectActivity = ({ projects }: ProjectActivityProps) => {
   return (
-    <div className="dashboard-card h-[calc(100vh-2rem)]">
+    <div className="h-[calc(100vh-2rem)]">
       <h2 className="text-lg font-semibold mb-4 text-white">Clients/Project Activity Summary</h2>
       <div className="space-y-4">
         {projects.map((project, idx) => (
