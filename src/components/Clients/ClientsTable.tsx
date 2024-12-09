@@ -3,7 +3,6 @@ import { Table, TableBody } from "@/components/ui/table";
 import { ClientsHeader } from "./ClientsHeader";
 import { ClientsRow } from "./ClientsRow";
 import { ClientModal } from "./ClientModal";
-import { useToast } from "@/components/ui/use-toast";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,6 +13,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { showClientDeletedToast } from "@/utils/toastUtils";
 
 interface ClientEntry {
   company: string;
@@ -40,7 +40,6 @@ export const ClientsTable = ({
   onClientUpdated,
   onClientDeleted
 }: ClientsTableProps) => {
-  const { toast } = useToast();
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: string } | null>(null);
   const [selectedClients, setSelectedClients] = useState<Set<string>>(new Set());
   const [modalState, setModalState] = useState<{
@@ -109,10 +108,7 @@ export const ClientsTable = ({
   const handleDelete = (client: ClientEntry) => {
     setDeleteConfirm({ isOpen: false });
     onClientDeleted?.(client);
-    toast({
-      title: "Client Deleted",
-      description: `${client.company} has been removed from your clients list.`,
-    });
+    showClientDeletedToast(client.company);
   };
 
   const handleDeleteDialogOpenChange = (open: boolean) => {

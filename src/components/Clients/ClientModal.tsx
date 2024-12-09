@@ -9,8 +9,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
 import { useState, useEffect } from "react";
+import { showErrorToast, showClientSavedToast } from "@/utils/toastUtils";
 
 interface ClientModalProps {
   isOpen: boolean;
@@ -21,7 +21,6 @@ interface ClientModalProps {
 }
 
 export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientModalProps) => {
-  const { toast } = useToast();
   const [formData, setFormData] = useState({
     company: '',
     contactName: '',
@@ -44,20 +43,16 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
     e.preventDefault();
     
     if (!formData.company || !formData.contactName || !formData.email) {
-      toast({
-        title: "Validation Error",
-        description: "Company, Contact Name and Email are required fields",
-        variant: "destructive",
-      });
+      showErrorToast(
+        "Validation Error",
+        "Company, Contact Name and Email are required fields"
+      );
       return;
     }
 
     onSave(formData);
     onClose();
-    toast({
-      title: `Client ${mode === 'add' ? 'Added' : 'Updated'} Successfully`,
-      description: `${formData.company} has been ${mode === 'add' ? 'added to' : 'updated in'} your clients list.`,
-    });
+    showClientSavedToast(mode, formData.company);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

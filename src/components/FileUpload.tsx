@@ -1,15 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
 import { useRef } from "react";
 import { parseCSV, parseJSON, validateClients, ImportedClient } from "@/utils/importUtils";
+import { showImportSuccessToast, showImportErrorToast } from "@/utils/toastUtils";
 
 interface FileUploadProps {
   onImportSuccess: (clients: ImportedClient[]) => void;
 }
 
 export const FileUpload = ({ onImportSuccess }: FileUploadProps) => {
-  const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -19,11 +18,7 @@ export const FileUpload = ({ onImportSuccess }: FileUploadProps) => {
     const fileExtension = file.name.split('.').pop()?.toLowerCase();
     
     if (!['csv', 'json'].includes(fileExtension || '')) {
-      toast({
-        title: "Invalid file type",
-        description: "Please upload a CSV or JSON file",
-        variant: "destructive",
-      });
+      showErrorToast("Invalid file type", "Please upload a CSV or JSON file");
       return;
     }
 
@@ -41,10 +36,7 @@ export const FileUpload = ({ onImportSuccess }: FileUploadProps) => {
 
         if (validateClients(clients)) {
           onImportSuccess(clients);
-          toast({
-            title: "Import successful",
-            description: `Successfully imported ${clients.length} clients`,
-          });
+          showImportSuccessToast(clients.length);
           
           if (fileInputRef.current) {
             fileInputRef.current.value = '';
@@ -52,11 +44,7 @@ export const FileUpload = ({ onImportSuccess }: FileUploadProps) => {
         }
       } catch (error) {
         console.error('Import error:', error);
-        toast({
-          title: "Import failed",
-          description: "There was an error processing your file. Please check the format and try again.",
-          variant: "destructive",
-        });
+        showImportErrorToast();
       }
     };
 
