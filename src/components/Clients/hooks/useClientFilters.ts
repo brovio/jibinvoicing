@@ -19,12 +19,7 @@ export const useClientFilters = (data: ClientEntry[]) => {
       // Apply rate filter
       if (rateFilter) {
         const [min, max] = rateFilter.split('-').map(Number);
-        if (max) {
-          if (item.rate < min || item.rate > max) return false;
-        } else {
-          // Handle "151+" case
-          if (item.rate < min) return false;
-        }
+        if (item.rate < min || item.rate > max) return false;
       }
 
       // Apply currency filter

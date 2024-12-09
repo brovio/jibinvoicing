@@ -1,5 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { FileUpload } from "@/components/FileUpload";
 
 interface TableActionsProps {
   onImportSuccess: (clients: any[]) => void;
@@ -31,19 +32,19 @@ export const TableActions = ({
           onChange={(e) => onRateFilterChange(e.target.value)}
         >
           <option value="">All Rates</option>
-          <option value="0-50">$0 - $50</option>
-          <option value="51-100">$51 - $100</option>
-          <option value="101-150">$101 - $150</option>
-          <option value="151+">$151+</option>
+          <option value="0-30">$0 - $30</option>
+          <option value="30-50">$30 - $50</option>
+          <option value="50-100">$50 - $100</option>
         </select>
         <select 
           className="bg-[#252A38] border border-gray-800 text-gray-400 rounded-[10px] px-4 py-2"
           onChange={(e) => onCurrencyFilterChange(e.target.value)}
         >
           <option value="">All Currencies</option>
-          <option value="USD">USD</option>
+          <option value="AUD">AUD</option>
           <option value="EUR">EUR</option>
           <option value="GBP">GBP</option>
+          <option value="USD">USD</option>
         </select>
       </div>
     </div>

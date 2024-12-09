@@ -1,10 +1,12 @@
 import { ClientsTable } from "@/components/Clients/ClientsTable";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ImportedClient } from "@/utils/importUtils";
 import { UserPlus } from "lucide-react";
 import { FileUpload } from "@/components/FileUpload";
 import { ExportButton } from "@/components/ExportButton";
 import { Button } from "@/components/ui/button";
+
+const STORAGE_KEY = 'stored_clients';
 
 const initialData = [
   {
@@ -31,7 +33,14 @@ const initialData = [
 ];
 
 const Clients = () => {
-  const [clients, setClients] = useState(initialData);
+  const [clients, setClients] = useState(() => {
+    const storedClients = localStorage.getItem(STORAGE_KEY);
+    return storedClients ? JSON.parse(storedClients) : initialData;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(clients));
+  }, [clients]);
 
   const handleImportSuccess = (importedClients: ImportedClient[]) => {
     const formattedClients = importedClients.map(client => ({
