@@ -1,4 +1,3 @@
-import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,42 +11,33 @@ import InvoiceTemplates from "./pages/InvoiceTemplates";
 import ThemeYTemplate from "./components/themes/Theme-Y";
 import { sampleInvoiceData } from "./data/sampleInvoiceData";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000,
-      retry: 1,
-    },
-  },
-});
+const queryClient = new QueryClient();
 
-const App: React.FC = () => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Layout>
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/timesheets" element={<Index />} />
-              <Route path="/clients" element={<Clients />} />
-              <Route path="/invoice-templates" element={<InvoiceTemplates />} />
-              <Route 
-                path="/invoice-preview" 
-                element={
-                  <div className="p-4">
-                    <ThemeYTemplate {...sampleInvoiceData} />
-                  </div>
-                } 
-              />
-            </Routes>
-          </Layout>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
-  );
-};
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/timesheets" element={<Index />} />
+            <Route path="/clients" element={<Clients />} />
+            <Route path="/invoice-templates" element={<InvoiceTemplates />} />
+            <Route 
+              path="/invoice-preview" 
+              element={
+                <div className="p-4">
+                  <ThemeYTemplate {...sampleInvoiceData} />
+                </div>
+              } 
+            />
+          </Routes>
+        </Layout>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
 export default App;

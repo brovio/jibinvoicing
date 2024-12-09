@@ -9,6 +9,7 @@ interface TimesheetEntry {
   client: string;
   task: string;
   hours: number;
+  status: string;
 }
 
 export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
@@ -39,7 +40,7 @@ export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
   }, [data, sortConfig]);
 
   return (
-    <div className="rounded-lg overflow-hidden border border-[#30363D] bg-[#161B22]">
+    <div className="bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">
       <Table>
         <TimesheetHeader onSort={requestSort} />
         <TableBody>

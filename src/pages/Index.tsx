@@ -1,114 +1,98 @@
-import React, { useState } from "react";
 import { TimesheetTable } from "@/components/Timesheet/TimesheetTable";
-import { TimesheetUpload } from "@/components/Timesheet/TimesheetUpload";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import type { TimesheetEntry } from "@/utils/timesheetUtils";
-import { Upload } from "lucide-react";
+import { Search, Upload } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+const sampleData = [
+  {
+    date: "2024-02-20",
+    project: "Website Redesign",
+    client: "Google",
+    task: "UI Development",
+    hours: 6.5,
+    status: "Approved"
+  },
+  {
+    date: "2024-02-19",
+    project: "Mobile App",
+    client: "Microsoft",
+    task: "API Integration",
+    hours: 8.0,
+    status: "Pending"
+  },
+  {
+    date: "2024-02-18",
+    project: "Cloud Migration",
+    client: "Apple",
+    task: "Database Setup",
+    hours: 7.5,
+    status: "Approved"
+  }
+];
 
 const Index = () => {
-  const [entries, setEntries] = useState<TimesheetEntry[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedProject, setSelectedProject] = useState("All Projects");
-  const [selectedStaff, setSelectedStaff] = useState("All Staff");
-  const [entriesPerPage, setEntriesPerPage] = useState("25");
-
-  const handleImportSuccess = (newEntries: TimesheetEntry[]) => {
-    setEntries(prev => [...prev, ...newEntries]);
-  };
-
-  const tableData = entries.map(entry => ({
-    date: entry.date,
-    client: entry.client,
-    project: entry.project,
-    task: entry.tasks,
-    hours: entry.duration,
-  }));
-
   return (
-    <div className="space-y-6">
-      {entries.length === 0 ? (
-        <div className="border border-dashed border-[#30363D] rounded-lg p-20">
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-12 h-12 bg-[#21262D] rounded-full flex items-center justify-center">
-              <Upload className="w-6 h-6 text-[#8B949E]" />
+    <div className="max-w-7xl mx-auto">
+      <div className="mb-6 flex flex-col gap-6">
+        <div className="bg-[#252A38] border border-gray-800 rounded-[10px] p-8 text-center">
+          <div className="flex flex-col items-center gap-2">
+            <div className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center mb-2">
+              <Upload className="w-6 h-6 text-gray-400" />
             </div>
-            <h3 className="text-xl font-medium text-white">Import Timesheets</h3>
-            <p className="text-[#8B949E]">Drag and drop your CSV file here, or click to browse</p>
-            <TimesheetUpload onImportSuccess={handleImportSuccess} />
+            <h2 className="text-xl font-medium text-white">Import Timesheets</h2>
+            <p className="text-gray-400">Drag and drop your CSV file here, or click to browse</p>
+            <Button className="mt-4 bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white">
+              Browse Files
+            </Button>
           </div>
         </div>
-      ) : (
-        <>
-          <div className="flex items-center gap-4">
+
+        <div className="flex justify-between items-center gap-4">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
             <Input
-              className="flex-1 bg-[#161B22] border-[#30363D] text-white placeholder:text-[#8B949E] h-10 rounded-lg"
               placeholder="Search timesheets..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9 bg-[#252A38] border-gray-800 text-white placeholder:text-gray-500 rounded-[10px]"
             />
-            <Select value={selectedProject} onValueChange={setSelectedProject}>
-              <SelectTrigger className="w-[180px] bg-[#161B22] border-[#30363D] text-white rounded-lg">
-                <SelectValue placeholder="All Projects" />
-              </SelectTrigger>
-              <SelectContent className="bg-[#161B22] border-[#30363D]">
-                <SelectItem value="All Projects">All Projects</SelectItem>
-                <SelectItem value="Website Redesign">Website Redesign</SelectItem>
-                <SelectItem value="Mobile App">Mobile App</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={selectedStaff} onValueChange={setSelectedStaff}>
-              <SelectTrigger className="w-[180px] bg-[#161B22] border-[#30363D] text-white rounded-lg">
-                <SelectValue placeholder="All Staff" />
-              </SelectTrigger>
-              <SelectContent className="bg-[#161B22] border-[#30363D]">
-                <SelectItem value="All Staff">All Staff</SelectItem>
-                <SelectItem value="John Doe">John Doe</SelectItem>
-                <SelectItem value="Jane Smith">Jane Smith</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
-          <TimesheetTable data={tableData} />
-          <div className="flex items-center justify-between text-[#8B949E]">
-            <p className="text-sm">
-              Showing 1 to {Math.min(Number(entriesPerPage), tableData.length)} of {tableData.length} results
-            </p>
-            <div className="flex items-center gap-4">
-              <Select value={entriesPerPage} onValueChange={setEntriesPerPage}>
-                <SelectTrigger className="w-[130px] bg-[#161B22] border-[#30363D] text-white rounded-lg">
-                  <SelectValue placeholder="25 entries" />
-                </SelectTrigger>
-                <SelectContent className="bg-[#161B22] border-[#30363D]">
-                  <SelectItem value="25">25 entries</SelectItem>
-                  <SelectItem value="50">50 entries</SelectItem>
-                  <SelectItem value="100">100 entries</SelectItem>
-                </SelectContent>
-              </Select>
-              <div className="flex gap-2">
-                <button className="p-2 rounded-lg bg-[#161B22] border border-[#30363D] text-[#8B949E] hover:bg-[#21262D]">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-                <button className="p-2 rounded-lg bg-[#0EA5E9] text-white">1</button>
-                <button className="p-2 rounded-lg bg-[#161B22] border border-[#30363D] text-[#8B949E] hover:bg-[#21262D]">2</button>
-                <button className="p-2 rounded-lg bg-[#161B22] border border-[#30363D] text-[#8B949E] hover:bg-[#21262D]">3</button>
-                <button className="p-2 rounded-lg bg-[#161B22] border border-[#30363D] text-[#8B949E] hover:bg-[#21262D]">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </div>
-            </div>
+          <div className="flex gap-4">
+            <select className="bg-[#252A38] border border-gray-800 text-gray-400 rounded-[10px] px-4 py-2">
+              <option>All Projects</option>
+            </select>
+            <select className="bg-[#252A38] border border-gray-800 text-gray-400 rounded-[10px] px-4 py-2">
+              <option>All Staff</option>
+            </select>
           </div>
-        </>
-      )}
+        </div>
+      </div>
+
+      <TimesheetTable data={sampleData} />
+
+      <div className="mt-4 flex justify-between items-center text-gray-400">
+        <span>Showing 1 to 10 of 20 results</span>
+        <div className="flex items-center gap-2">
+          <select className="bg-[#252A38] border border-gray-800 text-gray-400 rounded-[10px] px-4 py-2">
+            <option>25 entries</option>
+          </select>
+          <div className="flex gap-2">
+            <button className="px-3 py-1 rounded-[10px] bg-[#252A38] border border-gray-800">
+              &lt;
+            </button>
+            <button className="px-3 py-1 rounded-[10px] bg-[#0EA5E9] text-white">
+              1
+            </button>
+            <button className="px-3 py-1 rounded-[10px] bg-[#252A38] border border-gray-800">
+              2
+            </button>
+            <button className="px-3 py-1 rounded-[10px] bg-[#252A38] border border-gray-800">
+              3
+            </button>
+            <button className="px-3 py-1 rounded-[10px] bg-[#252A38] border border-gray-800">
+              &gt;
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
