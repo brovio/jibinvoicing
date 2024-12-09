@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { MoreVertical } from "lucide-react";
 
 type Project = {
@@ -28,20 +27,12 @@ export const ProjectActivity = ({ projects }: ProjectActivityProps) => {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="bg-dashboard-card border-dashboard-border text-white hover:bg-dashboard-hover"
-              >
+              <button className="btn-secondary">
                 View project
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="icon"
-                className="text-gray-400 hover:bg-dashboard-hover hover:text-white"
-              >
+              </button>
+              <button className="btn-icon">
                 <MoreVertical className="h-4 w-4" />
-              </Button>
+              </button>
             </div>
           </div>
         ))}
