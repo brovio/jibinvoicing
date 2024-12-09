@@ -32,6 +32,13 @@ export const QuickActionCard = ({ title }: QuickActionCardProps) => {
                 </button>
               </Link>
             )}
+            {title === "Timesheets" && (
+              <Link to="/timesheets" className="mt-auto">
+                <button className="w-full border border-dashboard-primary bg-transparent text-dashboard-primary hover:bg-dashboard-primary/10 rounded-[10px] px-4 py-2 transition-colors duration-200">
+                  View Timesheets Page
+                </button>
+              </Link>
+            )}
           </>
         )}
         {title === "Invoices" && (
