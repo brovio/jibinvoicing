@@ -2,7 +2,6 @@ import { Input } from "@/components/ui/input";
 import { Search, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ThemeYTemplate from "@/components/themes/Theme-Y";
-import PeekoTemplate from "@/components/themes/Theme-peeko";
 import { sampleInvoiceData } from "@/data/sampleInvoiceData";
 import { useState } from "react";
 
@@ -16,12 +15,12 @@ const InvoiceTemplates = () => {
       description: "Modern and professional invoice template"
     },
     {
-      name: "Peeko",
-      component: PeekoTemplate,
+      name: "Theme Y",
+      component: ThemeYTemplate,
       description: "Clean and minimal invoice design"
     },
     {
-      name: "Classic",
+      name: "Theme Y",
       component: ThemeYTemplate,
       description: "Traditional business invoice layout"
     }
