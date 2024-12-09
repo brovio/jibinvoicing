@@ -19,6 +19,14 @@
   --input: 214.3 31.8% 91.4%;
   --ring: 221.2 83.2% 53.3%;
   --radius: 0.75rem;
+
+  /* Dashboard specific colors */
+  --dashboard-background: #1A1F2C;
+  --dashboard-card: #252A38;
+  --dashboard-border: #374151;
+  --dashboard-hover: #2A303F;
+  --dashboard-text: #9CA3AF;
+  --dashboard-primary: #0EA5E9;
 }
 
 .dark {

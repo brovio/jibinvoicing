@@ -15,7 +15,7 @@
 
 /* Glass effect for cards */
 .glass {
-  @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl;
+  @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-[10px];
 }
 
 /* Animations */
@@ -33,113 +33,38 @@
   }
 }
 
-/* Invoice template styles */
-.invoice-preview {
-  aspect-ratio: 1 / 1.4142; /* A4 aspect ratio */
-  margin: 2%;
-  position: relative;
-  cursor: pointer;
-  transition: transform 0.2s;
+/* Dashboard card styles */
+.dashboard-card {
+  @apply bg-[#252A38] border border-gray-800 rounded-[10px] p-6;
 }
 
-.invoice-preview:hover {
-  transform: scale(1.02);
+/* Button styles */
+.btn-primary {
+  @apply bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white rounded-[10px];
 }
 
-.invoice-container {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
+/* Input and select styles */
+.input-field {
+  @apply bg-[#252A38] border border-gray-800 text-white placeholder:text-gray-500 rounded-[10px];
 }
 
-/* Invoice isolation styles */
-.invoice-template {
-  position: relative;
-  z-index: 10;
-  background: white;
-  isolation: isolate;
+.select-field {
+  @apply bg-[#252A38] border border-gray-800 text-gray-400 rounded-[10px] px-4 py-2;
 }
 
-.invoice-template > div {
-  position: relative;
-  z-index: 2;
-  background: white;
+/* Table styles */
+.table-container {
+  @apply bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800;
 }
 
-/* Hide background elements in modal view */
-.invoice-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+.table-header {
+  @apply text-gray-400 font-medium cursor-pointer hover:bg-[#2A303F] transition-colors;
 }
 
-.invoice-modal-content {
-  background: white;
-  width: 90%;
-  height: 90%;
-  padding: 20px;
-  overflow-y: auto;
-  position: relative;
-  isolation: isolate;
+.table-row {
+  @apply border-b border-gray-800 hover:bg-[#2A303F] transition-colors;
 }
 
-.invoice-modal-content > div {
-  background: white;
-  position: relative;
-  z-index: 2;
-}
-
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: #000;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1001;
-}
-
-/* Dialog and Alert Dialog styles */
-[role="dialog"][data-state="open"] {
-  background-color: #252A38 !important;
-  border-radius: 10px !important;
-}
-
-[role="alertdialog"] {
-  background-color: #252A38 !important;
-  border-radius: 10px !important;
-  color: white !important;
-}
-
-[role="alertdialog"] button {
-  border-radius: 10px !important;
-}
-
-[role="alertdialog"] button[type="button"] {
-  background-color: #0EA5E9 !important;
-  color: white !important;
-}
-
-/* Modal styles */
-.dialog-content {
-  border-radius: 10px !important;
-}
-
-.dialog-content button {
-  border-radius: 10px !important;
+.table-cell {
+  @apply text-gray-300 cursor-pointer hover:text-white;
 }
