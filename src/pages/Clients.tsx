@@ -72,7 +72,7 @@ const Clients = () => {
       <div className="mb-6 flex flex-col gap-6">
         <div className="bg-[#252A38] border border-gray-800 rounded-[10px] p-8">
           <div className="flex flex-col items-center gap-2">
-            <div className="w-12 h-12 bg-[#0EA5E9] rounded-[10px] flex items-center justify-center mb-2">
+            <div className="w-12 h-12 rounded-[10px] flex items-center justify-center mb-2">
               <UserPlus className="w-6 h-6 text-white" />
             </div>
             <h2 className="text-xl font-medium text-white">Import/Export Clients</h2>
