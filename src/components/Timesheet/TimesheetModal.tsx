@@ -69,7 +69,7 @@ export const TimesheetModal = ({ isOpen, onClose, entry, rowIndex }: TimesheetMo
             )}
             <div>
               <label className="text-sm text-gray-400">Row Number</label>
-              <p className="text-white">{displayValue(rowIndex !== undefined ? rowIndex + 2 : 'N/A')}</p>
+              <p className="text-white">{displayValue(rowIndex !== undefined ? rowIndex + 1 : 'N/A')}</p>
             </div>
             {entry.entryType && (
               <div>
