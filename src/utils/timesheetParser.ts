@@ -15,11 +15,11 @@ export interface TimesheetEntry {
 }
 
 const parseCSVLine = (line: string): string[] => {
-  // If the line starts with a comma, it's likely malformed
-  if (line.startsWith(',')) {
-    line = ' ' + line; // Add a space to ensure proper splitting
+  // Handle lines that are already split (appear as arrays)
+  if (Array.isArray(line)) {
+    return line.map(item => item?.toString().trim() || '');
   }
-  
+
   const result: string[] = [];
   let current = '';
   let inQuotes = false;
@@ -45,6 +45,17 @@ const parseCSVLine = (line: string): string[] => {
   return result;
 }
 
+const isValidDate = (dateStr: string): boolean => {
+  // Check if it matches MM/DD/YYYY format
+  const dateRegex = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+  if (!dateRegex.test(dateStr)) return false;
+
+  // Parse the date and verify it's valid
+  const [month, day, year] = dateStr.split('/').map(Number);
+  const date = new Date(year, month - 1, day);
+  return date.getMonth() === month - 1 && date.getDate() === day && date.getFullYear() === year;
+}
+
 export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
   try {
     // Split content into lines and remove empty lines
@@ -59,14 +70,8 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
 
     // Process data rows (skip header row)
     return lines.slice(1).map((line, index) => {
-      // Check if the line is a malformed single string containing multiple values
-      if (line.includes('Desktop,Desktop') && line.startsWith(',')) {
-        console.log(`Skipping malformed row ${index + 2}:`, line);
-        return null;
-      }
-
       const values = parseCSVLine(line);
-      console.log(`Processing row ${index + 2}:`, values);
+      console.log(`Processing row ${index + 1}:`, values);
 
       const getValueOrDefault = (columnName: string): string => {
         const index = headers.indexOf(columnName);
@@ -75,12 +80,20 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
         return value && value.trim() ? value.trim() : '-';
       };
 
-      // Validate date format
-      const dateValue = getValueOrDefault('date');
-      const isValidDate = /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateValue);
+      // Get the date value and validate it
+      let dateValue = getValueOrDefault('date');
+      if (!isValidDate(dateValue)) {
+        // Try to find a valid date in the row
+        for (let i = 0; i < values.length; i++) {
+          if (isValidDate(values[i])) {
+            dateValue = values[i];
+            break;
+          }
+        }
+      }
 
       const entry: TimesheetEntry = {
-        date: isValidDate ? dateValue : '-',
+        date: dateValue,
         client: getValueOrDefault('client'),
         project: getValueOrDefault('project'),
         task: getValueOrDefault('notes') !== '-' ? getValueOrDefault('notes') : getValueOrDefault('task'),
@@ -100,8 +113,7 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
       };
 
       return entry;
-    })
-    .filter(entry => entry !== null); // Remove any null entries from malformed rows
+    });
 
   } catch (error) {
     console.error('Error parsing CSV:', error);
