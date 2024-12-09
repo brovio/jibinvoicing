@@ -37,7 +37,7 @@ const staffData = [
 
 const Landing = () => {
   return (
-    <div className="grid grid-cols-12 gap-8 h-[calc(100vh-4rem)]">
+    <div className="grid grid-cols-12 gap-8 h-[calc(100vh-130px)]">
       {/* Left column - Project Activity - Now 5 columns instead of 4 */}
       <div className="col-span-5">
         <div className="bg-dashboard-card border-dashboard-card rounded-[10px] p-8">
