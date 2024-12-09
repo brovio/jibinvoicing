@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/Layout";
-import Index from "./pages/Index";
+import Timesheets from "./pages/Timesheets";
 import Landing from "./pages/Landing";
 import Clients from "./pages/Clients";
 import InvoiceTemplates from "./pages/InvoiceTemplates";
@@ -22,7 +22,7 @@ const App = () => (
         <Layout>
           <Routes>
             <Route path="/" element={<Landing />} />
-            <Route path="/timesheets" element={<Index />} />
+            <Route path="/timesheets" element={<Timesheets />} />
             <Route path="/clients" element={<Clients />} />
             <Route path="/invoice-templates" element={<InvoiceTemplates />} />
             <Route 
