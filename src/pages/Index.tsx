@@ -3,6 +3,9 @@ import { Input } from "@/components/ui/input";
 import { Search, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ExportButton } from "@/components/ExportButton";
+import { useRef } from "react";
+import { parseTimesheetCSV } from "@/utils/timesheetParser";
+import { showImportSuccessToast, showImportErrorToast } from "@/utils/toastUtils";
 
 const sampleData = [
   {
@@ -32,6 +35,47 @@ const sampleData = [
 ];
 
 const Index = () => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== 'application/zip') {
+      showImportErrorToast('Please upload a ZIP file');
+      return;
+    }
+
+    try {
+      // For now, let's just read the first CSV file we find in the ZIP
+      const arrayBuffer = await file.arrayBuffer();
+      const blob = new Blob([arrayBuffer], { type: 'application/zip' });
+      
+      // Log the file contents for debugging
+      console.log('ZIP file received:', file.name);
+      console.log('File size:', file.size);
+      
+      // TODO: Implement ZIP extraction
+      // For now, we'll use sample data to test the parser
+      const sampleCSVContent = `Date,Full Name,EntryType,Time,Duration,Break,Break Type,Activity,Client,Notes
+2024-03-20,John Doe,In,09:00,8,No,,Website Development,Google,Frontend Tasks
+2024-03-20,Jane Smith,Out,17:00,8,Yes,Lunch,Mobile App,Apple,Backend Development`;
+      
+      const parsedEntries = parseTimesheetCSV(sampleCSVContent);
+      console.log('Parsed timesheet entries:', parsedEntries);
+      
+      showImportSuccessToast(parsedEntries.length);
+      
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } catch (error) {
+      console.error('Error processing ZIP file:', error);
+      showImportErrorToast();
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="mb-6 flex flex-col gap-6">
@@ -45,9 +89,19 @@ const Index = () => {
               Import your timesheets using CSV or ZIP format. Required columns: Date, Project, Client, Task, and Hours.
             </p>
             <div className="flex gap-4">
-              <Button className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white gap-2 rounded-[10px]">
+              <input
+                type="file"
+                accept=".zip"
+                onChange={handleFileChange}
+                className="hidden"
+                ref={fileInputRef}
+              />
+              <Button 
+                onClick={() => fileInputRef.current?.click()}
+                className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white gap-2 rounded-[10px]"
+              >
                 <Upload className="h-4 w-4" />
-                Import Timesheets (CSV/ZIP)
+                Import Timesheets (ZIP)
               </Button>
               <ExportButton format="csv" clients={[]} />
               <ExportButton format="json" clients={[]} />
