@@ -3,6 +3,8 @@ import { Table, TableBody } from "@/components/ui/table";
 import { ClientsHeader } from "./ClientsHeader";
 import { ClientsRow } from "./ClientsRow";
 import { ClientModal } from "./ClientModal";
+import { TableActions } from "./TableActions";
+import { TablePagination } from "./TablePagination";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -75,11 +77,10 @@ export const ClientsTable = ({
     return sortableItems;
   }, [data, sortConfig]);
 
-  const handleSelectAll = (selectAll: boolean, includeAll?: boolean) => {
+  const handleSelectAll = (selectAll: boolean) => {
     if (selectAll) {
       const newSelected = new Set<string>();
-      const clientsToSelect = includeAll ? data : sortedData;
-      clientsToSelect.forEach(client => newSelected.add(client.company));
+      sortedData.forEach(client => newSelected.add(client.company));
       setSelectedClients(newSelected);
     } else {
       setSelectedClients(new Set());
@@ -111,33 +112,39 @@ export const ClientsTable = ({
     showClientDeletedToast(client.company);
   };
 
-  const handleDeleteDialogOpenChange = (open: boolean) => {
-    setDeleteConfirm(current => ({ ...current, isOpen: open }));
-  };
-
   return (
-    <div className="bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">
-      <Table>
-        <ClientsHeader 
-          onSort={requestSort} 
-          onSelectAll={handleSelectAll}
-          totalClients={data.length}
-          visibleClients={sortedData.length}
-        />
-        <TableBody>
-          {sortedData.map((item, index) => (
-            <ClientsRow 
-              key={index} 
-              data={item}
-              isSelected={selectedClients.has(item.company)}
-              onSelect={(selected) => handleRowSelect(item, selected)}
-              onView={(client) => setModalState({ isOpen: true, mode: 'view', client })}
-              onEdit={(client) => setModalState({ isOpen: true, mode: 'edit', client })}
-              onDelete={(client) => setDeleteConfirm({ isOpen: true, client })}
-            />
-          ))}
-        </TableBody>
-      </Table>
+    <>
+      <TableActions
+        onImportSuccess={onClientAdded}
+        clients={data}
+        onAddClick={() => setModalState({ isOpen: true, mode: 'add' })}
+      />
+
+      <div className="bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">
+        <Table>
+          <ClientsHeader 
+            onSort={requestSort} 
+            onSelectAll={handleSelectAll}
+            totalClients={data.length}
+            visibleClients={sortedData.length}
+          />
+          <TableBody>
+            {sortedData.map((item, index) => (
+              <ClientsRow 
+                key={index} 
+                data={item}
+                isSelected={selectedClients.has(item.company)}
+                onSelect={(selected) => handleRowSelect(item, selected)}
+                onView={(client) => setModalState({ isOpen: true, mode: 'view', client })}
+                onEdit={(client) => setModalState({ isOpen: true, mode: 'edit', client })}
+                onDelete={(client) => setDeleteConfirm({ isOpen: true, client })}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      <TablePagination totalResults={data.length} />
 
       <ClientModal 
         isOpen={modalState.isOpen}
@@ -149,7 +156,7 @@ export const ClientsTable = ({
 
       <AlertDialog 
         open={deleteConfirm.isOpen} 
-        onOpenChange={handleDeleteDialogOpenChange}
+        onOpenChange={(open) => setDeleteConfirm(current => ({ ...current, isOpen: open }))}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -173,6 +180,6 @@ export const ClientsTable = ({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </>
   );
 };
