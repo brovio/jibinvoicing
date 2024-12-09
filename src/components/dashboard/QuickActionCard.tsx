@@ -26,7 +26,19 @@ export const QuickActionCard = ({ title }: QuickActionCardProps) => {
             </button>
           </>
         )}
-        {title !== "Clients" && title !== "Timesheets" && (
+        {title === "Invoices" && (
+          <>
+            <button className="btn-primary w-full">
+              <Upload className="h-4 w-4" />
+              Import {title}
+            </button>
+            <button className="btn-primary w-full">
+              <Download className="h-4 w-4" />
+              Export {title}
+            </button>
+          </>
+        )}
+        {title !== "Clients" && title !== "Timesheets" && title !== "Invoices" && (
           <>
             <button className="btn-secondary w-full">
               <Upload className="h-4 w-4" />
