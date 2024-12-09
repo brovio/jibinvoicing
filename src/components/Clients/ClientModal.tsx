@@ -52,7 +52,9 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
 
     onSave(formData);
     onClose();
-    showClientSavedToast(mode, formData.company);
+    if (mode !== 'view') {
+      showClientSavedToast(mode, formData.company);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

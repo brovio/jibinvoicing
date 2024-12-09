@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
 import { useRef } from "react";
 import { parseCSV, parseJSON, validateClients, ImportedClient } from "@/utils/importUtils";
-import { showImportSuccessToast, showImportErrorToast } from "@/utils/toastUtils";
+import { showImportSuccessToast, showImportErrorToast, showErrorToast } from "@/utils/toastUtils";
 
 interface FileUploadProps {
   onImportSuccess: (clients: ImportedClient[]) => void;
