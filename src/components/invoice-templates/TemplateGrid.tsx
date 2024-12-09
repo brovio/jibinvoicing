@@ -22,7 +22,7 @@ export const TemplateGrid = () => {
   return (
     <>
       <div className="bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">
-        <div className="grid grid-cols-1 gap-6 p-6">
+        <div className="grid grid-cols-2 gap-6 p-6">
           {templates.map((template, index) => (
             <div key={index} className="group relative">
               <div 
