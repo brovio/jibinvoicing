@@ -18,28 +18,28 @@ export const showErrorToast = (title: string, description: string) => {
 export const showImportSuccessToast = (count: number) => {
   showSuccessToast(
     "Import successful",
-    `Successfully imported ${count} clients`
+    `Successfully imported ${count} entries`
   );
 };
 
-export const showImportErrorToast = () => {
+export const showImportErrorToast = (message?: string) => {
   showErrorToast(
     "Import failed",
-    "There was an error processing your file. Please check the format and try again."
+    message || "There was an error processing your file. Please check the format and try again."
   );
 };
 
 export const showExportSuccessToast = (count: number, format: string) => {
   showSuccessToast(
     "Export successful",
-    `Successfully exported ${count} clients as ${format.toUpperCase()}`
+    `Successfully exported ${count} entries as ${format.toUpperCase()}`
   );
 };
 
 export const showExportErrorToast = () => {
   showErrorToast(
     "Export failed",
-    "There was an error exporting your clients"
+    "There was an error exporting your entries"
   );
 };
 
