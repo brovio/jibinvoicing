@@ -2,11 +2,11 @@ import JSZip from 'jszip';
 
 export interface TimesheetEntry {
   date: string;
-  project: string;
   client: string;
+  project: string;
   task: string;
   hours: number;
-  status?: string;
+  status: string;
   staffName?: string;
   entryType?: string;
   time?: string;
@@ -19,35 +19,53 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
   const headers = lines[0].toLowerCase().split(',').map(h => h.trim());
   
   return lines.slice(1).map(line => {
-    const values = line.split(',');
+    // Split the line, handling quoted values that might contain commas
+    const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
+      .map(val => val.trim().replace(/^"|"$/g, ''));
+    
     const entry: Record<string, any> = {};
+    let duration = 0;
     
     headers.forEach((header, index) => {
-      const value = values[index]?.trim();
+      const value = values[index]?.trim() || '';
+      
       switch(header) {
         case 'date':
           entry.date = value;
           break;
-        case 'project':
+        case 'full name':
+          entry.staffName = value;
+          break;
+        case 'entrytype':
+          entry.entryType = value;
+          break;
+        case 'time':
+          entry.time = value;
+          break;
+        case 'duration':
+          duration = parseFloat(value) || 0;
+          entry.hours = duration;
+          break;
+        case 'break':
+          entry.break = value.toLowerCase() === 'true';
+          break;
+        case 'break type':
+          entry.breakType = value;
+          break;
+        case 'activity':
           entry.project = value;
           break;
         case 'client':
-          entry.client = value;
+          // If client is empty, use project as fallback
+          if (!value && headers.includes('project')) {
+            const projectIndex = headers.indexOf('project');
+            entry.client = values[projectIndex]?.trim() || 'Unspecified Client';
+          } else {
+            entry.client = value || 'Unspecified Client';
+          }
           break;
-        case 'task':
         case 'notes':
-          entry.task = value;
-          break;
-        case 'hours':
-        case 'duration':
-          entry.hours = parseFloat(value) || 0;
-          break;
-        case 'status':
-          entry.status = value || 'Pending';
-          break;
-        case 'staff name':
-        case 'full name':
-          entry.staffName = value;
+          entry.task = value || 'General Task';
           break;
       }
     });
@@ -57,7 +75,8 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
     entry.client = entry.client || 'Unspecified Client';
     entry.task = entry.task || 'General Task';
     entry.hours = entry.hours || 0;
-    entry.status = entry.status || 'Pending';
+    entry.status = 'Pending';
+    entry.date = entry.date || new Date().toISOString().split('T')[0];
 
     return entry as TimesheetEntry;
   });
