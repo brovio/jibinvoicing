@@ -14,7 +14,8 @@ const sampleData = [
     client: "Google",
     task: "UI Development",
     hours: 6.5,
-    status: "Approved"
+    status: "Approved",
+    rowNumber: 1
   },
   {
     date: "2024-02-19",
@@ -22,7 +23,8 @@ const sampleData = [
     client: "Microsoft",
     task: "API Integration",
     hours: 8.0,
-    status: "Pending"
+    status: "Pending",
+    rowNumber: 2
   },
   {
     date: "2024-02-18",
@@ -30,7 +32,8 @@ const sampleData = [
     client: "Apple",
     task: "Database Setup",
     hours: 7.5,
-    status: "Approved"
+    status: "Approved",
+    rowNumber: 3
   }
 ];
 

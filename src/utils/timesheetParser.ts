@@ -12,7 +12,7 @@ export interface TimesheetEntry {
   time?: string;
   break?: boolean;
   breakType?: string;
-  rowNumber: number; // Added this field
+  rowNumber: number;
 }
 
 const parseCSVLine = (line: string): string[] => {
@@ -99,15 +99,15 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
         // Get date from the first column
         const dateValue = values[0];
         if (!dateValue || !isValidDate(dateValue)) {
-          console.log('Invalid date found:', dateValue);
+          console.log('Invalid date found:', line);
           return null;
         }
 
         const entry: TimesheetEntry = {
           date: dateValue,
           staffName: getValue('full name'),
-          client: getValue('client'),
-          project: getValue('project'),
+          client: getValue('client') || 'Unspecified',
+          project: getValue('project') || 'Unspecified',
           task: getValue('notes'),
           hours: parseFloat(getValue('duration')) || 0,
           status: 'Pending',
@@ -121,9 +121,9 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
         // Log entry for debugging
         console.log(`Processing row ${entry.rowNumber}:`, entry);
 
-        // Validate required fields
-        if (!entry.date || !entry.client || !entry.project) {
-          console.log('Missing required fields in row:', entry.rowNumber);
+        // Only validate date field
+        if (!entry.date) {
+          console.log('Missing date in row:', entry.rowNumber);
           return null;
         }
 
