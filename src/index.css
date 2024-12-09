@@ -40,12 +40,24 @@
 
 /* Button styles */
 .btn-primary {
-  @apply bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white rounded-[10px];
+  @apply bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white rounded-[10px] px-4 py-2 transition-colors duration-200;
+}
+
+.btn-secondary {
+  @apply bg-dashboard-card border border-dashboard-border text-white hover:bg-dashboard-hover rounded-[10px] px-4 py-2 transition-colors duration-200;
+}
+
+.btn-ghost {
+  @apply bg-transparent hover:bg-dashboard-hover text-gray-400 hover:text-white rounded-[10px] px-4 py-2 transition-colors duration-200;
+}
+
+.btn-icon {
+  @apply w-8 h-8 flex items-center justify-center rounded-[10px] bg-transparent hover:bg-dashboard-hover text-gray-400 hover:text-white transition-colors duration-200;
 }
 
 /* Input and select styles */
 .input-field {
-  @apply bg-dashboard-card border border-dashboard-border text-white placeholder:text-gray-500 rounded-[10px];
+  @apply bg-dashboard-card border border-dashboard-border text-white placeholder:text-gray-500 rounded-[10px] px-4 py-2;
 }
 
 .select-field {
