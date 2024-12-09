@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import './styles/themes.css';
+
 @layer base {
   * {
     @apply border-border;
@@ -13,7 +15,7 @@
 
 /* Glass effect for cards */
 .glass {
-  @apply bg-[#252A38] backdrop-blur-lg border border-gray-800 rounded-[10px];
+  @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl;
 }
 
 /* Animations */
@@ -23,96 +25,121 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-/* Table styles */
-table {
-  @apply w-full;
+/* Invoice template styles */
+.invoice-preview {
+  aspect-ratio: 1 / 1.4142; /* A4 aspect ratio */
+  margin: 2%;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s;
 }
 
-th {
-  @apply text-left py-3 px-4 text-gray-400 font-medium text-sm;
+.invoice-preview:hover {
+  transform: scale(1.02);
 }
 
-td {
-  @apply py-3 px-4 text-white;
+.invoice-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
 }
 
-tr {
-  @apply border-b border-gray-800;
+/* Invoice isolation styles */
+.invoice-template {
+  position: relative;
+  z-index: 10;
+  background: white;
+  isolation: isolate;
 }
 
-/* Button styles */
-.btn-primary {
-  @apply bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white rounded-[10px] px-4 py-2;
+.invoice-template > div {
+  position: relative;
+  z-index: 2;
+  background: white;
 }
 
-/* Input styles */
-input, select {
-  @apply bg-[#252A38] border border-gray-800 text-white rounded-[10px] px-4 py-2;
-  @apply placeholder:text-gray-500;
+/* Hide background elements in modal view */
+.invoice-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
-/* Search input specific styles */
-.search-input {
-  @apply pl-9 bg-[#252A38] border-gray-800 text-white placeholder:text-gray-500 rounded-[10px];
+.invoice-modal-content {
+  background: white;
+  width: 90%;
+  height: 90%;
+  padding: 20px;
+  overflow-y: auto;
+  position: relative;
+  isolation: isolate;
 }
 
-/* Card styles */
-.card {
-  @apply bg-[#252A38] border border-gray-800 rounded-[10px] p-8;
+.invoice-modal-content > div {
+  background: white;
+  position: relative;
+  z-index: 2;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #000;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
 }
 
 /* Dialog and Alert Dialog styles */
 [role="dialog"][data-state="open"] {
-  @apply bg-[#252A38] rounded-[10px];
+  background-color: #252A38 !important;
+  border-radius: 10px !important;
 }
 
 [role="alertdialog"] {
-  @apply bg-[#252A38] rounded-[10px] text-white;
+  background-color: #252A38 !important;
+  border-radius: 10px !important;
+  color: white !important;
 }
 
 [role="alertdialog"] button {
-  @apply rounded-[10px];
+  border-radius: 10px !important;
 }
 
 [role="alertdialog"] button[type="button"] {
-  @apply bg-[#0EA5E9] text-white;
+  background-color: #0EA5E9 !important;
+  color: white !important;
 }
 
 /* Modal styles */
 .dialog-content {
-  @apply rounded-[10px];
+  border-radius: 10px !important;
 }
 
 .dialog-content button {
-  @apply rounded-[10px];
-}
-
-/* Navigation styles */
-.nav-link {
-  @apply px-4 py-1.5 rounded-[10px] text-sm font-medium transition-colors;
-}
-
-.nav-link-active {
-  @apply bg-[#0EA5E9] text-white;
-}
-
-.nav-link-inactive {
-  @apply text-gray-400 hover:bg-gray-800;
-}
-
-/* Pagination styles */
-.pagination-button {
-  @apply px-3 py-1 rounded-[10px];
-}
-
-.pagination-active {
-  @apply bg-[#0EA5E9] text-white;
-}
-
-.pagination-inactive {
-  @apply bg-[#252A38] border border-gray-800 text-gray-400;
+  border-radius: 10px !important;
 }
