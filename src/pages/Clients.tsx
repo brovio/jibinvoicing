@@ -4,6 +4,7 @@ import { ImportedClient } from "@/utils/importUtils";
 import { UserPlus } from "lucide-react";
 import { FileUpload } from "@/components/FileUpload";
 import { ExportButton } from "@/components/ExportButton";
+import { Button } from "@/components/ui/button";
 
 const initialData = [
   {
@@ -33,7 +34,6 @@ const Clients = () => {
   const [clients, setClients] = useState(initialData);
 
   const handleImportSuccess = (importedClients: ImportedClient[]) => {
-    console.log('Imported clients:', importedClients);
     const formattedClients = importedClients.map(client => ({
       company: client.company,
       contactName: client.contactName,
@@ -45,7 +45,6 @@ const Clients = () => {
       notes: client.notes || '',
       website: client.website || ''
     }));
-    console.log('Formatted clients:', formattedClients);
     setClients(prev => [...prev, ...formattedClients]);
   };
 
@@ -73,13 +72,21 @@ const Clients = () => {
             </div>
             <h2 className="text-xl font-medium text-white">Import/Export Clients</h2>
             <p className="text-gray-400 text-center max-w-lg">
-              Import your clients using CSV or JSON format. Required columns: Company, Contact, Email, Currency, and Rate.
-              Additional fields: Phone, Address, Notes, and Website.
+              Import your clients using CSV or JSON format. Required columns:
+              Company, Contact, Email, Currency, and Rate. Additional fields: Phone,
+              Address, Notes, and Website.
             </p>
             <div className="flex gap-4 mt-4">
               <FileUpload onImportSuccess={handleImportSuccess} />
               <ExportButton clients={clients} format="csv" />
               <ExportButton clients={clients} format="json" />
+              <Button
+                onClick={() => handleClientAdded({})}
+                className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white gap-2 rounded-[10px]"
+              >
+                <UserPlus className="h-4 w-4" />
+                Add Client
+              </Button>
             </div>
           </div>
         </div>
