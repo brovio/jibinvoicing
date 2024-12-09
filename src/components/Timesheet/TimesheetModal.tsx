@@ -16,6 +16,11 @@ interface TimesheetModalProps {
 export const TimesheetModal = ({ isOpen, onClose, entry, rowIndex }: TimesheetModalProps) => {
   if (!entry) return null;
 
+  // Helper function to display value or dash
+  const displayValue = (value: any) => {
+    return value || value === 0 ? value : "-";
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="bg-[#252A38] border border-gray-800 text-white">
@@ -26,55 +31,55 @@ export const TimesheetModal = ({ isOpen, onClose, entry, rowIndex }: TimesheetMo
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-sm text-gray-400">Date</label>
-              <p className="text-white">{entry.date}</p>
+              <p className="text-white">{displayValue(entry.date)}</p>
             </div>
             {entry.time && (
               <div>
                 <label className="text-sm text-gray-400">Time</label>
-                <p className="text-white">{entry.time}</p>
+                <p className="text-white">{displayValue(entry.time)}</p>
               </div>
             )}
             {entry.staffName && (
               <div>
                 <label className="text-sm text-gray-400">Staff Name</label>
-                <p className="text-white">{entry.staffName}</p>
+                <p className="text-white">{displayValue(entry.staffName)}</p>
               </div>
             )}
             <div>
               <label className="text-sm text-gray-400">Hours</label>
-              <p className="text-white">{entry.hours}</p>
+              <p className="text-white">{displayValue(entry.hours)}</p>
             </div>
             <div>
               <label className="text-sm text-gray-400">Client</label>
-              <p className="text-white">{entry.client}</p>
+              <p className="text-white">{displayValue(entry.client)}</p>
             </div>
             <div>
               <label className="text-sm text-gray-400">Project</label>
-              <p className="text-white">{entry.project}</p>
+              <p className="text-white">{displayValue(entry.project)}</p>
             </div>
             <div>
               <label className="text-sm text-gray-400">Break</label>
-              <p className="text-white">{entry.break ? 'Yes' : 'No'}</p>
+              <p className="text-white">{displayValue(entry.break ? 'Yes' : 'No')}</p>
             </div>
             {entry.breakType && (
               <div>
                 <label className="text-sm text-gray-400">Break Type</label>
-                <p className="text-white">{entry.breakType}</p>
+                <p className="text-white">{displayValue(entry.breakType)}</p>
               </div>
             )}
             <div>
               <label className="text-sm text-gray-400">Row Number</label>
-              <p className="text-white">{rowIndex !== undefined ? rowIndex + 2 : 'N/A'}</p>
+              <p className="text-white">{displayValue(rowIndex !== undefined ? rowIndex + 2 : 'N/A')}</p>
             </div>
             {entry.entryType && (
               <div>
                 <label className="text-sm text-gray-400">Entry Type</label>
-                <p className="text-white">{entry.entryType}</p>
+                <p className="text-white">{displayValue(entry.entryType)}</p>
               </div>
             )}
             <div className="col-span-2">
               <label className="text-sm text-gray-400">Task</label>
-              <p className="text-white">{entry.task}</p>
+              <p className="text-white">{displayValue(entry.task)}</p>
             </div>
           </div>
         </div>
