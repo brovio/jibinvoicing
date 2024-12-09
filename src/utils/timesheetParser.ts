@@ -15,21 +15,8 @@ export interface TimesheetEntry {
 }
 
 const parseCSVLine = (line: string): string[] => {
-  // Handle lines that are already split (appear as arrays)
   if (Array.isArray(line)) {
     return line.map(item => item?.toString().trim() || '');
-  }
-
-  // If the line is a single string containing multiple values separated by commas
-  if (typeof line === 'string' && line.includes(',Desktop,Desktop,')) {
-    // Split the string by commas and extract the date value
-    const parts = line.split(',');
-    for (let i = 0; i < parts.length; i++) {
-      if (parts[i].includes('/')) {
-        // Found a date-like string, reconstruct the line with this as the date
-        return [`${parts[i]}`, ...Array(20).fill('')];
-      }
-    }
   }
 
   const result: string[] = [];
@@ -75,6 +62,10 @@ const isValidDate = (dateStr: string): boolean => {
   return date.getMonth() === month - 1 && date.getDate() === day && date.getFullYear() === year;
 }
 
+const isEmptyRow = (values: string[]): boolean => {
+  return values.every(value => !value || value.trim() === '');
+}
+
 export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
   try {
     // Split content into lines and remove empty lines
@@ -88,56 +79,48 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
     console.log('CSV Headers:', headers);
 
     // Process data rows (skip header row)
-    return lines.slice(1).map((line, index) => {
-      const values = parseCSVLine(line);
-      console.log(`Processing row ${index + 1}:`, values);
+    return lines.slice(1)
+      .map(line => parseCSVLine(line))
+      .filter(values => !isEmptyRow(values))
+      .map((values, index) => {
+        console.log(`Processing row ${index + 1}:`, values);
 
-      const getValueOrDefault = (columnName: string): string => {
-        const index = headers.indexOf(columnName);
-        if (index === -1) return '-';
-        const value = values[index];
-        return value && value.trim() ? value.trim() : '-';
-      };
+        const getValueByHeader = (headerName: string): string => {
+          const index = headers.indexOf(headerName);
+          return index !== -1 ? values[index]?.trim() || '' : '';
+        };
 
-      // Get the date value and validate it
-      let dateValue = getValueOrDefault('date');
-      if (!isValidDate(dateValue)) {
-        // Try to find a valid date in any column
+        // Try to find a valid date
+        let dateValue = '';
         for (const value of values) {
-          if (isValidDate(value)) {
-            dateValue = value.split(' ')[0]; // Take only the date part if there's a time
+          if (value && isValidDate(value.split(' ')[0])) {
+            dateValue = value.split(' ')[0];
             break;
           }
         }
-      }
 
-      // If still no valid date found, mark as invalid
-      if (!isValidDate(dateValue)) {
-        dateValue = 'Invalid Date';
-      }
+        if (!dateValue) {
+          console.log(`No valid date found in row ${index + 1}`);
+          return null;
+        }
 
-      const entry: TimesheetEntry = {
-        date: dateValue,
-        client: getValueOrDefault('client'),
-        project: getValueOrDefault('project'),
-        task: getValueOrDefault('notes') !== '-' ? getValueOrDefault('notes') : getValueOrDefault('task'),
-        hours: parseFloat(getValueOrDefault('hours')) || 0,
-        status: 'Pending',
-        staffName: getValueOrDefault('staff name') !== '-' ? 
-                  getValueOrDefault('staff name') : 
-                  getValueOrDefault('staffname'),
-        entryType: getValueOrDefault('entry type') !== '-' ? 
-                  getValueOrDefault('entry type') : 
-                  getValueOrDefault('entrytype'),
-        time: getValueOrDefault('time'),
-        break: getValueOrDefault('break').toLowerCase() === 'true',
-        breakType: getValueOrDefault('break type') !== '-' ? 
-                  getValueOrDefault('break type') : 
-                  getValueOrDefault('breaktype')
-      };
+        const entry: TimesheetEntry = {
+          date: dateValue,
+          client: getValueByHeader('client') || getValueByHeader('company') || '',
+          project: getValueByHeader('project') || '',
+          task: getValueByHeader('task') || getValueByHeader('notes') || '',
+          hours: parseFloat(getValueByHeader('hours')) || 0,
+          status: 'Pending',
+          staffName: getValueByHeader('staff name') || getValueByHeader('staffname') || '',
+          entryType: getValueByHeader('entry type') || getValueByHeader('entrytype') || '',
+          time: getValueByHeader('time') || '',
+          break: getValueByHeader('break')?.toLowerCase() === 'true',
+          breakType: getValueByHeader('break type') || getValueByHeader('breaktype') || ''
+        };
 
-      return entry;
-    });
+        return entry;
+      })
+      .filter((entry): entry is TimesheetEntry => entry !== null);
 
   } catch (error) {
     console.error('Error parsing CSV:', error);
