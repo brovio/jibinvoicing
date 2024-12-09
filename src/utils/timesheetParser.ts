@@ -16,69 +16,72 @@ export interface TimesheetEntry {
 
 export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
   const lines = csvContent.trim().split('\n');
-  const headers = lines[0].toLowerCase().split(',').map(h => h.trim());
+  const headers = lines[0].split(',').map(h => h.trim());
   
+  // Create a map of column indices for faster lookup
+  const columnMap = headers.reduce((acc: Record<string, number>, header, index) => {
+    acc[header.toLowerCase()] = index;
+    return acc;
+  }, {});
+
   return lines.slice(1).map(line => {
     // Split the line, handling quoted values that might contain commas
     const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
       .map(val => val.trim().replace(/^"|"$/g, ''));
     
-    const entry: Record<string, any> = {};
-    let duration = 0;
-    
-    headers.forEach((header, index) => {
-      const value = values[index]?.trim() || '';
-      
-      switch(header) {
-        case 'date':
-          entry.date = value;
-          break;
-        case 'full name':
-          entry.staffName = value;
-          break;
-        case 'entrytype':
-          entry.entryType = value;
-          break;
-        case 'time':
-          entry.time = value;
-          break;
-        case 'duration':
-          duration = parseFloat(value) || 0;
-          entry.hours = duration;
-          break;
-        case 'break':
-          entry.break = value.toLowerCase() === 'true';
-          break;
-        case 'break type':
-          entry.breakType = value;
-          break;
-        case 'activity':
-          entry.project = value;
-          break;
-        case 'client':
-          // If client is empty, use project as fallback
-          if (!value && headers.includes('project')) {
-            const projectIndex = headers.indexOf('project');
-            entry.client = values[projectIndex]?.trim() || 'Unspecified Client';
-          } else {
-            entry.client = value || 'Unspecified Client';
-          }
-          break;
-        case 'notes':
-          entry.task = value || 'General Task';
-          break;
-      }
-    });
+    const entry: Record<string, any> = {
+      status: 'Pending' // Default status
+    };
 
-    // Set default values for required fields if they're missing
-    entry.project = entry.project || 'Unspecified Project';
-    entry.client = entry.client || 'Unspecified Client';
-    entry.task = entry.task || 'General Task';
-    entry.hours = entry.hours || 0;
-    entry.status = 'Pending';
-    entry.date = entry.date || new Date().toISOString().split('T')[0];
+    // Helper function to get value by column name
+    const getValue = (columnName: string): string => {
+      const index = columnMap[columnName.toLowerCase()];
+      return index !== undefined ? values[index]?.trim() || '' : '';
+    };
 
-    return entry as TimesheetEntry;
+    // Date
+    entry.date = getValue('Date');
+    if (!entry.date || entry.date === '') {
+      entry.date = new Date().toISOString().split('T')[0];
+    }
+
+    // Client (with Project fallback)
+    entry.client = getValue('Client');
+    if (!entry.client || entry.client === '') {
+      entry.client = getValue('Project') || 'Unspecified Client';
+    }
+
+    // Project (from Activity)
+    entry.project = getValue('Activity') || 'Unspecified Project';
+
+    // Task (from Notes)
+    entry.task = getValue('Notes') || 'General Task';
+
+    // Hours (from Duration)
+    const duration = getValue('Duration');
+    entry.hours = parseFloat(duration) || 0;
+
+    // Additional fields for modal
+    entry.staffName = getValue('Full Name');
+    entry.entryType = getValue('EntryType');
+    entry.time = getValue('Time');
+    entry.break = getValue('Break').toLowerCase() === 'true';
+    entry.breakType = getValue('Break Type');
+
+    // Validate and ensure required fields have values
+    return {
+      date: entry.date,
+      client: entry.client,
+      project: entry.project,
+      task: entry.task,
+      hours: entry.hours,
+      status: entry.status,
+      staffName: entry.staffName,
+      entryType: entry.entryType,
+      time: entry.time,
+      break: entry.break,
+      breakType: entry.breakType
+    } as TimesheetEntry;
   });
 };
 
