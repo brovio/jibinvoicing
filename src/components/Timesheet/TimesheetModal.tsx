@@ -18,7 +18,9 @@ export const TimesheetModal = ({ isOpen, onClose, entry, rowIndex }: TimesheetMo
 
   // Helper function to display value or dash
   const displayValue = (value: any) => {
-    return value || value === 0 ? value : "-";
+    if (value === undefined || value === null || value === '') return '-';
+    if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+    return value;
   };
 
   return (
@@ -33,18 +35,14 @@ export const TimesheetModal = ({ isOpen, onClose, entry, rowIndex }: TimesheetMo
               <label className="text-sm text-gray-400">Date</label>
               <p className="text-white">{displayValue(entry.date)}</p>
             </div>
-            {entry.time && (
-              <div>
-                <label className="text-sm text-gray-400">Time</label>
-                <p className="text-white">{displayValue(entry.time)}</p>
-              </div>
-            )}
-            {entry.staffName && (
-              <div>
-                <label className="text-sm text-gray-400">Staff Name</label>
-                <p className="text-white">{displayValue(entry.staffName)}</p>
-              </div>
-            )}
+            <div>
+              <label className="text-sm text-gray-400">Time</label>
+              <p className="text-white">{displayValue(entry.time)}</p>
+            </div>
+            <div>
+              <label className="text-sm text-gray-400">Staff Name</label>
+              <p className="text-white">{displayValue(entry.staffName)}</p>
+            </div>
             <div>
               <label className="text-sm text-gray-400">Hours</label>
               <p className="text-white">{displayValue(entry.hours)}</p>
@@ -59,24 +57,20 @@ export const TimesheetModal = ({ isOpen, onClose, entry, rowIndex }: TimesheetMo
             </div>
             <div>
               <label className="text-sm text-gray-400">Break</label>
-              <p className="text-white">{displayValue(entry.break ? 'Yes' : 'No')}</p>
+              <p className="text-white">{displayValue(entry.break)}</p>
             </div>
-            {entry.breakType && (
-              <div>
-                <label className="text-sm text-gray-400">Break Type</label>
-                <p className="text-white">{displayValue(entry.breakType)}</p>
-              </div>
-            )}
+            <div>
+              <label className="text-sm text-gray-400">Break Type</label>
+              <p className="text-white">{displayValue(entry.breakType)}</p>
+            </div>
             <div>
               <label className="text-sm text-gray-400">Row Number</label>
-              <p className="text-white">{displayValue(rowIndex !== undefined ? rowIndex + 1 : 'N/A')}</p>
+              <p className="text-white">{displayValue(rowIndex !== undefined ? rowIndex + 2 : '-')}</p>
             </div>
-            {entry.entryType && (
-              <div>
-                <label className="text-sm text-gray-400">Entry Type</label>
-                <p className="text-white">{displayValue(entry.entryType)}</p>
-              </div>
-            )}
+            <div>
+              <label className="text-sm text-gray-400">Entry Type</label>
+              <p className="text-white">{displayValue(entry.entryType)}</p>
+            </div>
             <div className="col-span-2">
               <label className="text-sm text-gray-400">Task</label>
               <p className="text-white">{displayValue(entry.task)}</p>

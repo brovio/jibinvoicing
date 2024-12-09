@@ -15,101 +15,51 @@ export interface TimesheetEntry {
 }
 
 export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
-  const lines = csvContent.trim().split('\n');
-  const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-  
-  const columnMap = headers.reduce((acc: Record<string, number>, header, index) => {
-    acc[header.toLowerCase()] = index;
-    return acc;
-  }, {});
+  try {
+    // Split content into lines and remove empty lines
+    const lines = csvContent.split('\n').filter(line => line.trim());
+    
+    // Get headers from first line and normalize them
+    const headers = lines[0].split(',').map(header => 
+      header.trim().toLowerCase().replace(/['"]/g, '')
+    );
 
-  console.log('CSV Headers:', headers);
-  console.log('Column Map:', columnMap);
+    console.log('CSV Headers:', headers);
 
-  return lines.slice(1)
-    .filter(line => line.trim())
-    .map(line => {
+    // Process data rows (skip header row)
+    return lines.slice(1).map((line, index) => {
+      // Split the line by comma, but preserve commas within quotes
       const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
         .map(val => val.trim().replace(/^"|"$/g, ''));
 
-      console.log('Processing line values:', values);
+      console.log(`Processing row ${index + 2}:`, values);
 
-      const getValue = (columnName: string): string => {
-        const index = columnMap[columnName.toLowerCase()];
-        return index !== undefined ? values[index]?.trim() || '' : '';
-      };
-
-      // Parse date
-      const rawDate = getValue('date');
-      console.log('Raw date value:', rawDate);
-      let formattedDate = '';
-      try {
-        const date = new Date(rawDate);
-        formattedDate = date.toISOString().split('T')[0];
-      } catch (error) {
-        console.error('Error parsing date:', error);
-        formattedDate = new Date().toISOString().split('T')[0];
-      }
-
-      // Get client with proper fallback logic
-      let client = getValue('client');
-      if (!client || client === '') {
-        client = getValue('project');
-      }
-      // If both client and project are empty, leave it as an empty string
-      if (!client) {
-        client = '';
-      }
-
-      // Get project name
-      const project = getValue('project') || '';
-
-      // Get task description
-      const task = getValue('task description') || getValue('notes') || 'General Task';
-
-      // Parse duration (format: "Xh Ym")
-      const durationStr = getValue('duration');
-      let hours = 0;
-      if (durationStr) {
-        const hoursMatch = durationStr.match(/(\d+)h/);
-        const minutesMatch = durationStr.match(/(\d+)m/);
-        
-        const hoursValue = hoursMatch ? parseInt(hoursMatch[1]) : 0;
-        const minutesValue = minutesMatch ? parseInt(minutesMatch[1]) : 0;
-        
-        hours = hoursValue + (minutesValue / 60);
-      }
-
-      // Additional fields
-      const staffName = getValue('full name');
-      const entryType = getValue('entry type');
-      const time = getValue('time');
-      const breakValue = getValue('break')?.toLowerCase() === 'true';
-      const breakType = getValue('break type');
-
-      const entry = {
-        date: formattedDate,
-        client,
-        project,
-        task,
-        hours,
+      const entry: TimesheetEntry = {
+        date: values[headers.indexOf('date')] || new Date().toISOString().split('T')[0],
+        client: values[headers.indexOf('client')] || '-',
+        project: values[headers.indexOf('project')] || '-',
+        task: values[headers.indexOf('task')] || values[headers.indexOf('notes')] || 'General Task',
+        hours: parseFloat(values[headers.indexOf('hours')]) || 0,
         status: 'Pending',
-        staffName,
-        entryType,
-        time,
-        break: breakValue,
-        breakType
+        staffName: values[headers.indexOf('staff name')] || values[headers.indexOf('staffname')] || '-',
+        entryType: values[headers.indexOf('entry type')] || values[headers.indexOf('entrytype')] || '',
+        time: values[headers.indexOf('time')] || '',
+        break: values[headers.indexOf('break')]?.toLowerCase() === 'true',
+        breakType: values[headers.indexOf('break type')] || values[headers.indexOf('breaktype')] || ''
       };
 
-      console.log('Parsed entry:', entry);
       return entry;
     });
+  } catch (error) {
+    console.error('Error parsing CSV:', error);
+    throw new Error('Failed to parse CSV file');
+  }
 };
 
-export const processTimesheetZip = async (zipFile: File): Promise<TimesheetEntry[]> => {
+export const processTimesheetZip = async (file: File): Promise<TimesheetEntry[]> => {
   try {
     const zip = new JSZip();
-    const zipContent = await zip.loadAsync(zipFile);
+    const zipContent = await zip.loadAsync(file);
     
     const csvFiles = Object.values(zipContent.files).filter(file => 
       file.name.toLowerCase().endsWith('.csv')
