@@ -1,6 +1,9 @@
 import { ClientsTable } from "@/components/Clients/ClientsTable";
 import { useState } from "react";
 import { ImportedClient } from "@/utils/importUtils";
+import { UserPlus } from "lucide-react";
+import { FileUpload } from "@/components/FileUpload";
+import { ExportButton } from "@/components/ExportButton";
 
 const initialData = [
   {
@@ -28,7 +31,6 @@ const initialData = [
 
 const Clients = () => {
   const [clients, setClients] = useState(initialData);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const handleImportSuccess = (importedClients: ImportedClient[]) => {
     console.log('Imported clients:', importedClients);
@@ -67,15 +69,18 @@ const Clients = () => {
         <div className="bg-[#252A38] border border-gray-800 rounded-[10px] p-8">
           <div className="flex flex-col items-center gap-2">
             <div className="w-12 h-12 rounded-[10px] flex items-center justify-center mb-2">
-              <svg className="w-6 h-6 text-white" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-              </svg>
+              <UserPlus className="w-6 h-6 text-white" />
             </div>
             <h2 className="text-xl font-medium text-white">Import/Export Clients</h2>
             <p className="text-gray-400 text-center max-w-lg">
               Import your clients using CSV or JSON format. Required columns: Company, Contact, Email, Currency, and Rate.
               Additional fields: Phone, Address, Notes, and Website.
             </p>
+            <div className="flex gap-4 mt-4">
+              <FileUpload onImportSuccess={handleImportSuccess} />
+              <ExportButton clients={clients} format="csv" />
+              <ExportButton clients={clients} format="json" />
+            </div>
           </div>
         </div>
       </div>
