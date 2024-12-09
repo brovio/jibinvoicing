@@ -27,7 +27,7 @@ export const ProjectActivity = ({ projects }: ProjectActivityProps) => {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <button className="btn-secondary">
+              <button className="btn-primary">
                 View project
               </button>
               <button className="btn-icon">
