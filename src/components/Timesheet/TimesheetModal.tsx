@@ -10,10 +10,9 @@ interface TimesheetModalProps {
   isOpen: boolean;
   onClose: () => void;
   entry: TimesheetEntry | null;
-  rowIndex?: number;
 }
 
-export const TimesheetModal = ({ isOpen, onClose, entry, rowIndex }: TimesheetModalProps) => {
+export const TimesheetModal = ({ isOpen, onClose, entry }: TimesheetModalProps) => {
   if (!entry) return null;
 
   // Helper function to display value or dash
@@ -65,7 +64,7 @@ export const TimesheetModal = ({ isOpen, onClose, entry, rowIndex }: TimesheetMo
             </div>
             <div>
               <label className="text-sm text-gray-400">Row Number</label>
-              <p className="text-white">{displayValue(rowIndex !== undefined ? rowIndex + 1 : '-')}</p>
+              <p className="text-white">{displayValue(entry.rowNumber)}</p>
             </div>
             <div>
               <label className="text-sm text-gray-400">Entry Type</label>

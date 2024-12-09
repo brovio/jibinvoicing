@@ -12,6 +12,7 @@ export interface TimesheetEntry {
   time?: string;
   break?: boolean;
   breakType?: string;
+  rowNumber: number; // Added this field
 }
 
 const parseCSVLine = (line: string): string[] => {
@@ -113,15 +114,16 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
           time: getValue('time'),
           entryType: getValue('entry type'),
           break: getValue('break')?.toLowerCase() === 'true',
-          breakType: getValue('break type')
+          breakType: getValue('break type'),
+          rowNumber: index + 2 // Adding 2 to account for 0-based index and header row
         };
 
         // Log entry for debugging
-        console.log(`Processing row ${index + 2}:`, entry);
+        console.log(`Processing row ${entry.rowNumber}:`, entry);
 
         // Validate required fields
         if (!entry.date || !entry.client || !entry.project) {
-          console.log('Missing required fields in row:', index + 2);
+          console.log('Missing required fields in row:', entry.rowNumber);
           return null;
         }
 
