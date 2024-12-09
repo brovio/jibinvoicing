@@ -15,16 +15,6 @@ const InvoiceTemplates = () => {
       name: "Theme Y",
       component: ThemeYTemplate,
       description: "Modern and professional invoice template"
-    },
-    {
-      name: "Theme Y",
-      component: ThemeYTemplate,
-      description: "Clean and minimal invoice design"
-    },
-    {
-      name: "Theme Y",
-      component: ThemeYTemplate,
-      description: "Traditional business invoice layout"
     }
   ];
 
@@ -132,7 +122,7 @@ const InvoiceTemplates = () => {
       </div>
 
       <div className="bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">
-        <div className="grid grid-cols-3 gap-6 p-6">
+        <div className="grid grid-cols-1 gap-6 p-6">
           {templates.map((template, index) => (
             <div key={index} className="group relative">
               <div 
@@ -159,7 +149,7 @@ const InvoiceTemplates = () => {
               className="close-button"
               onClick={() => setSelectedTemplate(null)}
             >
-              <X size={20} />
+              ✕
             </button>
             {templates[selectedTemplate].component({...sampleInvoiceData})}
           </div>
@@ -167,7 +157,7 @@ const InvoiceTemplates = () => {
       )}
 
       <div className="mt-4 flex justify-between items-center text-gray-400">
-        <span>Showing 1 to 3 of 3 results</span>
+        <span>Showing 1 to 1 of 1 results</span>
         <div className="flex items-center gap-2">
           <select className="bg-[#252A38] border border-gray-800 text-gray-400 rounded-[10px] px-4 py-2">
             <option>25 entries</option>
