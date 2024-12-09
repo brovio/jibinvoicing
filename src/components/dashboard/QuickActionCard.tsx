@@ -10,15 +10,14 @@ export const QuickActionCard = ({ title }: QuickActionCardProps) => {
     <div className="dashboard-card">
       <h2 className="text-lg font-semibold mb-4 text-white">{title}</h2>
       <div className="space-y-4">
-        <button className="btn-primary w-full gap-2">
-          <Plus className="h-4 w-4" />
-          Add {title}
+        <button className="btn-primary w-full">
+          + Add {title}
         </button>
-        <button className="btn-ghost w-full gap-2">
+        <button className="w-full flex items-center justify-center gap-2 text-gray-400 hover:text-white transition-colors">
           <Upload className="h-4 w-4" />
           Import {title}
         </button>
-        <button className="btn-ghost w-full gap-2">
+        <button className="w-full flex items-center justify-center gap-2 text-gray-400 hover:text-white transition-colors">
           <Download className="h-4 w-4" />
           Export {title}
         </button>
