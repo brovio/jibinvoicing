@@ -7,7 +7,7 @@ import { useRef, useState } from "react";
 import { processTimesheetZip, TimesheetEntry, parseTimesheetCSV } from "@/utils/timesheetParser";
 import { showImportSuccessToast, showImportErrorToast } from "@/utils/toastUtils";
 
-const sampleData = [
+const sampleData: TimesheetEntry[] = [
   {
     date: "2024-02-20",
     project: "Website Redesign",
@@ -15,7 +15,8 @@ const sampleData = [
     task: "UI Development",
     hours: 6.5,
     status: "Approved",
-    rowNumber: 1
+    rowNumber: 1,
+    rawColumns: ["2024-02-20", "", "", "Google", "Website Redesign", "UI Development", "6.5", "Approved", "", "", "", "", "", "", "", "", "", "", ""]
   },
   {
     date: "2024-02-19",
@@ -24,7 +25,8 @@ const sampleData = [
     task: "API Integration",
     hours: 8.0,
     status: "Pending",
-    rowNumber: 2
+    rowNumber: 2,
+    rawColumns: ["2024-02-19", "", "", "Microsoft", "Mobile App", "API Integration", "8.0", "Pending", "", "", "", "", "", "", "", "", "", "", ""]
   },
   {
     date: "2024-02-18",
@@ -33,7 +35,8 @@ const sampleData = [
     task: "Database Setup",
     hours: 7.5,
     status: "Approved",
-    rowNumber: 3
+    rowNumber: 3,
+    rawColumns: ["2024-02-18", "", "", "Apple", "Cloud Migration", "Database Setup", "7.5", "Approved", "", "", "", "", "", "", "", "", "", "", ""]
   }
 ];
 
