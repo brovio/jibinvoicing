@@ -1,11 +1,12 @@
 import { TimesheetTable } from "@/components/Timesheet/TimesheetTable";
 import { Input } from "@/components/ui/input";
-import { Search, Upload } from "lucide-react";
+import { HelpCircle, Search, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ExportButton } from "@/components/ExportButton";
 import { useRef, useState } from "react";
 import { processTimesheetZip, TimesheetEntry, parseTimesheetCSV } from "@/utils/timesheetParser";
 import { showImportSuccessToast, showImportErrorToast } from "@/utils/toastUtils";
+import { TimesheetHelpModal } from "@/components/Timesheet/TimesheetHelpModal";
 
 const sampleData: TimesheetEntry[] = [
   {
@@ -43,6 +44,7 @@ const sampleData: TimesheetEntry[] = [
 const Timesheets = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [timesheetData, setTimesheetData] = useState<TimesheetEntry[]>(sampleData);
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -84,7 +86,16 @@ const Timesheets = () => {
             <div className="w-12 h-12 rounded-[10px] flex items-center justify-center mb-2">
               <Upload className="w-6 h-6 text-white" />
             </div>
-            <h2 className="text-xl font-medium text-white">Import/Export Timesheets</h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl font-medium text-white">Import/Export Timesheets</h2>
+              <button
+                onClick={() => setIsHelpModalOpen(true)}
+                className="p-1 hover:bg-gray-700 rounded-full transition-colors"
+                title="View import help"
+              >
+                <HelpCircle className="w-5 h-5 text-gray-400 hover:text-white" />
+              </button>
+            </div>
             <p className="text-gray-400 text-center max-w-lg">
               Import your timesheets using CSV or ZIP format. Required columns: Date, Project, Client, Task, and Hours.
             </p>
@@ -155,6 +166,11 @@ const Timesheets = () => {
           </div>
         </div>
       </div>
+
+      <TimesheetHelpModal 
+        isOpen={isHelpModalOpen}
+        onClose={() => setIsHelpModalOpen(false)}
+      />
     </div>
   );
 };
