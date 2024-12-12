@@ -10,12 +10,16 @@ const Tools = () => {
       
       <div className="dashboard-card">
         <h2 className="text-xl font-medium text-white mb-4">Timesheet Parser</h2>
-        <div className="w-full aspect-[16/9] overflow-hidden rounded-[10px] bg-[#1A1F2C]">
+        <div className="w-full aspect-[16/9] overflow-hidden rounded-[10px] bg-[#3f475e]">
           <iframe
             src="https://j-parser.lovable.app/"
             className="w-full h-full border border-dashboard-border rounded-[10px]"
             title="Timesheet Parser Tool"
-            style={{ minHeight: '600px' }}
+            style={{ 
+              minHeight: '600px',
+              backgroundColor: '#3f475e',
+              color: '#FFFFFF'
+            }}
           />
         </div>
       </div>
