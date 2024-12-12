@@ -1,7 +1,6 @@
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/Layout";
@@ -18,26 +17,24 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <TooltipProvider>
-          <Layout>
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/timesheets" element={<Timesheets />} />
-              <Route path="/clients" element={<Clients />} />
-              <Route path="/invoice-templates" element={<InvoiceTemplates />} />
-              <Route 
-                path="/invoice-preview" 
-                element={
-                  <div className="p-4">
-                    <ThemeYTemplate {...sampleInvoiceData} />
-                  </div>
-                } 
-              />
-            </Routes>
-          </Layout>
-          <Toaster />
-          <Sonner />
-        </TooltipProvider>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/timesheets" element={<Timesheets />} />
+            <Route path="/clients" element={<Clients />} />
+            <Route path="/invoice-templates" element={<InvoiceTemplates />} />
+            <Route 
+              path="/invoice-preview" 
+              element={
+                <div className="p-4">
+                  <ThemeYTemplate {...sampleInvoiceData} />
+                </div>
+              } 
+            />
+          </Routes>
+        </Layout>
+        <Toaster />
+        <Sonner />
       </BrowserRouter>
     </QueryClientProvider>
   );
