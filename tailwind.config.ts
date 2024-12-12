@@ -29,6 +29,12 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        dashboard: {
+          primary: "#0EA5E9",
+          card: "#252A38",
+          border: "#374151",
+          hover: "#2A303F",
+        },
         invoice: {
           primary: "var(--invoice-primary)",
           secondary: "var(--invoice-secondary)",

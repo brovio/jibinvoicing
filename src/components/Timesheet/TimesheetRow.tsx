@@ -1,13 +1,6 @@
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Eye, FileEdit, Trash2 } from "lucide-react";
-
-interface TimesheetEntry {
-  date: string;
-  project: string;
-  client: string;
-  task: string;
-  hours: number;
-}
+import { TimesheetEntry } from "@/utils/timesheetParser";
 
 export const TimesheetRow = ({ data }: { data: TimesheetEntry }) => {
   return (

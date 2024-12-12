@@ -5,7 +5,7 @@ import { CompanyDetails } from '../invoice-templates/shared/CompanyDetails';
 import { InvoiceItems } from '../invoice-templates/shared/InvoiceItems';
 import { PaymentSection } from '../invoice-templates/shared/PaymentSection';
 
-export const ThemeYTemplate: React.FC<InvoiceTemplateProps> = (props) => {
+export const ThemeNewTemplate: React.FC<InvoiceTemplateProps> = (props) => {
   return (
     <div className="min-h-screen bg-transparent py-8">
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
@@ -46,4 +46,4 @@ export const ThemeYTemplate: React.FC<InvoiceTemplateProps> = (props) => {
   );
 };
 
-export default ThemeYTemplate;
+export default ThemeNewTemplate;

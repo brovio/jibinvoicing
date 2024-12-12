@@ -1,0 +1,50 @@
+{
+  "type": "clients",
+  "timestamp": "2024-11-29T02:52:29.497Z",
+  "version": "1.0.0",
+  "clients": [
+    {
+      "company": "The Photobooth People",
+      "contactName": "Nikki Douglas",
+      "email": "nikki@thephotoboothpeople.com.au",
+      "rate": 60,
+      "currency": "USD",
+      "website": "https://thephotoboothpeople.com.au/"
+    },
+    {
+      "company": "KW Civil",
+      "contactName": "Troy Bosman",
+      "email": "safety@kwcivil.com.au",
+      "phone": "+61 405 509 880",
+      "rate": 60,
+      "currency": "USD",
+      "website": "https://kwcivil.com.au/"
+    },
+    {
+      "company": "Kailash Capital",
+      "contactName": "Matthew Malgari",
+      "email": "matt@kailashcapital.com",
+      "rate": 50,
+      "currency": "USD",
+      "website": "https://kailashcapital.com/"
+    },
+    {
+      "company": "Codarra",
+      "contactName": "Carol Sutton",
+      "email": "carol.sutton@codarra.com.au",
+      "phone": "+61 2 6128 1100",
+      "address": "251 Crawford St",
+      "rate": 70,
+      "currency": "AUD",
+      "website": "https://codarra.com.au/"
+    },
+    {
+      "company": "ISTA",
+      "contactName": "Adleena Chandra",
+      "email": "adleena@isthatch.com.au",
+      "rate": 15,
+      "currency": "USD",
+      "website": "https://isthatch.com.au/"
+    }
+  ]
+}

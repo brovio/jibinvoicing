@@ -37,18 +37,22 @@ const staffData = [
 
 const Landing = () => {
   return (
-    <div className="grid grid-cols-12 gap-6 h-[calc(100vh-2rem)]">
+    <div className="grid grid-cols-12 gap-6 min-h-[calc(100vh-230px)]">
       {/* Left column - Project Activity */}
-      <div className="col-span-4">
-        <ProjectActivity projects={projectData} />
+      <div className="col-span-5">
+        <div className="bg-dashboard-card border-dashboard-card rounded-[10px] p-6">
+          <ProjectActivity projects={projectData} />
+        </div>
       </div>
 
       {/* Right section - 2x2 grid */}
-      <div className="col-span-8 grid grid-cols-2 gap-6">
+      <div className="col-span-7 grid grid-cols-2 gap-6">
         <QuickActionCard title="Clients" />
         <QuickActionCard title="Invoices" />
         <QuickActionCard title="Timesheets" />
-        <CompanyInfo staff={staffData} />
+        <div className="bg-dashboard-card border-dashboard-card rounded-[10px] p-6">
+          <CompanyInfo staff={staffData} />
+        </div>
       </div>
     </div>
   );
