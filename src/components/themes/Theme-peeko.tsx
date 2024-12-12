@@ -2,7 +2,7 @@ import React from 'react';
 import { format } from 'date-fns';
 import { InvoiceTemplateProps } from '../../lib/types';
 
-export const ThemeYTemplate: React.FC<InvoiceTemplateProps> = ({
+export const PeekoTemplate: React.FC<InvoiceTemplateProps> = ({
   invoiceNumber,
   issueDate,
   dueDate,
@@ -18,7 +18,7 @@ export const ThemeYTemplate: React.FC<InvoiceTemplateProps> = ({
   const total = subtotal + vat;
 
   return (
-    <div className="min-h-screen bg-transparent py-8">
+    <div className="min-h-screen bg-gray-100 py-8">
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
         <div className="p-8">
           {/* Header */}
@@ -163,4 +163,4 @@ export const ThemeYTemplate: React.FC<InvoiceTemplateProps> = ({
   );
 };
 
-export default ThemeYTemplate;
+export default PeekoTemplate;

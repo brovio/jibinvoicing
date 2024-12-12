@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
-import { showExportSuccessToast, showExportErrorToast } from "@/utils/toastUtils";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Client {
   company: string;
@@ -20,6 +20,8 @@ interface ExportButtonProps {
 }
 
 export const ExportButton = ({ clients, format }: ExportButtonProps) => {
+  const { toast } = useToast();
+
   const exportToCSV = (clients: Client[]) => {
     const headers = ['company,contactName,email,phone,address,currency,rate,notes,website'];
     const csvRows = clients.map(client => 
@@ -46,9 +48,16 @@ export const ExportButton = ({ clients, format }: ExportButtonProps) => {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      showExportSuccessToast(clients.length, format);
+      toast({
+        title: "Export successful",
+        description: `Successfully exported ${clients.length} clients as ${format.toUpperCase()}`,
+      });
     } catch (error) {
-      showExportErrorToast();
+      toast({
+        title: "Export failed",
+        description: "There was an error exporting your clients",
+        variant: "destructive",
+      });
     }
   };
 

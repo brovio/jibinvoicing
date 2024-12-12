@@ -1,4 +1,5 @@
 import { Settings, Upload } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 export const Header = () => {
@@ -8,17 +9,19 @@ export const Header = () => {
         Bronance
       </Link>
       <div className="flex items-center gap-2">
-        <button className="btn-icon">
+        <Button variant="ghost" size="icon" className="w-8 h-8 text-gray-400 hover:bg-gray-800">
           <Upload className="h-4 w-4" />
-        </button>
+        </Button>
         
-        <button className="btn-icon">
+        <Button variant="ghost" size="icon" className="w-8 h-8 text-gray-400 hover:bg-gray-800">
           <Settings className="h-4 w-4" />
-        </button>
+        </Button>
 
-        <button className="btn-primary">
+        <Button 
+          className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white px-4 py-2 rounded-[10px] flex items-center gap-2"
+        >
           Start Wizard
-        </button>
+        </Button>
       </div>
     </header>
   );

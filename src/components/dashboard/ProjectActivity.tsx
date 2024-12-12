@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { MoreVertical } from "lucide-react";
 
 type Project = {
@@ -13,30 +15,28 @@ interface ProjectActivityProps {
 
 export const ProjectActivity = ({ projects }: ProjectActivityProps) => {
   return (
-    <div className="h-[calc(100vh-2rem)]">
-      <h2 className="text-lg font-semibold mb-4 text-white">Clients/Project Activity Summary</h2>
+    <Card className="p-6 bg-white h-[calc(100vh-2rem)]">
+      <h2 className="text-lg font-semibold mb-4">Clients/Project Activity Summary</h2>
       <div className="space-y-4">
         {projects.map((project, idx) => (
           <div key={idx} className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-medium text-white">{project.name}</h3>
-              <div className="flex items-center text-sm text-gray-400">
+              <h3 className="text-sm font-medium">{project.name}</h3>
+              <div className="flex items-center text-sm text-gray-500">
                 <span>Due on {project.dueDate}</span>
                 <span className="mx-2">•</span>
                 <span>Created by {project.creator}</span>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <button className="btn-primary">
-                View project
-              </button>
-              <button className="btn-icon">
+              <Button variant="outline" size="sm">View project</Button>
+              <Button variant="ghost" size="icon">
                 <MoreVertical className="h-4 w-4" />
-              </button>
+              </Button>
             </div>
           </div>
         ))}
       </div>
-    </div>
+    </Card>
   );
 };
