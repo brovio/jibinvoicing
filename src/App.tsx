@@ -8,6 +8,7 @@ import Timesheets from "./pages/Timesheets";
 import Landing from "./pages/Landing";
 import Clients from "./pages/Clients";
 import InvoiceTemplates from "./pages/InvoiceTemplates";
+import Tools from "./pages/Tools";
 import ThemeYTemplate from "./components/themes/Theme-Y";
 import { sampleInvoiceData } from "./data/sampleInvoiceData";
 
@@ -25,6 +26,7 @@ const App = () => (
             <Route path="/timesheets" element={<Timesheets />} />
             <Route path="/clients" element={<Clients />} />
             <Route path="/invoice-templates" element={<InvoiceTemplates />} />
+            <Route path="/tools" element={<Tools />} />
             <Route 
               path="/invoice-preview" 
               element={

@@ -6,6 +6,7 @@ const navItems = [
   { path: "/clients", label: "Clients" },
   { path: "/invoice-templates", label: "Invoice Templates" },
   { path: "/invoices", label: "Invoices" },
+  { path: "/tools", label: "Tools" },
 ];
 
 export const Navigation = () => {
