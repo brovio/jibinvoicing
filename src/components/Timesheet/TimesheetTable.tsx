@@ -2,15 +2,7 @@ import React from "react";
 import { Table, TableBody } from "@/components/ui/table";
 import { TimesheetHeader } from "./TimesheetHeader";
 import { TimesheetRow } from "./TimesheetRow";
-
-interface TimesheetEntry {
-  date: string;
-  project: string;
-  client: string;
-  task: string;
-  hours: number;
-  status: string;
-}
+import { TimesheetEntry } from "@/utils/timesheetParser";
 
 export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
   const [sortConfig, setSortConfig] = React.useState<{ key: string; direction: string } | null>(null);

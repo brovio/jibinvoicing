@@ -2,6 +2,10 @@ import { TimesheetTable } from "@/components/Timesheet/TimesheetTable";
 import { Input } from "@/components/ui/input";
 import { Search, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ExportButton } from "@/components/ExportButton";
+import { useRef, useState } from "react";
+import { processTimesheetZip, TimesheetEntry } from "@/utils/timesheetParser";
+import { showImportSuccessToast, showImportErrorToast } from "@/utils/toastUtils";
 
 const sampleData = [
   {
@@ -30,20 +34,64 @@ const sampleData = [
   }
 ];
 
-const Index = () => {
+const Timesheets = () => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [timesheetData, setTimesheetData] = useState<TimesheetEntry[]>(sampleData);
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== 'application/zip') {
+      showImportErrorToast('Please upload a ZIP file');
+      return;
+    }
+
+    try {
+      const entries = await processTimesheetZip(file);
+      setTimesheetData(entries);
+      showImportSuccessToast(entries.length);
+      
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } catch (error) {
+      console.error('Error importing timesheets:', error);
+      showImportErrorToast();
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="mb-6 flex flex-col gap-6">
-        <div className="bg-[#252A38] border border-gray-800 rounded-[10px] p-8 text-center">
+        <div className="bg-[#252A38] border border-gray-800 rounded-[10px] p-8">
           <div className="flex flex-col items-center gap-2">
-            <div className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center mb-2">
-              <Upload className="w-6 h-6 text-gray-400" />
+            <div className="w-12 h-12 rounded-[10px] flex items-center justify-center mb-2">
+              <Upload className="w-6 h-6 text-white" />
             </div>
-            <h2 className="text-xl font-medium text-white">Import Timesheets</h2>
-            <p className="text-gray-400">Drag and drop your CSV file here, or click to browse</p>
-            <Button className="mt-4 bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white">
-              Browse Files
-            </Button>
+            <h2 className="text-xl font-medium text-white">Import/Export Timesheets</h2>
+            <p className="text-gray-400 text-center max-w-lg">
+              Import your timesheets using CSV or ZIP format. Required columns: Date, Project, Client, Task, and Hours.
+            </p>
+            <div className="flex gap-4">
+              <input
+                type="file"
+                accept=".zip"
+                onChange={handleFileChange}
+                className="hidden"
+                ref={fileInputRef}
+              />
+              <Button 
+                onClick={() => fileInputRef.current?.click()}
+                className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white gap-2 rounded-[10px]"
+              >
+                <Upload className="h-4 w-4" />
+                Import Timesheets (ZIP)
+              </Button>
+              <ExportButton format="csv" clients={[]} />
+              <ExportButton format="json" clients={[]} />
+            </div>
           </div>
         </div>
 
@@ -66,7 +114,7 @@ const Index = () => {
         </div>
       </div>
 
-      <TimesheetTable data={sampleData} />
+      <TimesheetTable data={timesheetData} />
 
       <div className="mt-4 flex justify-between items-center text-gray-400">
         <span>Showing 1 to 10 of 20 results</span>
@@ -97,4 +145,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Timesheets;
