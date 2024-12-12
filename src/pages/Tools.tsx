@@ -1,4 +1,10 @@
 import React from 'react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const Tools = () => {
   return (
@@ -8,21 +14,27 @@ const Tools = () => {
         <p className="text-gray-400">Access helpful tools and utilities</p>
       </div>
       
-      <div className="dashboard-card">
-        <h2 className="text-xl font-medium text-white mb-4">Timesheet Parser</h2>
-        <div className="w-full aspect-[16/9] overflow-hidden rounded-[10px] bg-[#3f475e]">
-          <iframe
-            src="https://j-parser.lovable.app/"
-            className="w-full h-full border border-dashboard-border rounded-[10px]"
-            title="Timesheet Parser Tool"
-            style={{ 
-              minHeight: '600px',
-              backgroundColor: '#3f475e',
-              color: '#FFFFFF'
-            }}
-          />
-        </div>
-      </div>
+      <Accordion type="single" collapsible defaultValue="timesheet-parser">
+        <AccordionItem value="timesheet-parser" className="dashboard-card border-none">
+          <AccordionTrigger className="text-xl font-medium text-white hover:no-underline">
+            Timesheet Parser
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="w-full aspect-[16/9] overflow-hidden rounded-[10px] bg-[#3f475e]">
+              <iframe
+                src="https://j-parser.lovable.app/"
+                className="w-full h-full border border-dashboard-border rounded-[10px]"
+                title="Timesheet Parser Tool"
+                style={{ 
+                  minHeight: '600px',
+                  backgroundColor: '#3f475e',
+                  color: '#FFFFFF'
+                }}
+              />
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 };
