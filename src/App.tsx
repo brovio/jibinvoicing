@@ -15,9 +15,9 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <BrowserRouter>
+    <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
           <Layout>
             <Routes>
               <Route path="/" element={<Landing />} />
@@ -36,9 +36,9 @@ function App() {
           </Layout>
           <Toaster />
           <Sonner />
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </BrowserRouter>
   );
 }
 
