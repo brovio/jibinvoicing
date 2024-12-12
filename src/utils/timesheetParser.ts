@@ -17,6 +17,18 @@ export interface TimesheetEntry {
   rawColumns: string[];  // Store all original columns
 }
 
+function convertDurationToDecimal(duration: string): number {
+  if (!duration) return 0;
+  
+  const match = duration.match(/(\d+)h\s*(\d+)?m?/);
+  if (!match) return 0;
+  
+  const hours = parseInt(match[1]) || 0;
+  const minutes = parseInt(match[2]) || 0;
+  
+  return Number((hours + minutes / 60).toFixed(2));
+}
+
 const parseCSVLine = (line: string): string[] => {
   const result: string[] = [];
   let current = '';
@@ -90,12 +102,15 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
           clientValue = values[projectIndex] || '-';
         }
 
+        const rawDuration = values[hoursIndex] || '';
+        const decimalHours = convertDurationToDecimal(rawDuration);
+
         const entry: TimesheetEntry = {
           date: values[dateIndex] || '',
           client: clientValue,
           project: values[projectIndex] || '',
           task: values[taskIndex] || '',
-          hours: parseFloat(values[hoursIndex]) || 0,
+          hours: decimalHours,
           staffName: values[staffNameIndex] || '',
           entryType: values[entryTypeIndex] || '',
           time: values[timeIndex] || '',
