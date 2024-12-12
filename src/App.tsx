@@ -13,31 +13,33 @@ import { sampleInvoiceData } from "./data/sampleInvoiceData";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/timesheets" element={<Timesheets />} />
-            <Route path="/clients" element={<Clients />} />
-            <Route path="/invoice-templates" element={<InvoiceTemplates />} />
-            <Route 
-              path="/invoice-preview" 
-              element={
-                <div className="p-4">
-                  <ThemeYTemplate {...sampleInvoiceData} />
-                </div>
-              } 
-            />
-          </Routes>
-        </Layout>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/timesheets" element={<Timesheets />} />
+              <Route path="/clients" element={<Clients />} />
+              <Route path="/invoice-templates" element={<InvoiceTemplates />} />
+              <Route 
+                path="/invoice-preview" 
+                element={
+                  <div className="p-4">
+                    <ThemeYTemplate {...sampleInvoiceData} />
+                  </div>
+                } 
+              />
+            </Routes>
+          </Layout>
+          <Toaster />
+          <Sonner />
+        </TooltipProvider>
+      </QueryClientProvider>
+    </BrowserRouter>
+  );
+}
 
 export default App;
