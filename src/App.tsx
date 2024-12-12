@@ -15,30 +15,32 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <BrowserRouter>
+    <React.StrictMode>
       <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Layout>
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/timesheets" element={<Timesheets />} />
-              <Route path="/clients" element={<Clients />} />
-              <Route path="/invoice-templates" element={<InvoiceTemplates />} />
-              <Route 
-                path="/invoice-preview" 
-                element={
-                  <div className="p-4">
-                    <ThemeYTemplate {...sampleInvoiceData} />
-                  </div>
-                } 
-              />
-            </Routes>
-          </Layout>
-          <Toaster />
-          <Sonner />
-        </TooltipProvider>
+        <BrowserRouter>
+          <TooltipProvider>
+            <Layout>
+              <Routes>
+                <Route path="/" element={<Landing />} />
+                <Route path="/timesheets" element={<Timesheets />} />
+                <Route path="/clients" element={<Clients />} />
+                <Route path="/invoice-templates" element={<InvoiceTemplates />} />
+                <Route 
+                  path="/invoice-preview" 
+                  element={
+                    <div className="p-4">
+                      <ThemeYTemplate {...sampleInvoiceData} />
+                    </div>
+                  } 
+                />
+              </Routes>
+            </Layout>
+            <Toaster />
+            <Sonner />
+          </TooltipProvider>
+        </BrowserRouter>
       </QueryClientProvider>
-    </BrowserRouter>
+    </React.StrictMode>
   );
 }
 
