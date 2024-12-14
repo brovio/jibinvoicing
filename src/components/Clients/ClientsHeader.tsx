@@ -21,7 +21,7 @@ export const ClientsHeader = ({ onSort, onSelectAll, totalClients, visibleClient
     if (checked && totalClients > visibleClients) {
       setIsConfirmDialogOpen(true);
     } else {
-      onSelectAll(checked, false);
+      onSelectAll(checked, checked);
     }
   };
 
