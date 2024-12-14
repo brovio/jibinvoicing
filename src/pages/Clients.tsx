@@ -113,7 +113,6 @@ const Clients = () => {
         throw new Error('Client ID is required for update');
       }
 
-      // Perform the update with a direct match on clientid
       const { error } = await supabase
         .from('brovio-clients')
         .update({
@@ -127,11 +126,10 @@ const Clients = () => {
           notes: updatedClient.notes || null,
           website: updatedClient.website || null
         })
-        .match({ clientid: updatedClient.clientId }); // Use match for exact equality
+        .eq('clientid', parseInt(updatedClient.clientId, 10)); // Convert clientId to integer and use eq
 
       if (error) throw error;
       
-      // Refresh the clients list after successful update
       await fetchClients();
     } catch (error) {
       console.error('Update client error:', error);
