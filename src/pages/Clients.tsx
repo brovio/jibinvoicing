@@ -24,7 +24,22 @@ const Clients = () => {
         .order('clientid', { ascending: true });
 
       if (error) throw error;
-      setClients(data || []);
+      
+      // Transform the data to match our frontend model
+      const transformedData = data?.map(client => ({
+        clientId: client.clientid,
+        company: client.company,
+        contactName: client.contact_name,
+        email: client.email,
+        phone: client.phone,
+        address: client.address,
+        currency: client.currency,
+        rate: client.rate,
+        notes: client.notes,
+        website: client.website
+      })) || [];
+      
+      setClients(transformedData);
     } catch (error) {
       console.error('Error fetching clients:', error);
       showErrorToast(
@@ -123,6 +138,10 @@ const Clients = () => {
 
   const handleClientDeleted = async (deletedClient: any) => {
     try {
+      if (!deletedClient.clientId) {
+        throw new Error('Client ID is required for deletion');
+      }
+      
       const { error } = await supabase
         .from('brovio-clients')
         .delete()
