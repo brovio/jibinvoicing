@@ -56,25 +56,11 @@ export const TimesheetModal = ({ isOpen, onClose, entry }: TimesheetModalProps) 
               <p className="text-sm text-gray-400">{entry.staff_name}</p>
             </div>
           )}
-          {entry.entry_type && (
+          {entry.flag_reason && (
             <div>
-              <h3 className="font-medium text-gray-300">Entry Type</h3>
-              <p className="text-sm text-gray-400">{entry.entry_type}</p>
+              <h3 className="font-medium text-gray-300">Flag Reason</h3>
+              <p className="text-sm text-gray-400">{entry.flag_reason}</p>
             </div>
-          )}
-          {entry.break && (
-            <>
-              <div>
-                <h3 className="font-medium text-gray-300">Break</h3>
-                <p className="text-sm text-gray-400">Yes</p>
-              </div>
-              {entry.break_type && (
-                <div>
-                  <h3 className="font-medium text-gray-300">Break Type</h3>
-                  <p className="text-sm text-gray-400">{entry.break_type}</p>
-                </div>
-              )}
-            </>
           )}
         </div>
       </DialogContent>
