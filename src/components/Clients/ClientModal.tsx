@@ -11,7 +11,6 @@ import { showErrorToast, showClientSavedToast } from "@/utils/toastUtils";
 import { BasicInfoFields } from "./FormFields/BasicInfoFields";
 import { ContactFields } from "./FormFields/ContactFields";
 import { BillingFields } from "./FormFields/BillingFields";
-import { FileEdit } from "lucide-react";
 
 let nextManualClientId = 1;
 
@@ -27,8 +26,7 @@ interface ClientModalProps {
   mode: 'add' | 'edit' | 'view';
 }
 
-export const ClientModal = ({ isOpen, onClose, onSave, client, mode: initialMode }: ClientModalProps) => {
-  const [mode, setMode] = useState(initialMode);
+export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientModalProps) => {
   const [formData, setFormData] = useState({
     clientId: '',
     company: '',
@@ -41,10 +39,6 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode: initialMode
     notes: '',
     website: ''
   });
-
-  useEffect(() => {
-    setMode(initialMode);
-  }, [initialMode]);
 
   useEffect(() => {
     if (client) {
@@ -85,29 +79,13 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode: initialMode
     }));
   };
 
-  const toggleEditMode = () => {
-    setMode(mode === 'view' ? 'edit' : 'view');
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px] bg-[#252A38] border border-gray-800 text-white dialog-content">
         <DialogHeader>
-          <div className="flex justify-between items-center">
-            <DialogTitle className="text-white">
-              {mode === 'add' ? 'Add New Client' : mode === 'edit' ? 'Edit Client' : 'View Client'}
-            </DialogTitle>
-            {mode === 'view' && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={toggleEditMode}
-                className="hover:bg-gray-700"
-              >
-                <FileEdit className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
+          <DialogTitle className="text-white">
+            {mode === 'add' ? 'Add New Client' : mode === 'edit' ? 'Edit Client' : 'View Client'}
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -116,19 +94,8 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode: initialMode
             <BillingFields formData={formData} handleChange={handleChange} mode={mode} />
           </div>
           <DialogFooter>
-            {mode === 'view' ? (
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={onClose}
-              >
-                Close
-              </Button>
-            ) : (
-              <Button 
-                type="submit" 
-                className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90"
-              >
+            {mode !== 'view' && (
+              <Button type="submit" className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90">
                 {mode === 'add' ? 'Add Client' : 'Save Changes'}
               </Button>
             )}
