@@ -1,16 +1,24 @@
 import React, { useState } from "react";
 import { Table, TableBody } from "@/components/ui/table";
-import { ClientsHeader } from "./ClientsHeader";
 import { ClientsRow } from "./ClientsRow";
 import { ClientModal } from "./ClientModal";
 import { TableActions } from "./TableActions";
 import { TablePagination } from "./TablePagination";
 import { showClientDeletedToast } from "@/utils/toastUtils";
 import { useClientFilters } from "./hooks/useClientFilters";
-import { useClientSelection } from "./hooks/useClientSelection";
 import { ClientEntry, ClientsTableProps } from "./types/clients";
 import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 import { BulkEditDialog } from "./BulkEditDialog";
+import { useTableSelection } from "@/hooks/useTableSelection";
+import { SharedTableHeader } from "@/components/shared/TableHeader";
+
+const clientColumns = [
+  { key: 'company', label: 'Company' },
+  { key: 'contactName', label: 'Contact Name' },
+  { key: 'email', label: 'Email' },
+  { key: 'currency', label: 'Currency' },
+  { key: 'rate', label: 'Rate', align: 'right' as const },
+];
 
 export const ClientsTable = ({ 
   data,
@@ -28,14 +36,14 @@ export const ClientsTable = ({
   } = useClientFilters(data);
 
   const {
-    selectedClients,
-    selectAllMode,
     handleSelectAll,
     handleRowSelect,
     clearSelection,
     isSelected,
-    excludedClients
-  } = useClientSelection();
+    excludedItems,
+    selectAllMode,
+    getSelectedItems
+  } = useTableSelection<ClientEntry>();
 
   const [modalState, setModalState] = useState<{
     isOpen: boolean;
@@ -78,22 +86,13 @@ export const ClientsTable = ({
     clearSelection();
   };
 
-  const getSelectedClients = () => {
-    if (selectAllMode) {
-      // When in selectAllMode, return all clients except the excluded ones
-      return data.filter(client => !excludedClients.has(client.company));
-    }
-    // When not in selectAllMode, return only explicitly selected clients
-    return data.filter(client => selectedClients.has(client.company));
-  };
-
   const handleBulkAction = (action: 'deleteAll' | 'editCurrency' | 'editRate' | 'deleteSelected') => {
     switch (action) {
       case 'deleteAll':
         handleDelete(data);
         break;
       case 'deleteSelected':
-        const selectedClientsList = getSelectedClients();
+        const selectedClientsList = getSelectedItems(data);
         if (selectedClientsList.length > 0) {
           handleDelete(selectedClientsList);
         }
@@ -108,7 +107,7 @@ export const ClientsTable = ({
   };
 
   const handleBulkEdit = () => {
-    const selectedClientsList = getSelectedClients();
+    const selectedClientsList = getSelectedItems(data);
     selectedClientsList.forEach(client => {
       const updatedClient = { ...client };
       if (bulkEditDialog.type === 'currency') {
@@ -128,6 +127,10 @@ export const ClientsTable = ({
     });
   };
 
+  const selectedCount = selectAllMode ? 
+    data.length - excludedItems.size : 
+    getSelectedItems(filteredAndSortedData).length;
+
   return (
     <>
       <TableActions
@@ -141,13 +144,14 @@ export const ClientsTable = ({
 
       <div className="bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">
         <Table>
-          <ClientsHeader 
-            onSort={requestSort} 
+          <SharedTableHeader 
+            columns={clientColumns}
+            onSort={requestSort}
             onSelectAll={handleSelectAll}
-            totalClients={data.length}
-            visibleClients={filteredAndSortedData.length}
-            selectedCount={selectAllMode ? data.length - excludedClients.size : selectedClients.size}
-            excludedCount={excludedClients.size}
+            totalItems={data.length}
+            visibleItems={filteredAndSortedData.length}
+            selectedCount={selectedCount}
+            excludedCount={excludedItems.size}
             selectAllMode={selectAllMode}
           />
           <TableBody>
@@ -182,7 +186,7 @@ export const ClientsTable = ({
         onConfirm={handleDelete}
         client={deleteConfirm.client}
         isMultiple={deleteConfirm.isMultiple}
-        getSelectedClients={getSelectedClients}
+        getSelectedClients={() => getSelectedItems(data)}
       />
 
       <BulkEditDialog 
