@@ -131,7 +131,7 @@ export const ClientsHeader = ({
       </TableHeader>
 
       <Dialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
-        <DialogContent className="bg-[#252A38] border border-gray-800 text-white">
+        <DialogContent className="bg-[#252A38] border border-gray-800 text-white rounded-[10px]">
           <DialogHeader>
             <DialogTitle className="text-white">Select All Clients</DialogTitle>
           </DialogHeader>
@@ -143,12 +143,12 @@ export const ClientsHeader = ({
                 onSelectAll(true, false);
                 setIsConfirmDialogOpen(false);
               }}
-              className="bg-transparent border-gray-700 text-white hover:bg-gray-800"
+              className="bg-transparent border-gray-700 text-white hover:bg-gray-800 rounded-[10px]"
             >
               Current Page Only
             </Button>
             <Button
-              className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90"
+              className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 rounded-[10px]"
               onClick={() => {
                 onSelectAll(true, true);
                 setIsConfirmDialogOpen(false);
@@ -161,7 +161,7 @@ export const ClientsHeader = ({
       </Dialog>
 
       <Dialog open={isDeleteAllDialogOpen} onOpenChange={setIsDeleteAllDialogOpen}>
-        <DialogContent className="bg-[#252A38] border border-gray-800 text-white">
+        <DialogContent className="bg-[#252A38] border border-gray-800 text-white rounded-[10px]">
           <DialogHeader>
             <DialogTitle className="text-white">Delete All Clients</DialogTitle>
           </DialogHeader>
@@ -170,14 +170,14 @@ export const ClientsHeader = ({
             <Button
               variant="outline"
               onClick={() => setIsDeleteAllDialogOpen(false)}
-              className="bg-transparent border-gray-700 text-white hover:bg-gray-800"
+              className="bg-transparent border-gray-700 text-white hover:bg-gray-800 rounded-[10px]"
             >
               Cancel
             </Button>
             <Button
               variant="destructive"
               onClick={handleDeleteAll}
-              className="bg-red-500 hover:bg-red-600"
+              className="bg-red-500 hover:bg-red-600 rounded-[10px]"
             >
               Delete All
             </Button>
