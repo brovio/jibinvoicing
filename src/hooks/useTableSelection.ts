@@ -7,12 +7,14 @@ export interface SelectableItem {
   date?: string;    // for timesheets
 }
 
-export const useTableSelection = <T extends SelectableItem>(
-  getItemIdentifier: (item: T) => string = (item) => item.company || item.date || ''
-) => {
+export const useTableSelection = <T extends SelectableItem>() => {
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [selectAllMode, setSelectAllMode] = useState<boolean>(false);
   const [excludedItems, setExcludedItems] = useState<Set<string>>(new Set());
+
+  const getItemIdentifier = (item: T): string => {
+    return item.company || item.date || item.id || '';
+  };
 
   const handleSelectAll = (selectAll: boolean, includeAll?: boolean) => {
     setSelectAllMode(selectAll && !!includeAll);
@@ -46,7 +48,7 @@ export const useTableSelection = <T extends SelectableItem>(
     }
   };
 
-  const isSelected = (item: T) => {
+  const isSelected = (item: T): boolean => {
     const itemId = getItemIdentifier(item);
     if (selectAllMode) {
       return !excludedItems.has(itemId);
@@ -60,7 +62,7 @@ export const useTableSelection = <T extends SelectableItem>(
     setExcludedItems(new Set());
   };
 
-  const getSelectedItems = <T extends SelectableItem>(items: T[]) => {
+  const getSelectedItems = (items: T[]): T[] => {
     if (selectAllMode) {
       return items.filter(item => !excludedItems.has(getItemIdentifier(item)));
     }
