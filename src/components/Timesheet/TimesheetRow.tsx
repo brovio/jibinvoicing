@@ -17,7 +17,7 @@ export const TimesheetRow = ({ data }: { data: TimesheetEntry }) => {
       <TableCell className="text-gray-300">{data.client}</TableCell>
       <TableCell className="text-gray-300">{data.project}</TableCell>
       <TableCell className="text-gray-300">{data.task}</TableCell>
-      <TableCell className="text-gray-300 text-right">{data.hours}</TableCell>
+      <TableCell className="text-gray-300 text-right">{Number(data.hours).toFixed(2)}</TableCell>
       <TableCell>
         <TooltipProvider>
           <Tooltip>
