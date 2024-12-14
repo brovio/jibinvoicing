@@ -97,8 +97,7 @@ export const ClientsTable = ({
   const handleBulkAction = (action: 'deleteAll' | 'editCurrency' | 'editRate' | 'deleteSelected') => {
     switch (action) {
       case 'deleteAll':
-        const allClients = [...data];
-        handleDelete(allClients);
+        handleDelete(data);
         break;
       case 'deleteSelected':
         const selectedClientsList = getSelectedClients();
@@ -130,7 +129,7 @@ export const ClientsTable = ({
     clearSelection();
   };
 
-  const handleImportSuccess = (importedClients: any[]) => {
+  const handleImportSuccess = (importedClients: ClientEntry[]) => {
     importedClients.forEach(client => {
       onClientAdded?.(client);
     });
