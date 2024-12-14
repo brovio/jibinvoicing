@@ -5,14 +5,14 @@ export const useClientSelection = () => {
   const [selectedClients, setSelectedClients] = useState<Set<string>>(new Set());
 
   const handleSelectAll = (selectAll: boolean, includeAll?: boolean) => {
-    // If includeAll is true or not specified, select all clients
-    // If includeAll is false, deselect all clients
     if (selectAll) {
+      // Return the new Set but also update the state
       const newSelected = new Set<string>();
-      // This part depends on how you want to handle the selection
-      // You might need to pass the clients as a prop to the component using this hook
+      setSelectedClients(newSelected);
       return newSelected;
     } else {
+      // Clear selection and return empty Set
+      setSelectedClients(new Set());
       return new Set<string>();
     }
   };
@@ -29,6 +29,7 @@ export const useClientSelection = () => {
 
   return {
     selectedClients,
+    setSelectedClients,
     handleSelectAll,
     handleRowSelect
   };

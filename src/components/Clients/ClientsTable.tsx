@@ -37,6 +37,7 @@ export const ClientsTable = ({
 
   const {
     selectedClients,
+    setSelectedClients,
     handleSelectAll,
     handleRowSelect
   } = useClientSelection();
@@ -74,6 +75,7 @@ export const ClientsTable = ({
           onClientDeleted?.(clientToDelete);
         }
       });
+      setSelectedClients(new Set()); // Clear selection after bulk delete
       showClientDeletedToast("Selected clients");
     } else if (client) {
       onClientDeleted?.(client);
@@ -92,6 +94,7 @@ export const ClientsTable = ({
         onClientUpdated?.(updatedClient);
       }
     });
+    setSelectedClients(new Set()); // Clear selection after bulk update
   };
 
   const handleBulkDelete = () => {
@@ -122,9 +125,15 @@ export const ClientsTable = ({
           <ClientsHeader 
             onSort={requestSort} 
             onSelectAll={(selectAll) => {
-              const newSelected = handleSelectAll(selectAll, true);
-              // If you want to actually set the selected clients, you'll need to do this in the component
-              // This is just an example, adjust as needed
+              if (selectAll) {
+                // When selecting all, add all visible clients to selection
+                const newSelected = new Set<string>();
+                filteredAndSortedData.forEach(client => newSelected.add(client.company));
+                setSelectedClients(newSelected);
+              } else {
+                // When deselecting, clear the selection
+                setSelectedClients(new Set());
+              }
             }}
             totalClients={data.length}
             visibleClients={filteredAndSortedData.length}
