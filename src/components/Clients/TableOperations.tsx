@@ -72,20 +72,36 @@ export const useTableOperations = ({ onClientDeleted }: TableOperationsProps) =>
     try {
       console.log('Deleting all clients');
       
-      const { error } = await supabase
+      // First, fetch all clients to notify about their deletion
+      const { data: allClients, error: fetchError } = await supabase
+        .from('brovio_clients')
+        .select('company');
+
+      if (fetchError) {
+        console.error('Error fetching clients:', fetchError);
+        toast.error('Failed to delete all clients');
+        return;
+      }
+
+      // Then delete all records
+      const { error: deleteError } = await supabase
         .from('brovio_clients')
         .delete()
-        .neq('id', 'none'); // This will delete all records
+        .gte('created_at', '1900-01-01'); // This will delete all records since this is before any possible record
 
-      if (error) {
-        console.error('Delete all error:', error);
+      if (deleteError) {
+        console.error('Delete all error:', deleteError);
         toast.error('Failed to delete all clients');
         return;
       }
 
       console.log('All clients deleted successfully');
       toast.success('All clients have been deleted');
-      window.location.reload();
+
+      // Notify about each deleted client
+      allClients?.forEach(client => {
+        onClientDeleted?.({ company: client.company } as ClientEntry);
+      });
     } catch (error) {
       console.error('Error in delete all operation:', error);
       toast.error('Failed to delete all clients');
