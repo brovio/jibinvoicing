@@ -27,7 +27,8 @@ export const ClientsTable = ({
     currencyFilter,
     setCurrencyFilter,
     requestSort,
-    filteredAndSortedData
+    filteredAndSortedData,
+    setData
   } = useClientFilters(data);
 
   const {
@@ -37,8 +38,13 @@ export const ClientsTable = ({
     handleRowSelect
   } = useClientSelection();
 
+  const handleClientDeleted = (client: ClientEntry) => {
+    setData(prevData => prevData.filter(c => c.company !== client.company));
+    onClientDeleted?.(client);
+  };
+
   const { handleDelete, handleBulkDelete, handleBulkUpdate, handleDeleteAll } = useTableOperations({
-    onClientDeleted
+    onClientDeleted: handleClientDeleted
   });
 
   const [modalState, setModalState] = useState<{
@@ -106,6 +112,7 @@ export const ClientsTable = ({
   };
 
   const handleImportSuccess = (importedClients: ClientEntry[]) => {
+    setData(prevData => [...importedClients, ...prevData]);
     importedClients.forEach(client => {
       onClientAdded?.(client);
     });
@@ -128,7 +135,7 @@ export const ClientsTable = ({
             onSelectAll={handleSelectAll}
             totalClients={data.length}
             visibleClients={filteredAndSortedData.length}
-            onClientsDeleted={() => window.location.reload()}
+            onClientsDeleted={handleClientDeleted}
             selectedClients={selectedClients}
             onBulkUpdate={(field, value) => handleBulkUpdate(field, value, selectedClients)}
             onBulkDelete={handleBulkDeleteAction}

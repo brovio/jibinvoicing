@@ -87,7 +87,7 @@ export const useTableOperations = ({ onClientDeleted }: TableOperationsProps) =>
       const { error: deleteError } = await supabase
         .from('brovio_clients')
         .delete()
-        .gte('created_at', '1900-01-01'); // This will delete all records since this is before any possible record
+        .gte('created_at', '1900-01-01'); // This will delete all records
 
       if (deleteError) {
         console.error('Delete all error:', deleteError);
