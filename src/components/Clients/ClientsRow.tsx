@@ -1,5 +1,5 @@
 import { TableCell, TableRow } from "@/components/ui/table";
-import { FileEdit, Trash2 } from "lucide-react";
+import { Eye, Trash2 } from "lucide-react";
 
 interface ClientEntry {
   company: string;
@@ -74,9 +74,9 @@ export const ClientsRow = ({
         <div className="flex items-center gap-2 justify-end">
           <button 
             className="p-1 hover:bg-gray-700 rounded-md transition-colors"
-            onClick={() => onEdit(data)}
+            onClick={() => onView(data)}
           >
-            <FileEdit className="w-4 h-4 text-gray-400" />
+            <Eye className="w-4 h-4 text-gray-400" />
           </button>
           <button 
             className="p-1 hover:bg-gray-700 rounded-md transition-colors"
