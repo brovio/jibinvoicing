@@ -19,6 +19,7 @@ import { showClientDeletedToast } from "@/utils/toastUtils";
 import { useClientFilters } from "./hooks/useClientFilters";
 import { useClientSelection } from "./hooks/useClientSelection";
 import { ClientEntry, ClientsTableProps } from "./types/clients";
+import { supabase } from "@/integrations/supabase/client";
 
 export const ClientsTable = ({ 
   data,
@@ -73,8 +74,25 @@ export const ClientsTable = ({
   };
 
   const handleClientsDeleted = () => {
-    // Refresh the data after bulk deletion
     window.location.reload();
+  };
+
+  const handleBulkUpdate = async (field: string, value: string | number) => {
+    try {
+      const selectedCompanies = Array.from(selectedClients);
+      const { error } = await supabase
+        .from('clients')
+        .update({ [field]: value })
+        .in('company', selectedCompanies);
+
+      if (error) throw error;
+
+      // Refresh the data after bulk update
+      window.location.reload();
+    } catch (error) {
+      console.error('Error updating clients:', error);
+      toast.error('Failed to update clients');
+    }
   };
 
   return (
@@ -91,10 +109,12 @@ export const ClientsTable = ({
         <Table>
           <ClientsHeader 
             onSort={requestSort} 
-            onSelectAll={(selectAll) => handleSelectAll(selectAll, filteredAndSortedData)}
+            onSelectAll={handleSelectAll}
             totalClients={data.length}
             visibleClients={filteredAndSortedData.length}
             onClientsDeleted={handleClientsDeleted}
+            selectedClients={selectedClients}
+            onBulkUpdate={handleBulkUpdate}
           />
           <TableBody>
             {filteredAndSortedData.map((item, index) => (
