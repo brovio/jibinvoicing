@@ -6,30 +6,25 @@ export const useClientSelection = () => {
   const [selectAllMode, setSelectAllMode] = useState<boolean>(false);
 
   const handleSelectAll = (selectAll: boolean, includeAll?: boolean) => {
-    if (selectAll) {
-      if (includeAll) {
-        // This would typically involve selecting ALL clients, even those not currently visible
-        // For now, we'll just set a flag to indicate all-selection mode
-        setSelectAllMode(true);
-      } else {
-        // Select only currently visible clients
-        setSelectAllMode(false);
-      }
-    } else {
-      // Deselect all
-      setSelectedClients(new Set());
-      setSelectAllMode(false);
-    }
+    setSelectAllMode(selectAll && !!includeAll);
+    setSelectedClients(new Set());
   };
 
   const handleRowSelect = (client: ClientEntry, selected: boolean) => {
-    const newSelected = new Set(selectedClients);
+    setSelectedClients(prev => {
+      const newSelected = new Set(prev);
+      if (selected) {
+        newSelected.add(client.company);
+      } else {
+        newSelected.delete(client.company);
+      }
+      return newSelected;
+    });
+    
+    // If selecting individual items, ensure we're not in selectAll mode
     if (selected) {
-      newSelected.add(client.company);
-    } else {
-      newSelected.delete(client.company);
+      setSelectAllMode(false);
     }
-    setSelectedClients(newSelected);
   };
 
   return {

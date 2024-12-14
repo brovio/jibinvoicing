@@ -40,6 +40,7 @@ export const ClientsTable = ({
 
   const {
     selectedClients,
+    selectAllMode,
     handleSelectAll,
     handleRowSelect
   } = useClientSelection();
@@ -50,9 +51,11 @@ export const ClientsTable = ({
     client?: ClientEntry;
   }>({ isOpen: false, mode: 'add' });
 
-  const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; client?: ClientEntry; isMultiple?: boolean }>({
-    isOpen: false
-  });
+  const [deleteConfirm, setDeleteConfirm] = useState<{ 
+    isOpen: boolean; 
+    client?: ClientEntry; 
+    isMultiple?: boolean 
+  }>({ isOpen: false });
 
   const [bulkEditDialog, setBulkEditDialog] = useState<{
     isOpen: boolean;
@@ -142,9 +145,9 @@ export const ClientsTable = ({
             visibleClients={filteredAndSortedData.length}
           />
           <TableBody>
-            {filteredAndSortedData.map((item, index) => (
+            {filteredAndSortedData.map((item) => (
               <ClientsRow 
-                key={index} 
+                key={item.company}
                 data={item}
                 isSelected={selectedClients.has(item.company)}
                 onSelect={(selected) => handleRowSelect(item, selected)}
