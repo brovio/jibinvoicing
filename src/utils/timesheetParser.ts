@@ -1,41 +1,99 @@
-import { supabase } from "@/integrations/supabase/client";
+import JSZip from 'jszip';
 
 export interface TimesheetEntry {
-  tsid: number;
   date: string;
-  time?: string;
-  client: string;
   project: string;
+  client: string;
   task: string;
   hours: number;
   status?: string;
-  staff_name?: string;
-  flag_reason?: string;
+  staffName?: string;
+  entryType?: string;
+  time?: string;
+  break?: boolean;
+  breakType?: string;
 }
 
-export const fetchTimesheets = async (): Promise<TimesheetEntry[]> => {
+export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
+  const lines = csvContent.trim().split('\n');
+  const headers = lines[0].split(',');
+  
+  return lines.slice(1).map(line => {
+    const values = line.split(',');
+    const entry: Record<string, any> = {};
+    
+    headers.forEach((header, index) => {
+      const value = values[index]?.trim();
+      switch(header.trim().toLowerCase()) {
+        case 'date':
+          entry.date = value;
+          break;
+        case 'activity':
+        case 'project':
+          entry.project = value;
+          break;
+        case 'client':
+          entry.client = value;
+          break;
+        case 'notes':
+        case 'task':
+          entry.task = value;
+          break;
+        case 'duration':
+        case 'hours':
+          entry.hours = parseFloat(value) || 0;
+          break;
+        case 'full name':
+        case 'staff name':
+          entry.staffName = value;
+          break;
+        case 'entrytype':
+          entry.entryType = value;
+          break;
+        case 'time':
+          entry.time = value;
+          break;
+        case 'break':
+          entry.break = value?.toLowerCase() === 'yes';
+          break;
+        case 'break type':
+          entry.breakType = value;
+          break;
+      }
+    });
+
+    // Set default values for required fields if they're missing
+    entry.project = entry.project || 'Unspecified Project';
+    entry.client = entry.client || 'Unspecified Client';
+    entry.task = entry.task || 'General Task';
+    entry.hours = entry.hours || 0;
+    entry.status = 'Pending';
+
+    return entry as TimesheetEntry;
+  });
+};
+
+export const processTimesheetZip = async (zipFile: File): Promise<TimesheetEntry[]> => {
   try {
-    const { data: timesheets, error } = await supabase
-      .from('imported_timesheets')
-      .select('*')
-      .order('date', { ascending: false });
+    const zip = new JSZip();
+    const zipContent = await zip.loadAsync(zipFile);
+    
+    // Find the first CSV file in the ZIP
+    const csvFile = Object.values(zipContent.files).find(file => 
+      file.name.toLowerCase().endsWith('.csv')
+    );
 
-    if (error) throw error;
+    if (!csvFile) {
+      throw new Error('No CSV file found in the ZIP archive');
+    }
 
-    return (timesheets || []).map(timesheet => ({
-      tsid: timesheet.timesheet_id,
-      date: timesheet.date,
-      time: timesheet.time,
-      client: timesheet.client,
-      project: timesheet.activity || 'No Project',
-      task: timesheet.notes || 'No Task',
-      hours: timesheet.duration,
-      status: timesheet.flagged ? 'Error' : 'Success',
-      staff_name: timesheet.full_name,
-      flag_reason: timesheet.flag_reason
-    }));
+    // Read the CSV content
+    const csvContent = await csvFile.async('string');
+    console.log('CSV Content:', csvContent); // Debug log
+    
+    return parseTimesheetCSV(csvContent);
   } catch (error) {
-    console.error('Error fetching timesheets:', error);
-    throw error;
+    console.error('Error processing ZIP file:', error);
+    throw new Error('Invalid timesheet format');
   }
 };

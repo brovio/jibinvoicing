@@ -1,28 +1,87 @@
-@import './styles/themes.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@import './styles/themes.css';
+
 @layer base {
-  /* Add your base styles here */
+  * {
+    @apply border-border;
+  }
   body {
-    font-family: 'Inter', sans-serif;
-    background-color: #1E1E2D;
-    color: #E4E4E7;
+    @apply bg-[#1A1F2C] text-foreground;
   }
+}
 
-  h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
+/* Glass effect for cards */
+.glass {
+  @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-[10px];
+}
+
+/* Animations */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
-
-  a {
-    color: #0EA5E9;
-    text-decoration: none;
+  to {
+    opacity: 1;
   }
+}
 
-  a:hover {
-    text-decoration: underline;
-  }
+/* Dashboard card styles */
+.dashboard-card {
+  @apply bg-dashboard-card border border-dashboard-border rounded-[10px] p-6;
+}
 
-  /* Add more global styles as needed */
+/* Button styles */
+.btn-primary {
+  @apply bg-dashboard-primary hover:opacity-90 text-white rounded-[10px] px-4 py-2 transition-all duration-200 flex items-center justify-center;
+}
+
+.btn-secondary {
+  @apply bg-dashboard-card border border-dashboard-border text-white hover:bg-dashboard-hover rounded-[10px] px-4 py-2 transition-colors duration-200 flex items-center justify-center;
+}
+
+.btn-ghost {
+  @apply bg-transparent hover:bg-dashboard-hover text-gray-400 hover:text-white rounded-[10px] px-4 py-2 transition-colors duration-200;
+}
+
+.btn-icon {
+  @apply w-8 h-8 flex items-center justify-center rounded-[10px] bg-transparent hover:bg-dashboard-hover text-gray-400 hover:text-white transition-colors duration-200;
+}
+
+/* Input and select styles */
+.input-field {
+  @apply bg-dashboard-card border border-dashboard-border text-white placeholder:text-gray-500 rounded-[10px] px-4 py-2;
+}
+
+.select-field {
+  @apply bg-dashboard-card border border-dashboard-border text-gray-400 rounded-[10px] px-4 py-2;
+}
+
+/* Table styles */
+.table-container {
+  @apply bg-dashboard-card rounded-[10px] overflow-hidden border border-dashboard-border;
+}
+
+.table-header {
+  @apply text-gray-400 font-medium cursor-pointer hover:bg-dashboard-hover transition-colors;
+}
+
+.table-row {
+  @apply border-b border-dashboard-border hover:bg-dashboard-hover transition-colors;
+}
+
+.table-cell {
+  @apply text-gray-300 cursor-pointer hover:text-white;
+}
+
+/* Dropdown styles */
+select {
+  @apply bg-dashboard-card border border-dashboard-border text-gray-400 rounded-[10px] px-4 py-2 appearance-none cursor-pointer hover:bg-dashboard-hover transition-colors duration-200;
 }
