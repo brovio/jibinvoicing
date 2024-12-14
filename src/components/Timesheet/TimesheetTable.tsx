@@ -86,7 +86,7 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
     setDeleteConfirm({ isOpen: false });
   };
 
-  const handleBulkAction = (action: string, includeAll?: boolean) => {
+  const handleBulkAction = (action: string, includeAll: boolean = false) => {
     if (action === 'deleteSelected') {
       const selectedEntries = getSelectedItems(data);
       if (selectedEntries.length > 0) {
