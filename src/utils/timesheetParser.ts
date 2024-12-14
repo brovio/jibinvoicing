@@ -3,16 +3,16 @@ import JSZip from 'jszip';
 export interface TimesheetEntry {
   tsid?: number;
   date: string;
-  project: string;
   client: string;
+  project: string;
   task: string;
   hours: number;
   status?: string;
-  staffName?: string;
-  entryType?: string;
+  staff_name?: string;
+  entry_type?: string;
   time?: string | null;
   break?: boolean;
-  breakType?: string;
+  break_type?: string;
 }
 
 const generateTsid = (): number => {
@@ -25,16 +25,27 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
   
   return lines.slice(1).map(line => {
     const values = line.split(',');
-    const entry: any = {
-      tsid: generateTsid()
-    };
+    const rawEntry: Record<string, string> = {};
     
     headers.forEach((header, index) => {
-      const value = values[index]?.trim();
-      entry[header] = value;
+      rawEntry[header.trim()] = values[index]?.trim() || '';
     });
 
-    return entry as TimesheetEntry;
+    // Map CSV fields to database columns
+    const entry: TimesheetEntry = {
+      tsid: generateTsid(),
+      date: rawEntry.date || new Date().toISOString().split('T')[0],
+      client: rawEntry.client || 'Unknown Client',
+      project: rawEntry.activity || 'Unknown Project', // Map 'activity' to project
+      task: rawEntry.notes || 'No Description', // Map 'notes' to task
+      hours: parseFloat(rawEntry.duration) || 0, // Map 'duration' to hours
+      staff_name: rawEntry.fullname || null,
+      time: rawEntry.time || null,
+      status: rawEntry.flagged === 'true' ? 'Flagged' : 'Pending',
+      entry_type: rawEntry.flagreason || null
+    };
+
+    return entry;
   });
 };
 
@@ -52,8 +63,6 @@ export const processTimesheetZip = async (zipFile: File): Promise<TimesheetEntry
     }
 
     const csvContent = await csvFile.async('string');
-    console.log('CSV Content:', csvContent);
-    
     return parseTimesheetCSV(csvContent);
   } catch (error) {
     console.error('Error processing ZIP file:', error);
