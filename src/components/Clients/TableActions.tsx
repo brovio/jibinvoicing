@@ -1,6 +1,12 @@
 import { Input } from "@/components/ui/input";
 import { Search, Settings } from "lucide-react";
 import { FileUpload } from "@/components/FileUpload";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface TableActionsProps {
   onImportSuccess: (clients: any[]) => void;
@@ -8,6 +14,7 @@ interface TableActionsProps {
   onAddClick: () => void;
   onRateFilterChange: (range: string) => void;
   onCurrencyFilterChange: (currency: string) => void;
+  onBulkAction?: (action: 'deleteAll' | 'editCurrency' | 'editRate' | 'deleteSelected') => void;
 }
 
 export const TableActions = ({ 
@@ -15,7 +22,8 @@ export const TableActions = ({
   clients, 
   onAddClick,
   onRateFilterChange,
-  onCurrencyFilterChange
+  onCurrencyFilterChange,
+  onBulkAction
 }: TableActionsProps) => {
   return (
     <div className="flex justify-between items-center gap-4 mb-4">
@@ -46,11 +54,41 @@ export const TableActions = ({
           <option value="GBP">GBP</option>
           <option value="USD">USD</option>
         </select>
-        <button 
-          className="bg-[#252A38] border border-gray-800 text-gray-400 rounded-[10px] p-2 hover:bg-[#2A303F] transition-colors"
-        >
-          <Settings className="h-5 w-5" />
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button 
+              className="bg-[#252A38] border border-gray-800 text-gray-400 rounded-[10px] p-2 hover:bg-[#2A303F] transition-colors"
+            >
+              <Settings className="h-5 w-5" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48 bg-[#252A38] border-gray-800">
+            <DropdownMenuItem 
+              className="text-gray-400 hover:text-white cursor-pointer"
+              onClick={() => onBulkAction?.('deleteAll')}
+            >
+              Delete All
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              className="text-gray-400 hover:text-white cursor-pointer"
+              onClick={() => onBulkAction?.('editCurrency')}
+            >
+              Edit Currency
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              className="text-gray-400 hover:text-white cursor-pointer"
+              onClick={() => onBulkAction?.('editRate')}
+            >
+              Edit Rate
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              className="text-gray-400 hover:text-white cursor-pointer"
+              onClick={() => onBulkAction?.('deleteSelected')}
+            >
+              Delete Selected
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
