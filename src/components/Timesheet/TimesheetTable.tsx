@@ -98,13 +98,17 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
     }
   };
 
+  const handleTableSelectAll = (selected: boolean, includeAll: boolean) => {
+    handleSelectAll(selected, includeAll);
+  };
+
   return (
     <div className="bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">
       <Table>
         <SharedTableHeader 
           columns={timesheetColumns}
           onSort={requestSort}
-          onSelectAll={handleSelectAll}
+          onSelectAll={handleTableSelectAll}
           totalItems={data.length}
           visibleItems={sortedData.length}
           selectedCount={selectAllMode ? data.length - excludedItems.size : getSelectedItems(data).length}
