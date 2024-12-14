@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Settings } from "lucide-react";
 import { FileUpload } from "@/components/FileUpload";
 
 interface TableActionsProps {
@@ -46,6 +46,11 @@ export const TableActions = ({
           <option value="GBP">GBP</option>
           <option value="USD">USD</option>
         </select>
+        <button 
+          className="bg-[#252A38] border border-gray-800 text-gray-400 rounded-[10px] p-2 hover:bg-[#2A303F] transition-colors"
+        >
+          <Settings className="h-5 w-5" />
+        </button>
       </div>
     </div>
   );
