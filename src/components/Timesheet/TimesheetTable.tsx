@@ -4,6 +4,9 @@ import { TimesheetRow } from "./TimesheetRow";
 import { TimesheetEntry } from "@/utils/timesheetParser";
 import { SharedTableHeader } from "@/components/shared/TableHeader";
 import { useTableSelection } from "@/hooks/useTableSelection";
+import { DeleteConfirmDialog } from "@/components/Clients/DeleteConfirmDialog";
+import { supabase } from "@/integrations/supabase/client";
+import { showErrorToast, showSuccessToast } from "@/utils/toastUtils";
 
 const timesheetColumns = [
   { key: 'date', label: 'Date' },
@@ -14,8 +17,17 @@ const timesheetColumns = [
   { key: 'status', label: 'Status' },
 ];
 
-export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
+interface TimesheetTableProps {
+  data: TimesheetEntry[];
+}
+
+export const TimesheetTable = ({ data }: TimesheetTableProps) => {
   const [sortConfig, setSortConfig] = React.useState<{ key: string; direction: string } | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = React.useState<{ 
+    isOpen: boolean; 
+    entry?: TimesheetEntry; 
+    isMultiple?: boolean 
+  }>({ isOpen: false });
 
   const {
     handleSelectAll,
@@ -23,7 +35,8 @@ export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
     isSelected,
     excludedItems,
     selectAllMode,
-    getSelectedItems
+    getSelectedItems,
+    clearSelection
   } = useTableSelection<TimesheetEntry>();
 
   const requestSort = (key: string) => {
@@ -50,6 +63,41 @@ export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
     return sortableItems;
   }, [data, sortConfig]);
 
+  const handleDelete = async (entriesToDelete: TimesheetEntry | TimesheetEntry[]) => {
+    try {
+      const entries = Array.isArray(entriesToDelete) ? entriesToDelete : [entriesToDelete];
+      const ids = entries.map(entry => entry.tsid);
+      
+      const { error } = await supabase
+        .from('brovio-timesheets')
+        .delete()
+        .in('tsid', ids);
+
+      if (error) throw error;
+
+      showSuccessToast(
+        `Successfully deleted ${entries.length} timesheet ${entries.length === 1 ? 'entry' : 'entries'}`
+      );
+      clearSelection();
+    } catch (error) {
+      console.error('Error deleting timesheet entries:', error);
+      showErrorToast('Failed to delete timesheet entries');
+    }
+    setDeleteConfirm({ isOpen: false });
+  };
+
+  const handleBulkAction = (action: string) => {
+    if (action === 'deleteSelected') {
+      const selectedEntries = getSelectedItems(data);
+      if (selectedEntries.length > 0) {
+        setDeleteConfirm({ 
+          isOpen: true, 
+          isMultiple: true 
+        });
+      }
+    }
+  };
+
   return (
     <div className="bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">
       <Table>
@@ -70,10 +118,20 @@ export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
               data={item}
               isSelected={isSelected(item)}
               onSelect={(selected) => handleRowSelect(item, selected)}
+              onDelete={() => setDeleteConfirm({ isOpen: true, entry: item })}
             />
           ))}
         </TableBody>
       </Table>
+
+      <DeleteConfirmDialog
+        isOpen={deleteConfirm.isOpen}
+        onOpenChange={(open) => setDeleteConfirm({ isOpen: open })}
+        onConfirm={handleDelete}
+        entry={deleteConfirm.entry}
+        isMultiple={deleteConfirm.isMultiple}
+        getSelectedEntries={() => getSelectedItems(data)}
+      />
     </div>
   );
 };

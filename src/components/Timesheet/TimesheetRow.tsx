@@ -7,10 +7,11 @@ interface TimesheetRowProps {
   data: TimesheetEntry;
   isSelected: boolean;
   onSelect: (selected: boolean) => void;
+  onDelete: () => void;
 }
 
-export const TimesheetRow = ({ data, isSelected, onSelect }: TimesheetRowProps) => {
-  const isError = data.status.startsWith('Error');
+export const TimesheetRow = ({ data, isSelected, onSelect, onDelete }: TimesheetRowProps) => {
+  const isError = data.status?.startsWith('Error');
 
   return (
     <TableRow className={`border-b border-gray-800 hover:bg-[#2A303F] transition-colors ${
@@ -51,7 +52,10 @@ export const TimesheetRow = ({ data, isSelected, onSelect }: TimesheetRowProps) 
           <button className="p-1 hover:bg-gray-700 rounded-md transition-colors">
             <FileEdit className="w-4 h-4 text-gray-400" />
           </button>
-          <button className="p-1 hover:bg-gray-700 rounded-md transition-colors">
+          <button 
+            className="p-1 hover:bg-gray-700 rounded-md transition-colors"
+            onClick={onDelete}
+          >
             <Trash2 className="w-4 h-4 text-gray-400" />
           </button>
         </div>
