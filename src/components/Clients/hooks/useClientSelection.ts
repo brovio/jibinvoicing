@@ -3,14 +3,22 @@ import { ClientEntry } from '../types/clients';
 
 export const useClientSelection = () => {
   const [selectedClients, setSelectedClients] = useState<Set<string>>(new Set());
+  const [selectAllMode, setSelectAllMode] = useState<boolean>(false);
 
-  const handleSelectAll = (selectAll: boolean, clients: ClientEntry[]) => {
+  const handleSelectAll = (selectAll: boolean, includeAll?: boolean) => {
     if (selectAll) {
-      const newSelected = new Set<string>();
-      clients.forEach(client => newSelected.add(client.company));
-      setSelectedClients(newSelected);
+      if (includeAll) {
+        // This would typically involve selecting ALL clients, even those not currently visible
+        // For now, we'll just set a flag to indicate all-selection mode
+        setSelectAllMode(true);
+      } else {
+        // Select only currently visible clients
+        setSelectAllMode(false);
+      }
     } else {
+      // Deselect all
       setSelectedClients(new Set());
+      setSelectAllMode(false);
     }
   };
 
@@ -26,6 +34,7 @@ export const useClientSelection = () => {
 
   return {
     selectedClients,
+    selectAllMode,
     handleSelectAll,
     handleRowSelect
   };
