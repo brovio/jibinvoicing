@@ -18,13 +18,14 @@ export interface TimesheetEntry {
 
 export const fetchTimesheets = async (): Promise<TimesheetEntry[]> => {
   try {
-    const { data, error } = await supabase
+    const { data: timesheets, error } = await supabase
       .from('brovio-timesheets')
       .select('*')
       .order('date', { ascending: false });
 
     if (error) throw error;
-    return data || [];
+
+    return timesheets || [];
   } catch (error) {
     console.error('Error fetching timesheets:', error);
     throw error;
