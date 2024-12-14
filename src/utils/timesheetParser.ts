@@ -116,7 +116,7 @@ export const fetchTimesheets = async (): Promise<TimesheetEntry[]> => {
       client: entry.client,
       project: entry.activity || 'Unspecified Project',
       task: entry.notes || 'General Task',
-      hours: parseFloat(entry.duration) || 0,
+      hours: entry.duration,  // Changed from parseFloat(entry.duration) since duration is already a number
       time: entry.time,
       staff_name: entry.full_name,
       status: entry.flagged ? `Error: ${entry.flag_reason}` : 'Success',
