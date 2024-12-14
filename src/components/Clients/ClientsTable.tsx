@@ -1,16 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import { Table, TableBody } from "@/components/ui/table";
 import { ClientsRow } from "./ClientsRow";
 import { ClientModal } from "./ClientModal";
 import { TableActions } from "./TableActions";
 import { TablePagination } from "./TablePagination";
-import { showClientDeletedToast } from "@/utils/toastUtils";
-import { useClientFilters } from "./hooks/useClientFilters";
-import { ClientEntry, ClientsTableProps } from "./types/clients";
 import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 import { BulkEditDialog } from "./BulkEditDialog";
-import { useTableSelection } from "@/hooks/useTableSelection";
 import { SharedTableHeader } from "@/components/shared/TableHeader";
+import { useClientsTable } from "./hooks/useClientsTable";
+import { ClientsTableProps } from "./types/clients";
 
 const clientColumns = [
   { key: 'company', label: 'Company' },
@@ -32,96 +30,26 @@ export const ClientsTable = ({
     currencyFilter,
     setCurrencyFilter,
     requestSort,
-    filteredAndSortedData
-  } = useClientFilters(data);
-
-  const {
+    filteredAndSortedData,
     handleSelectAll,
     handleRowSelect,
-    clearSelection,
     isSelected,
     excludedItems,
     selectAllMode,
-    getSelectedItems
-  } = useTableSelection<ClientEntry>();
+    getSelectedItems,
+    modalState,
+    setModalState,
+    deleteConfirm,
+    setDeleteConfirm,
+    bulkEditDialog,
+    setBulkEditDialog,
+    handleSave,
+    handleDelete,
+    handleBulkAction,
+    handleBulkEdit
+  } = useClientsTable(data, onClientAdded, onClientUpdated, onClientDeleted);
 
-  const [modalState, setModalState] = useState<{
-    isOpen: boolean;
-    mode: 'add' | 'edit' | 'view';
-    client?: ClientEntry;
-  }>({ isOpen: false, mode: 'add' });
-
-  const [deleteConfirm, setDeleteConfirm] = useState<{ 
-    isOpen: boolean; 
-    client?: ClientEntry; 
-    isMultiple?: boolean 
-  }>({ isOpen: false });
-
-  const [bulkEditDialog, setBulkEditDialog] = useState<{
-    isOpen: boolean;
-    type: 'currency' | 'rate';
-    value: string;
-  }>({ isOpen: false, type: 'currency', value: '' });
-
-  const handleSave = (client: ClientEntry) => {
-    if (modalState.mode === 'add') {
-      onClientAdded?.(client);
-    } else if (modalState.mode === 'edit') {
-      onClientUpdated?.(client);
-    }
-    setModalState({ isOpen: false, mode: 'add' });
-  };
-
-  const handleDelete = (clientsToDelete: ClientEntry | ClientEntry[]) => {
-    if (Array.isArray(clientsToDelete)) {
-      clientsToDelete.forEach(client => {
-        onClientDeleted?.(client);
-      });
-      showClientDeletedToast(`${clientsToDelete.length} clients`);
-    } else {
-      onClientDeleted?.(clientsToDelete);
-      showClientDeletedToast(clientsToDelete.company);
-    }
-    setDeleteConfirm({ isOpen: false });
-    clearSelection();
-  };
-
-  const handleBulkAction = (action: 'deleteAll' | 'editCurrency' | 'editRate' | 'deleteSelected') => {
-    switch (action) {
-      case 'deleteAll':
-        handleDelete(data);
-        break;
-      case 'deleteSelected':
-        const selectedClientsList = getSelectedItems(data);
-        if (selectedClientsList.length > 0) {
-          handleDelete(selectedClientsList);
-        }
-        break;
-      case 'editCurrency':
-        setBulkEditDialog({ isOpen: true, type: 'currency', value: '' });
-        break;
-      case 'editRate':
-        setBulkEditDialog({ isOpen: true, type: 'rate', value: '' });
-        break;
-    }
-  };
-
-  const handleBulkEdit = () => {
-    const selectedClientsList = getSelectedItems(data);
-    selectedClientsList.forEach(client => {
-      const updatedClient = { ...client };
-      if (bulkEditDialog.type === 'currency') {
-        updatedClient.currency = bulkEditDialog.value;
-      } else {
-        updatedClient.rate = Number(bulkEditDialog.value);
-      }
-      onClientUpdated?.(updatedClient);
-    });
-    setBulkEditDialog({ isOpen: false, type: 'currency', value: '' });
-    clearSelection();
-  };
-
-  const handleImportSuccess = (importedClients: ClientEntry[]) => {
+  const handleImportSuccess = (importedClients: any[]) => {
     importedClients.forEach(client => {
       onClientAdded?.(client);
     });
