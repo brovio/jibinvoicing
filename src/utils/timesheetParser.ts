@@ -10,14 +10,19 @@ export interface TimesheetEntry {
   status?: string;
   staffName?: string;
   entryType?: string;
-  time?: string;
+  time?: string | null;
   break?: boolean;
   breakType?: string;
 }
 
 const generateTsid = (): number => {
-  // Generate a random 8-digit number
   return Math.floor(10000000 + Math.random() * 90000000);
+};
+
+const isValidTimeFormat = (time: string): boolean => {
+  // Check if the time string matches HH:MM or HH:MM:SS format
+  const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/;
+  return timeRegex.test(time);
 };
 
 export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
@@ -58,7 +63,8 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
           entry.entryType = value;
           break;
         case 'time':
-          entry.time = value;
+          // Only set time if it's in a valid format, otherwise set to null
+          entry.time = value && isValidTimeFormat(value) ? value : null;
           break;
         case 'break':
           entry.break = value?.toLowerCase() === 'yes';
@@ -85,7 +91,6 @@ export const processTimesheetZip = async (zipFile: File): Promise<TimesheetEntry
     const zip = new JSZip();
     const zipContent = await zip.loadAsync(zipFile);
     
-    // Find the first CSV file in the ZIP
     const csvFile = Object.values(zipContent.files).find(file => 
       file.name.toLowerCase().endsWith('.csv')
     );
@@ -94,9 +99,8 @@ export const processTimesheetZip = async (zipFile: File): Promise<TimesheetEntry
       throw new Error('No CSV file found in the ZIP archive');
     }
 
-    // Read the CSV content
     const csvContent = await csvFile.async('string');
-    console.log('CSV Content:', csvContent); // Debug log
+    console.log('CSV Content:', csvContent);
     
     return parseTimesheetCSV(csvContent);
   } catch (error) {
