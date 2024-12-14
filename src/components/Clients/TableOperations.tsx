@@ -12,11 +12,10 @@ interface TableOperationsProps {
 export const useTableOperations = ({ onClientDeleted }: TableOperationsProps) => {
   const handleDelete = async (client: ClientEntry) => {
     try {
-      const dbClient = toDatabase(client);
       const { error } = await supabase
         .from('clients')
         .delete()
-        .eq('company', dbClient.company);
+        .eq('company', client.company);
 
       if (error) throw error;
 
@@ -39,7 +38,7 @@ export const useTableOperations = ({ onClientDeleted }: TableOperationsProps) =>
       if (error) throw error;
 
       toast.success(`Successfully deleted ${selectedCompanies.length} clients`);
-      window.location.reload();
+      window.location.reload(); // Refresh to show updated state
     } catch (error) {
       console.error('Error deleting clients:', error);
       toast.error('Failed to delete clients');
@@ -56,7 +55,7 @@ export const useTableOperations = ({ onClientDeleted }: TableOperationsProps) =>
 
       if (error) throw error;
 
-      window.location.reload();
+      window.location.reload(); // Refresh to show updated state
     } catch (error) {
       console.error('Error updating clients:', error);
       toast.error('Failed to update clients');
