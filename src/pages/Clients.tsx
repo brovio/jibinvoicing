@@ -13,6 +13,10 @@ import { toast } from "sonner";
 const Clients = () => {
   const [clients, setClients] = useState<ClientEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [modalState, setModalState] = useState<{
+    isOpen: boolean;
+    mode: 'add' | 'edit' | 'view';
+  }>({ isOpen: false, mode: 'add' });
 
   useEffect(() => {
     const fetchClients = async () => {
@@ -52,6 +56,14 @@ const Clients = () => {
 
   const handleClientDeleted = (deletedClient: ClientEntry) => {
     setClients(prev => prev.filter(client => client.company !== deletedClient.company));
+  };
+
+  const handleImportSuccess = (importedClients: ImportedClient[]) => {
+    const newClients = importedClients.map(client => ({
+      ...client,
+      rate: Number(client.rate)
+    }));
+    setClients(prev => [...newClients, ...prev]);
   };
 
   if (loading) {
