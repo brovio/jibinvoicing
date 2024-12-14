@@ -3,40 +3,36 @@ import { Input } from "@/components/ui/input";
 import { Search, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ExportButton } from "@/components/ExportButton";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { processTimesheetZip, TimesheetEntry } from "@/utils/timesheetParser";
 import { showImportSuccessToast, showImportErrorToast } from "@/utils/toastUtils";
-
-const sampleData = [
-  {
-    date: "2024-02-20",
-    project: "Website Redesign",
-    client: "Google",
-    task: "UI Development",
-    hours: 6.5,
-    status: "Approved"
-  },
-  {
-    date: "2024-02-19",
-    project: "Mobile App",
-    client: "Microsoft",
-    task: "API Integration",
-    hours: 8.0,
-    status: "Pending"
-  },
-  {
-    date: "2024-02-18",
-    project: "Cloud Migration",
-    client: "Apple",
-    task: "Database Setup",
-    hours: 7.5,
-    status: "Approved"
-  }
-];
+import { supabase } from "@/integrations/supabase/client";
 
 const Timesheets = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [timesheetData, setTimesheetData] = useState<TimesheetEntry[]>(sampleData);
+  const [timesheetData, setTimesheetData] = useState<TimesheetEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchTimesheets();
+  }, []);
+
+  const fetchTimesheets = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('brovio-timesheets')
+        .select('*')
+        .order('date', { ascending: false });
+
+      if (error) throw error;
+      setTimesheetData(data || []);
+    } catch (error) {
+      console.error('Error fetching timesheets:', error);
+      showImportErrorToast('Failed to load timesheets');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -49,7 +45,16 @@ const Timesheets = () => {
 
     try {
       const entries = await processTimesheetZip(file);
-      setTimesheetData(entries);
+      
+      // Insert entries into Supabase
+      const { data, error } = await supabase
+        .from('brovio-timesheets')
+        .insert(entries)
+        .select();
+
+      if (error) throw error;
+
+      await fetchTimesheets(); // Refresh the table
       showImportSuccessToast(entries.length);
       
       // Reset file input
@@ -61,6 +66,10 @@ const Timesheets = () => {
       showImportErrorToast();
     }
   };
+
+  if (isLoading) {
+    return <div className="flex justify-center items-center h-96">Loading...</div>;
+  }
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -117,7 +126,7 @@ const Timesheets = () => {
       <TimesheetTable data={timesheetData} />
 
       <div className="mt-4 flex justify-between items-center text-gray-400">
-        <span>Showing 1 to 10 of 20 results</span>
+        <span>Showing 1 to {Math.min(10, timesheetData.length)} of {timesheetData.length} results</span>
         <div className="flex items-center gap-2">
           <select className="bg-[#252A38] border border-gray-800 text-gray-400 rounded-[10px] px-4 py-2">
             <option>25 entries</option>

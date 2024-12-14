@@ -1,6 +1,7 @@
 import JSZip from 'jszip';
 
 export interface TimesheetEntry {
+  tsid?: number;
   date: string;
   project: string;
   client: string;
@@ -14,13 +15,20 @@ export interface TimesheetEntry {
   breakType?: string;
 }
 
+const generateTsid = (): number => {
+  // Generate a random 8-digit number
+  return Math.floor(10000000 + Math.random() * 90000000);
+};
+
 export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
   const lines = csvContent.trim().split('\n');
   const headers = lines[0].split(',');
   
   return lines.slice(1).map(line => {
     const values = line.split(',');
-    const entry: Record<string, any> = {};
+    const entry: Record<string, any> = {
+      tsid: generateTsid()
+    };
     
     headers.forEach((header, index) => {
       const value = values[index]?.trim();
@@ -43,7 +51,6 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
         case 'hours':
           entry.hours = parseFloat(value) || 0;
           break;
-        case 'full name':
         case 'staff name':
           entry.staffName = value;
           break;
