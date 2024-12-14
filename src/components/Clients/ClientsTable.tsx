@@ -104,10 +104,11 @@ export const ClientsTable = ({
 
   const handleDelete = async (client: ClientEntry) => {
     try {
+      const dbClient = toDatabase(client);
       const { error } = await supabase
         .from('clients')
         .delete()
-        .eq('company', client.company);
+        .eq('company', dbClient.company);
 
       if (error) throw error;
 
