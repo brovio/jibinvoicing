@@ -62,10 +62,22 @@ export const ClientsTable = ({
     setModalState({ isOpen: false, mode: 'add' });
   };
 
-  const handleDelete = (client: ClientEntry) => {
-    setDeleteConfirm({ isOpen: false });
-    onClientDeleted?.(client);
-    showClientDeletedToast(client.company);
+  const handleDelete = async (client: ClientEntry) => {
+    try {
+      const { error } = await supabase
+        .from('clients')
+        .delete()
+        .eq('company', client.company);
+
+      if (error) throw error;
+
+      setDeleteConfirm({ isOpen: false });
+      onClientDeleted?.(client);
+      showClientDeletedToast(client.company);
+    } catch (error) {
+      console.error('Error deleting client:', error);
+      toast.error('Failed to delete client');
+    }
   };
 
   const handleImportSuccess = (importedClients: ClientEntry[]) => {
@@ -127,7 +139,7 @@ export const ClientsTable = ({
         <Table>
           <ClientsHeader 
             onSort={requestSort} 
-            onSelectAll={(selectAll: boolean) => handleSelectAll(selectAll, filteredAndSortedData)}
+            onSelectAll={handleSelectAll}
             totalClients={data.length}
             visibleClients={filteredAndSortedData.length}
             onClientsDeleted={handleClientsDeleted}
