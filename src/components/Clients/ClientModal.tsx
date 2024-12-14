@@ -12,6 +12,12 @@ import { BasicInfoFields } from "./FormFields/BasicInfoFields";
 import { ContactFields } from "./FormFields/ContactFields";
 import { BillingFields } from "./FormFields/BillingFields";
 
+let nextManualClientId = 1;
+
+const generateNextManualClientId = () => {
+  return String(nextManualClientId++).padStart(4, '0');
+};
+
 interface ClientModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -38,12 +44,12 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
     if (client) {
       setFormData({
         ...client,
-        clientId: client.clientId || `client_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+        clientId: client.clientId || generateNextManualClientId()
       });
     } else if (mode === 'add') {
       setFormData(prev => ({
         ...prev,
-        clientId: `client_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+        clientId: generateNextManualClientId()
       }));
     }
   }, [client, mode]);

@@ -1,5 +1,11 @@
 import { toast } from "@/components/ui/use-toast";
 
+let currentClientId = 1;
+
+const generateNextClientId = () => {
+  return String(currentClientId++).padStart(4, '0');
+};
+
 export interface ImportedClient {
   clientId: string;
   company: string;
@@ -32,7 +38,7 @@ export const parseCSV = (content: string): ImportedClient[] => {
       .map(line => {
         const values = line.split(',').map(value => value.trim());
         const client: Partial<ImportedClient> = {
-          clientId: `client_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+          clientId: generateNextClientId()
         };
         
         headers.forEach((header, index) => {
@@ -92,7 +98,7 @@ export const parseJSON = (content: string): ImportedClient[] => {
     }
 
     return data.map(item => ({
-      clientId: `client_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      clientId: generateNextClientId(),
       company: item.company,
       contactName: item.contactName,
       email: item.email,
