@@ -39,7 +39,8 @@ export const ClientsTable = ({
 
   const {
     selectedClients,
-    handleSelectAll,
+    setSelectedClients,
+    handleSelectAll: baseHandleSelectAll,
     handleRowSelect
   } = useClientSelection();
 
@@ -53,13 +54,16 @@ export const ClientsTable = ({
     isOpen: false
   });
 
-  const handleSave = (client: ClientEntry) => {
-    if (modalState.mode === 'add') {
-      onClientAdded?.(client);
-    } else if (modalState.mode === 'edit') {
-      onClientUpdated?.(client);
+  const handleSelectAll = (selectAll: boolean, includeAll?: boolean) => {
+    if (selectAll) {
+      const clientsToSelect = includeAll ? data : filteredAndSortedData;
+      const newSelected = new Set<string>();
+      clientsToSelect.forEach(client => newSelected.add(client.company));
+      setSelectedClients(newSelected);
+    } else {
+      setSelectedClients(new Set());
     }
-    setModalState({ isOpen: false, mode: 'add' });
+    baseHandleSelectAll(selectAll, includeAll);
   };
 
   const handleDelete = async (client: ClientEntry) => {

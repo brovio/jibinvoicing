@@ -4,14 +4,14 @@ import { ClientEntry } from '../types/clients';
 export const useClientSelection = () => {
   const [selectedClients, setSelectedClients] = useState<Set<string>>(new Set());
 
-  const handleSelectAll = (selectAll: boolean, clients: ClientEntry[]) => {
-    if (selectAll) {
-      const newSelected = new Set<string>();
-      clients.forEach(client => newSelected.add(client.company));
-      setSelectedClients(newSelected);
-    } else {
+  const handleSelectAll = (selectAll: boolean, includeAll?: boolean) => {
+    if (!selectAll) {
       setSelectedClients(new Set());
+      return;
     }
+    
+    // Logic will be handled by the parent component
+    // which has access to either filtered or all clients
   };
 
   const handleRowSelect = (client: ClientEntry, selected: boolean) => {
@@ -26,6 +26,7 @@ export const useClientSelection = () => {
 
   return {
     selectedClients,
+    setSelectedClients,
     handleSelectAll,
     handleRowSelect
   };
