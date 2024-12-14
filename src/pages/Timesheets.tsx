@@ -26,23 +26,23 @@ const Timesheets = () => {
 
       if (error) throw error;
       
-      // Ensure the data matches TimesheetEntry interface
-      const typedData = data?.map(entry => ({
-        tsid: entry.tsid,
-        date: entry.date,
-        client: entry.client,
-        project: entry.project,
-        task: entry.task,
-        hours: entry.hours,
-        status: entry.status,
-        staffName: entry.staffName,
-        entryType: entry.entryType,
-        time: entry.time,
-        break: entry.break,
-        breakType: entry.breakType
-      })) as TimesheetEntry[];
-
-      setTimesheetData(typedData || []);
+      if (data) {
+        const typedData: TimesheetEntry[] = data.map(entry => ({
+          tsid: entry.tsid,
+          date: entry.date,
+          client: entry.client,
+          project: entry.project,
+          task: entry.task,
+          hours: entry.hours,
+          status: entry.status || 'Pending',
+          staffName: entry.staff_name,
+          entryType: entry.entry_type,
+          time: entry.time,
+          break: entry.break,
+          breakType: entry.break_type
+        }));
+        setTimesheetData(typedData);
+      }
     } catch (error) {
       console.error('Error fetching timesheets:', error);
       showImportErrorToast('Failed to load timesheets');
