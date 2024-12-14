@@ -29,11 +29,19 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
     isOpen: boolean; 
     entry?: TimesheetEntry; 
     isMultiple?: boolean 
-  }>({ isOpen: false });
+  }>({ 
+    isOpen: false,
+    entry: undefined,
+    isMultiple: false
+  });
+  
   const [modalState, setModalState] = React.useState<{
     isOpen: boolean;
     entry?: TimesheetEntry;
-  }>({ isOpen: false });
+  }>({ 
+    isOpen: false,
+    entry: undefined
+  });
 
   const {
     handleSelectAll,
@@ -96,7 +104,7 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
       console.error('Error deleting timesheet entries:', error);
       showErrorToast('Failed to delete timesheet entries');
     }
-    setDeleteConfirm({ isOpen: false });
+    setDeleteConfirm({ isOpen: false, entry: undefined, isMultiple: false });
   };
 
   const handleBulkAction = (action: string) => {
@@ -105,6 +113,7 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
       if (selectedEntries.length > 0) {
         setDeleteConfirm({ 
           isOpen: true, 
+          entry: undefined,
           isMultiple: true 
         });
       }
@@ -138,7 +147,7 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
                 data={item}
                 isSelected={isSelected(item)}
                 onSelect={(selected) => handleRowSelect(item, selected)}
-                onDelete={(entry) => setDeleteConfirm({ isOpen: true, entry })}
+                onDelete={(entry) => setDeleteConfirm({ isOpen: true, entry, isMultiple: false })}
                 onView={(entry) => setModalState({ isOpen: true, entry })}
                 onEdit={(entry) => setModalState({ isOpen: true, entry })}
               />
@@ -158,7 +167,7 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
 
       <TimesheetModal
         isOpen={modalState.isOpen}
-        onClose={() => setModalState({ isOpen: false })}
+        onClose={() => setModalState({ isOpen: false, entry: undefined })}
         entry={modalState.entry}
       />
     </>
