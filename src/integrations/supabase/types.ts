@@ -108,7 +108,7 @@ export type Database = {
           client: string
           created_at: string | null
           date: string
-          duration: string
+          duration: number
           flag_reason: string | null
           flagged: boolean | null
           full_name: string
@@ -122,7 +122,7 @@ export type Database = {
           client: string
           created_at?: string | null
           date: string
-          duration: string
+          duration: number
           flag_reason?: string | null
           flagged?: boolean | null
           full_name: string
@@ -136,7 +136,7 @@ export type Database = {
           client?: string
           created_at?: string | null
           date?: string
-          duration?: string
+          duration?: number
           flag_reason?: string | null
           flagged?: boolean | null
           full_name?: string

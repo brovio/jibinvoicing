@@ -1,11 +1,17 @@
 import { TimesheetTable } from "@/components/Timesheet/TimesheetTable";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ExportButton } from "@/components/ExportButton";
 import { useState, useEffect } from "react";
 import { TimesheetEntry, fetchTimesheets } from "@/utils/timesheetParser";
 import { showErrorToast } from "@/utils/toastUtils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Timesheets = () => {
   const [timesheetData, setTimesheetData] = useState<TimesheetEntry[]>([]);
@@ -25,6 +31,11 @@ const Timesheets = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleBulkAction = (action: 'deleteAll' | 'editProject' | 'editClient' | 'deleteSelected') => {
+    // Implement bulk actions here
+    console.log('Bulk action:', action);
   };
 
   if (isLoading) {
@@ -59,13 +70,48 @@ const Timesheets = () => {
               className="pl-9 bg-[#252A38] border-gray-800 text-white placeholder:text-gray-500 rounded-[10px]"
             />
           </div>
-          <div className="flex gap-4">
+          <div className="flex items-center gap-4">
             <select className="bg-[#252A38] border border-gray-800 text-gray-400 rounded-[10px] px-4 py-2">
               <option>All Projects</option>
             </select>
             <select className="bg-[#252A38] border border-gray-800 text-gray-400 rounded-[10px] px-4 py-2">
               <option>All Staff</option>
             </select>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button 
+                  className="bg-[#252A38] border border-gray-800 text-gray-400 rounded-[10px] p-2 hover:bg-[#2A303F] transition-colors"
+                >
+                  <Settings className="h-5 w-5" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 bg-[#252A38] border-gray-800">
+                <DropdownMenuItem 
+                  className="text-gray-400 hover:text-white cursor-pointer"
+                  onClick={() => handleBulkAction('deleteAll')}
+                >
+                  Delete All
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  className="text-gray-400 hover:text-white cursor-pointer"
+                  onClick={() => handleBulkAction('editProject')}
+                >
+                  Edit Project
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  className="text-gray-400 hover:text-white cursor-pointer"
+                  onClick={() => handleBulkAction('editClient')}
+                >
+                  Edit Client
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  className="text-gray-400 hover:text-white cursor-pointer"
+                  onClick={() => handleBulkAction('deleteSelected')}
+                >
+                  Delete Selected
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
