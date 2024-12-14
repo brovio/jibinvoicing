@@ -6,22 +6,14 @@ import { ClientModal } from "./ClientModal";
 import { TableActions } from "./TableActions";
 import { TablePagination } from "./TablePagination";
 import { toDatabase, fromDatabase } from "./utils/clientTransforms";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { showClientDeletedToast } from "@/utils/toastUtils";
 import { useClientFilters } from "./hooks/useClientFilters";
 import { useClientSelection } from "./hooks/useClientSelection";
 import { ClientEntry, ClientsTableProps } from "./types/clients";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
+import { useTableOperations } from "./TableOperations";
 
 export const ClientsTable = ({ 
   data,
@@ -44,6 +36,10 @@ export const ClientsTable = ({
     handleSelectAll: baseHandleSelectAll,
     handleRowSelect
   } = useClientSelection();
+
+  const { handleDelete, handleBulkDelete, handleBulkUpdate } = useTableOperations({
+    onClientDeleted
+  });
 
   const [modalState, setModalState] = useState<{
     isOpen: boolean;
@@ -102,68 +98,10 @@ export const ClientsTable = ({
     }
   };
 
-  const handleDelete = async (client: ClientEntry) => {
-    try {
-      const dbClient = toDatabase(client);
-      const { error } = await supabase
-        .from('clients')
-        .delete()
-        .eq('company', dbClient.company);
-
-      if (error) throw error;
-
-      setDeleteConfirm({ isOpen: false });
-      onClientDeleted?.(client);
-      showClientDeletedToast(client.company);
-    } catch (error) {
-      console.error('Error deleting client:', error);
-      toast.error('Failed to delete client');
-    }
-  };
-
   const handleImportSuccess = (importedClients: ClientEntry[]) => {
     importedClients.forEach(client => {
       onClientAdded?.(client);
     });
-  };
-
-  const handleClientsDeleted = () => {
-    window.location.reload();
-  };
-
-  const handleBulkDelete = async () => {
-    try {
-      const selectedCompanies = Array.from(selectedClients);
-      const { error } = await supabase
-        .from('clients')
-        .delete()
-        .in('company', selectedCompanies);
-
-      if (error) throw error;
-
-      toast.success(`Successfully deleted ${selectedCompanies.length} clients`);
-      window.location.reload();
-    } catch (error) {
-      console.error('Error deleting clients:', error);
-      toast.error('Failed to delete clients');
-    }
-  };
-
-  const handleBulkUpdate = async (field: string, value: string | number) => {
-    try {
-      const selectedCompanies = Array.from(selectedClients);
-      const { error } = await supabase
-        .from('clients')
-        .update({ [field]: value })
-        .in('company', selectedCompanies);
-
-      if (error) throw error;
-
-      window.location.reload();
-    } catch (error) {
-      console.error('Error updating clients:', error);
-      toast.error('Failed to update clients');
-    }
   };
 
   return (
@@ -183,10 +121,10 @@ export const ClientsTable = ({
             onSelectAll={handleSelectAll}
             totalClients={data.length}
             visibleClients={filteredAndSortedData.length}
-            onClientsDeleted={handleClientsDeleted}
+            onClientsDeleted={() => window.location.reload()}
             selectedClients={selectedClients}
-            onBulkUpdate={handleBulkUpdate}
-            onBulkDelete={handleBulkDelete}
+            onBulkUpdate={(field, value) => handleBulkUpdate(field, value, selectedClients)}
+            onBulkDelete={() => handleBulkDelete(selectedClients)}
           />
           <TableBody>
             {filteredAndSortedData.map((item, index) => (
@@ -214,32 +152,15 @@ export const ClientsTable = ({
         onSave={handleSave}
       />
 
-      <AlertDialog 
-        open={deleteConfirm.isOpen} 
-        onOpenChange={(open) => setDeleteConfirm(current => ({ ...current, isOpen: open }))}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the client
-              {deleteConfirm.client && ` "${deleteConfirm.client.company}"`} and remove their data
-              from our servers.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setDeleteConfirm({ isOpen: false })}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => deleteConfirm.client && handleDelete(deleteConfirm.client)}
-              className="bg-red-500 hover:bg-red-600"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteConfirmDialog
+        isOpen={deleteConfirm.isOpen}
+        client={deleteConfirm.client}
+        onClose={() => setDeleteConfirm({ isOpen: false })}
+        onConfirm={(client) => {
+          handleDelete(client);
+          setDeleteConfirm({ isOpen: false });
+        }}
+      />
     </>
   );
 };
