@@ -7,7 +7,9 @@ export const useClientSelection = () => {
 
   const handleSelectAll = (selectAll: boolean, includeAll?: boolean) => {
     setSelectAllMode(selectAll && !!includeAll);
-    setSelectedClients(new Set());
+    if (!selectAll) {
+      setSelectedClients(new Set());
+    }
   };
 
   const handleRowSelect = (client: ClientEntry, selected: boolean) => {
@@ -21,7 +23,6 @@ export const useClientSelection = () => {
       return newSelected;
     });
     
-    // If selecting individual items, ensure we're not in selectAll mode
     if (selected) {
       setSelectAllMode(false);
     }

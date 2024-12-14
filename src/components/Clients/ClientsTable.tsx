@@ -83,6 +83,14 @@ export const ClientsTable = ({
       showClientDeletedToast(clientsToDelete.company);
     }
     setDeleteConfirm({ isOpen: false });
+    handleSelectAll(false);
+  };
+
+  const getSelectedClients = () => {
+    if (selectAllMode) {
+      return data;
+    }
+    return data.filter(client => selectedClients.has(client.company));
   };
 
   const handleBulkAction = (action: 'deleteAll' | 'editCurrency' | 'editRate' | 'deleteSelected') => {
@@ -91,7 +99,7 @@ export const ClientsTable = ({
         setDeleteConfirm({ isOpen: true, isMultiple: true });
         break;
       case 'deleteSelected':
-        const selectedClientsList = data.filter(client => selectedClients.has(client.company));
+        const selectedClientsList = getSelectedClients();
         if (selectedClientsList.length > 0) {
           setDeleteConfirm({ isOpen: true, isMultiple: true });
         }
@@ -106,7 +114,7 @@ export const ClientsTable = ({
   };
 
   const handleBulkEdit = () => {
-    const selectedClientsList = data.filter(client => selectedClients.has(client.company));
+    const selectedClientsList = getSelectedClients();
     selectedClientsList.forEach(client => {
       const updatedClient = { ...client };
       if (bulkEditDialog.type === 'currency') {
@@ -117,18 +125,13 @@ export const ClientsTable = ({
       onClientUpdated?.(updatedClient);
     });
     setBulkEditDialog({ isOpen: false, type: 'currency', value: '' });
-  };
-
-  const handleImportSuccess = (importedClients: ClientEntry[]) => {
-    importedClients.forEach(client => {
-      onClientAdded?.(client);
-    });
+    handleSelectAll(false);
   };
 
   return (
     <>
       <TableActions
-        onImportSuccess={handleImportSuccess}
+        onImportSuccess={onClientAdded}
         clients={data}
         onAddClick={() => setModalState({ isOpen: true, mode: 'add' })}
         onRateFilterChange={setRateFilter}
@@ -149,7 +152,7 @@ export const ClientsTable = ({
               <ClientsRow 
                 key={item.company}
                 data={item}
-                isSelected={selectedClients.has(item.company)}
+                isSelected={selectedClients.has(item.company) || selectAllMode}
                 onSelect={(selected) => handleRowSelect(item, selected)}
                 onView={(client) => setModalState({ isOpen: true, mode: 'view', client })}
                 onEdit={(client) => setModalState({ isOpen: true, mode: 'edit', client })}
@@ -196,7 +199,7 @@ export const ClientsTable = ({
                 if (deleteConfirm.isMultiple) {
                   const clientsToDelete = deleteConfirm.client 
                     ? [deleteConfirm.client]
-                    : data.filter(client => selectedClients.has(client.company));
+                    : getSelectedClients();
                   handleDelete(clientsToDelete);
                 } else if (deleteConfirm.client) {
                   handleDelete(deleteConfirm.client);
