@@ -25,23 +25,8 @@ interface TimesheetTableProps {
 
 export const TimesheetTable = ({ data }: TimesheetTableProps) => {
   const [sortConfig, setSortConfig] = React.useState<{ key: string; direction: string } | null>(null);
-  const [deleteConfirm, setDeleteConfirm] = React.useState<{ 
-    isOpen: boolean; 
-    entry?: TimesheetEntry; 
-    isMultiple?: boolean 
-  }>({ 
-    isOpen: false,
-    entry: undefined,
-    isMultiple: false
-  });
-  
-  const [modalState, setModalState] = React.useState<{
-    isOpen: boolean;
-    entry?: TimesheetEntry;
-  }>({ 
-    isOpen: false,
-    entry: undefined
-  });
+  const [deleteConfirm, setDeleteConfirm] = React.useState({ isOpen: false });
+  const [modalState, setModalState] = React.useState({ isOpen: false });
 
   const {
     handleSelectAll,
@@ -82,13 +67,6 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
       const entries = Array.isArray(entriesToDelete) ? entriesToDelete : [entriesToDelete];
       const ids = entries.map(entry => entry.tsid);
       
-      const { error: timesheetsError } = await supabase
-        .from('brovio-timesheets')
-        .delete()
-        .in('tsid', ids);
-
-      if (timesheetsError) throw timesheetsError;
-
       const { error: importedError } = await supabase
         .from('imported_timesheets')
         .delete()
@@ -104,29 +82,16 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
       console.error('Error deleting timesheet entries:', error);
       showErrorToast('Failed to delete timesheet entries');
     }
-    setDeleteConfirm({ isOpen: false, entry: undefined, isMultiple: false });
+    setDeleteConfirm({ isOpen: false });
   };
 
-  const handleBulkAction = (action: string) => {
-    if (action === 'deleteAll' || action === 'deleteSelected') {
-      const selectedEntries = getSelectedItems(data);
-      if (selectedEntries.length > 0) {
-        setDeleteConfirm({ 
-          isOpen: true, 
-          entry: undefined,
-          isMultiple: true 
-        });
-      }
-    }
-  };
-
-  const handleTableSelectAll = (selected: boolean, includeAll: boolean = false) => {
-    handleSelectAll(selected, includeAll);
+  const handleTableSelectAll = (selected: boolean) => {
+    handleSelectAll(selected, false);
   };
 
   return (
     <>
-      <TimesheetActions onBulkAction={handleBulkAction} />
+      <TimesheetActions />
       
       <div className="bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">
         <Table>
@@ -147,9 +112,9 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
                 data={item}
                 isSelected={isSelected(item)}
                 onSelect={(selected) => handleRowSelect(item, selected)}
-                onDelete={(entry) => setDeleteConfirm({ isOpen: true, entry, isMultiple: false })}
-                onView={(entry) => setModalState({ isOpen: true, entry })}
-                onEdit={(entry) => setModalState({ isOpen: true, entry })}
+                onDelete={(entry) => setDeleteConfirm({ isOpen: true })}
+                onView={(entry) => setModalState({ isOpen: true })}
+                onEdit={(entry) => setModalState({ isOpen: true })}
               />
             ))}
           </TableBody>
@@ -158,17 +123,15 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
 
       <TimesheetDeleteDialog 
         isOpen={deleteConfirm.isOpen}
-        onOpenChange={(open) => setDeleteConfirm(current => ({ ...current, isOpen: open }))}
+        onOpenChange={(open) => setDeleteConfirm({ isOpen: open })}
         onConfirm={handleDelete}
-        entry={deleteConfirm.entry}
-        isMultiple={deleteConfirm.isMultiple}
         getSelectedEntries={() => getSelectedItems(data)}
       />
 
       <TimesheetModal
         isOpen={modalState.isOpen}
-        onClose={() => setModalState({ isOpen: false, entry: undefined })}
-        entry={modalState.entry}
+        onClose={() => setModalState({ isOpen: false })}
+        entry={undefined}
       />
     </>
   );
