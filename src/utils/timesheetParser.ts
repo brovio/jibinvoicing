@@ -1,3 +1,5 @@
+import { supabase } from "@/integrations/supabase/client";
+
 export interface TimesheetEntry {
   tsid: number;
   date: string;
@@ -13,3 +15,18 @@ export interface TimesheetEntry {
   break_type?: string;
   flag_reason?: string;
 }
+
+export const fetchTimesheets = async (): Promise<TimesheetEntry[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('brovio-timesheets')
+      .select('*')
+      .order('date', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error('Error fetching timesheets:', error);
+    throw error;
+  }
+};
