@@ -86,6 +86,7 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
   };
 
   const handleTableSelectAll = (selected: boolean) => {
+    // Fixed: Added the second argument 'false' to match the expected function signature
     handleSelectAll(selected, false);
   };
 
