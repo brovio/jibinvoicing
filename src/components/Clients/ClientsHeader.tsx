@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useTableOperations } from "./TableOperations";
 
 interface ClientsHeaderProps {
   onSort: (key: string) => void;
@@ -50,6 +51,10 @@ export const ClientsHeader = ({
   const [newCurrency, setNewCurrency] = useState("USD");
   const [newRate, setNewRate] = useState("");
 
+  const { handleDeleteAll } = useTableOperations({
+    onClientDeleted: onClientsDeleted
+  });
+
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
     setIsChecked(checked);
@@ -58,24 +63,6 @@ export const ClientsHeader = ({
       setIsConfirmDialogOpen(true);
     } else {
       onSelectAll(checked);
-    }
-  };
-
-  const handleDeleteAll = async () => {
-    try {
-      const { error } = await supabase
-        .from('clients')
-        .delete()
-        .not('id', 'is', null); // This will delete all records
-
-      if (error) throw error;
-
-      toast.success('All clients have been deleted');
-      onClientsDeleted?.();
-      setIsDeleteAllDialogOpen(false);
-    } catch (error) {
-      console.error('Error deleting clients:', error);
-      toast.error('Failed to delete clients');
     }
   };
 
@@ -240,7 +227,10 @@ export const ClientsHeader = ({
             </Button>
             <Button
               variant="destructive"
-              onClick={handleDeleteAll}
+              onClick={() => {
+                handleDeleteAll();
+                setIsDeleteAllDialogOpen(false);
+              }}
               className="bg-red-500 hover:bg-red-600 rounded-[10px]"
             >
               Delete All

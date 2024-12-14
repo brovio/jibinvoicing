@@ -37,7 +37,7 @@ export const ClientsTable = ({
     handleRowSelect
   } = useClientSelection();
 
-  const { handleDelete, handleBulkDelete, handleBulkUpdate } = useTableOperations({
+  const { handleDelete, handleBulkDelete, handleBulkUpdate, handleDeleteAll } = useTableOperations({
     onClientDeleted
   });
 
