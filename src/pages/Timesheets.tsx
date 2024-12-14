@@ -25,7 +25,24 @@ const Timesheets = () => {
         .order('date', { ascending: false });
 
       if (error) throw error;
-      setTimesheetData(data || []);
+      
+      // Ensure the data matches TimesheetEntry interface
+      const typedData = data?.map(entry => ({
+        tsid: entry.tsid,
+        date: entry.date,
+        client: entry.client,
+        project: entry.project,
+        task: entry.task,
+        hours: entry.hours,
+        status: entry.status,
+        staffName: entry.staffName,
+        entryType: entry.entryType,
+        time: entry.time,
+        break: entry.break,
+        breakType: entry.breakType
+      })) as TimesheetEntry[];
+
+      setTimesheetData(typedData || []);
     } catch (error) {
       console.error('Error fetching timesheets:', error);
       showImportErrorToast('Failed to load timesheets');
