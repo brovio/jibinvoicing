@@ -25,7 +25,6 @@ const Clients = () => {
 
       if (error) throw error;
       
-      // Transform the data to match our frontend model
       const transformedData = data?.map(client => ({
         clientId: client.clientid,
         company: client.company,
@@ -110,6 +109,10 @@ const Clients = () => {
 
   const handleClientUpdated = async (updatedClient: any) => {
     try {
+      if (!updatedClient.clientId) {
+        throw new Error('Client ID is required for update');
+      }
+
       const { error } = await supabase
         .from('brovio-clients')
         .update({
@@ -123,7 +126,8 @@ const Clients = () => {
           notes: updatedClient.notes || null,
           website: updatedClient.website || null
         })
-        .eq('clientid', updatedClient.clientId);
+        .eq('clientid', updatedClient.clientId)
+        .select();
 
       if (error) throw error;
       await fetchClients();
