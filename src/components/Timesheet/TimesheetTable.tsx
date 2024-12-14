@@ -6,7 +6,6 @@ import { SharedTableHeader } from "@/components/shared/TableHeader";
 import { useTableSelection } from "@/hooks/useTableSelection";
 import { TimesheetDeleteDialog } from "./TimesheetDeleteDialog";
 import { TimesheetModal } from "./TimesheetModal";
-import { TimesheetActions } from "./TimesheetActions";
 import { supabase } from "@/integrations/supabase/client";
 import { showErrorToast, showSuccessToast } from "@/utils/toastUtils";
 
@@ -87,14 +86,12 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
 
   return (
     <>
-      <TimesheetActions />
-      
       <div className="bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">
         <Table>
           <SharedTableHeader 
             columns={timesheetColumns}
             onSort={requestSort}
-            onSelectAll={(selected: boolean, includeAll: boolean) => handleSelectAll(selected, includeAll)}
+            onSelectAll={handleSelectAll}
             totalItems={data.length}
             visibleItems={sortedData.length}
             selectedCount={selectAllMode ? data.length - excludedItems.size : getSelectedItems(data).length}
