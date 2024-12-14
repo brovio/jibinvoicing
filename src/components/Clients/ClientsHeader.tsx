@@ -1,7 +1,7 @@
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ClientsHeaderProps {
   onSort: (key: string) => void;
@@ -21,9 +21,14 @@ export const ClientsHeader = ({ onSort, onSelectAll, totalClients, visibleClient
     if (checked && totalClients > visibleClients) {
       setIsConfirmDialogOpen(true);
     } else {
-      onSelectAll(checked);
+      onSelectAll(checked, false);
     }
   };
+
+  // Reset checkbox state when total clients changes
+  useEffect(() => {
+    setIsChecked(false);
+  }, [totalClients]);
 
   return (
     <>
