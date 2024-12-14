@@ -4,7 +4,7 @@ export interface SelectableItem {
   [key: string]: any;
   id?: string;
   company?: string; // for clients
-  date?: string;    // for timesheets
+  tsid?: number;    // for timesheets
 }
 
 export const useTableSelection = <T extends SelectableItem>() => {
@@ -13,7 +13,8 @@ export const useTableSelection = <T extends SelectableItem>() => {
   const [excludedItems, setExcludedItems] = useState<Set<string>>(new Set());
 
   const getItemIdentifier = (item: T): string => {
-    return item.company || item.date || item.id || '';
+    if (item.tsid !== undefined) return item.tsid.toString();
+    return item.company || item.id || '';
   };
 
   const handleSelectAll = (selectAll: boolean, includeAll?: boolean) => {

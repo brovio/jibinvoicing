@@ -66,7 +66,7 @@ export const TimesheetTable = ({ data }: { data: TimesheetEntry[] }) => {
         <TableBody>
           {sortedData.map((item) => (
             <TimesheetRow 
-              key={`${item.date}-${item.client}-${item.project}-${item.task}-${item.hours}`}
+              key={item.tsid}
               data={item}
               isSelected={isSelected(item)}
               onSelect={(selected) => handleRowSelect(item, selected)}
