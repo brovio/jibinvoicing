@@ -1,3 +1,4 @@
+import React from "react";
 import { Table, TableBody } from "@/components/ui/table";
 import { TimesheetRow } from "./TimesheetRow";
 import { TimesheetEntry } from "@/utils/timesheetParser";
