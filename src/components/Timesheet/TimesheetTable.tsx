@@ -6,6 +6,7 @@ import { SharedTableHeader } from "@/components/shared/TableHeader";
 import { useTableSelection } from "@/hooks/useTableSelection";
 import { TimesheetDeleteDialog } from "./TimesheetDeleteDialog";
 import { TimesheetModal } from "./TimesheetModal";
+import { TimesheetActions } from "./TimesheetActions";
 import { supabase } from "@/integrations/supabase/client";
 import { showErrorToast, showSuccessToast } from "@/utils/toastUtils";
 
@@ -73,7 +74,6 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
       const entries = Array.isArray(entriesToDelete) ? entriesToDelete : [entriesToDelete];
       const ids = entries.map(entry => entry.tsid);
       
-      // Delete from brovio-timesheets
       const { error: timesheetsError } = await supabase
         .from('brovio-timesheets')
         .delete()
@@ -81,7 +81,6 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
 
       if (timesheetsError) throw timesheetsError;
 
-      // Delete from imported_timesheets
       const { error: importedError } = await supabase
         .from('imported_timesheets')
         .delete()
@@ -117,34 +116,38 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
   };
 
   return (
-    <div className="bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">
-      <Table>
-        <SharedTableHeader 
-          columns={timesheetColumns}
-          onSort={requestSort}
-          onSelectAll={handleTableSelectAll}
-          totalItems={data.length}
-          visibleItems={sortedData.length}
-          selectedCount={selectAllMode ? data.length - excludedItems.size : getSelectedItems(data).length}
-          excludedCount={excludedItems.size}
-          selectAllMode={selectAllMode}
-        />
-        <TableBody>
-          {sortedData.map((item) => (
-            <TimesheetRow 
-              key={item.tsid}
-              data={item}
-              isSelected={isSelected(item)}
-              onSelect={(selected) => handleRowSelect(item, selected)}
-              onDelete={(entry) => setDeleteConfirm({ isOpen: true, entry })}
-              onView={(entry) => setModalState({ isOpen: true, entry })}
-              onEdit={(entry) => setModalState({ isOpen: true, entry })}
-            />
-          ))}
-        </TableBody>
-      </Table>
+    <>
+      <TimesheetActions onBulkAction={handleBulkAction} />
+      
+      <div className="bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">
+        <Table>
+          <SharedTableHeader 
+            columns={timesheetColumns}
+            onSort={requestSort}
+            onSelectAll={handleTableSelectAll}
+            totalItems={data.length}
+            visibleItems={sortedData.length}
+            selectedCount={selectAllMode ? data.length - excludedItems.size : getSelectedItems(data).length}
+            excludedCount={excludedItems.size}
+            selectAllMode={selectAllMode}
+          />
+          <TableBody>
+            {sortedData.map((item) => (
+              <TimesheetRow 
+                key={item.tsid}
+                data={item}
+                isSelected={isSelected(item)}
+                onSelect={(selected) => handleRowSelect(item, selected)}
+                onDelete={(entry) => setDeleteConfirm({ isOpen: true, entry })}
+                onView={(entry) => setModalState({ isOpen: true, entry })}
+                onEdit={(entry) => setModalState({ isOpen: true, entry })}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
-      <TimesheetDeleteDialog
+      <TimesheetDeleteDialog 
         isOpen={deleteConfirm.isOpen}
         onOpenChange={(open) => setDeleteConfirm(current => ({ ...current, isOpen: open }))}
         onConfirm={handleDelete}
@@ -158,6 +161,6 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
         onClose={() => setModalState({ isOpen: false })}
         entry={modalState.entry}
       />
-    </div>
+    </>
   );
 };
