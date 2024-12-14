@@ -13,6 +13,7 @@ export interface TimesheetEntry {
   time?: string | null;
   break?: boolean;
   break_type?: string;
+  flagReason?: string;
 }
 
 const generateTsid = (): number => {
@@ -23,6 +24,17 @@ const isValidTimeFormat = (time: string): boolean => {
   // Check if time matches HH:MM or HH:MM:SS format
   const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/;
   return timeRegex.test(time);
+};
+
+const parseDuration = (duration: string): number => {
+  // Parse duration in format "Xh YYm" to hours
+  const match = duration.match(/(\d+)h\s*(\d+)m/);
+  if (match) {
+    const hours = parseInt(match[1]);
+    const minutes = parseInt(match[2]);
+    return hours + (minutes / 60);
+  }
+  return 0;
 };
 
 export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
@@ -37,18 +49,18 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
       rawEntry[header.trim()] = values[index]?.trim() || '';
     });
 
-    // Map CSV fields to database columns
     const entry: TimesheetEntry = {
       tsid: generateTsid(),
       date: rawEntry.date || new Date().toISOString().split('T')[0],
-      client: rawEntry.client || 'Unknown Client',
-      project: rawEntry.activity || 'Unknown Project',
-      task: rawEntry.notes || 'No Description',
-      hours: parseFloat(rawEntry.duration) || 0,
-      staff_name: rawEntry.fullname || null,
+      client: rawEntry.client?.trim() || 'Unknown Client',
+      project: rawEntry.activity?.trim() || 'Unknown Project',
+      task: rawEntry.notes?.trim() || 'No Description',
+      hours: parseDuration(rawEntry.duration || '0h 0m'),
+      staff_name: rawEntry.fullname?.trim() || null,
       time: rawEntry.time && isValidTimeFormat(rawEntry.time) ? rawEntry.time : null,
-      status: rawEntry.flagged === 'true' ? 'Flagged' : 'Pending',
-      entry_type: rawEntry.flagreason || null
+      status: rawEntry.flagged === 'true' ? 'Error' : 'Success',
+      entry_type: rawEntry.flagreason || null,
+      flagReason: rawEntry.flagged === 'true' ? rawEntry.flagreason : undefined
     };
 
     return entry;
