@@ -1,13 +1,8 @@
 import { toast } from "@/components/ui/use-toast";
-
-let currentClientId = 1;
-
-const generateNextClientId = () => {
-  return String(currentClientId++).padStart(4, '0');
-};
+import { supabase } from "@/integrations/supabase/client";
 
 export interface ImportedClient {
-  clientId: string;
+  clientId?: string;
   company: string;
   contactName: string;
   email: string;
@@ -37,9 +32,7 @@ export const parseCSV = (content: string): ImportedClient[] => {
       .filter(line => line.trim())
       .map(line => {
         const values = line.split(',').map(value => value.trim());
-        const client: Partial<ImportedClient> = {
-          clientId: generateNextClientId()
-        };
+        const client: Partial<ImportedClient> = {};
         
         headers.forEach((header, index) => {
           switch(header) {
@@ -98,7 +91,6 @@ export const parseJSON = (content: string): ImportedClient[] => {
     }
 
     return data.map(item => ({
-      clientId: generateNextClientId(),
       company: item.company,
       contactName: item.contactName,
       email: item.email,

@@ -11,13 +11,46 @@ export type Database = {
     Tables: {
       "brovio-clients": {
         Row: {
+          address: string | null
           clientid: number
+          company: string
+          contact_name: string
+          created_at: string
+          currency: string | null
+          email: string
+          notes: string | null
+          phone: string | null
+          rate: number | null
+          updated_at: string
+          website: string | null
         }
         Insert: {
+          address?: string | null
           clientid?: number
+          company: string
+          contact_name: string
+          created_at?: string
+          currency?: string | null
+          email: string
+          notes?: string | null
+          phone?: string | null
+          rate?: number | null
+          updated_at?: string
+          website?: string | null
         }
         Update: {
+          address?: string | null
           clientid?: number
+          company?: string
+          contact_name?: string
+          created_at?: string
+          currency?: string | null
+          email?: string
+          notes?: string | null
+          phone?: string | null
+          rate?: number | null
+          updated_at?: string
+          website?: string | null
         }
         Relationships: []
       }

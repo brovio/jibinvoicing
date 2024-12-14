@@ -5,48 +5,143 @@ import { UserPlus } from "lucide-react";
 import { FileUpload } from "@/components/FileUpload";
 import { ExportButton } from "@/components/ExportButton";
 import { Button } from "@/components/ui/button";
-import backupClients from "@/data/default-clients.json";
-
-const STORAGE_KEY = 'stored_clients';
+import { supabase } from "@/integrations/supabase/client";
+import { showErrorToast } from "@/utils/toastUtils";
 
 const Clients = () => {
-  const [clients, setClients] = useState(() => {
-    const storedClients = localStorage.getItem(STORAGE_KEY);
-    return storedClients ? JSON.parse(storedClients) : backupClients.clients;
-  });
+  const [clients, setClients] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(clients));
-  }, [clients]);
+    fetchClients();
+  }, []);
 
-  const handleImportSuccess = (importedClients: ImportedClient[]) => {
-    const formattedClients = importedClients.map(client => ({
-      company: client.company,
-      contactName: client.contactName,
-      email: client.email,
-      phone: client.phone || '',
-      address: client.address || '',
-      currency: client.currency,
-      rate: Number(client.rate),
-      notes: client.notes || '',
-      website: client.website || ''
-    }));
-    setClients(prev => [...prev, ...formattedClients]);
+  const fetchClients = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('brovio-clients')
+        .select('*')
+        .order('clientid', { ascending: true });
+
+      if (error) throw error;
+      setClients(data || []);
+    } catch (error) {
+      console.error('Error fetching clients:', error);
+      showErrorToast(
+        "Failed to load clients",
+        "Please try again later or contact support if the problem persists"
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleClientAdded = (newClient: any) => {
-    setClients(prev => [...prev, newClient]);
+  const handleImportSuccess = async (importedClients: ImportedClient[]) => {
+    try {
+      const { data, error } = await supabase
+        .from('brovio-clients')
+        .insert(
+          importedClients.map(client => ({
+            company: client.company,
+            contact_name: client.contactName,
+            email: client.email,
+            phone: client.phone || null,
+            address: client.address || null,
+            currency: client.currency,
+            rate: Number(client.rate),
+            notes: client.notes || null,
+            website: client.website || null
+          }))
+        )
+        .select();
+
+      if (error) throw error;
+      await fetchClients();
+    } catch (error) {
+      console.error('Import error:', error);
+      showErrorToast(
+        "Import failed",
+        "There was an error importing the clients. Please try again."
+      );
+    }
   };
 
-  const handleClientUpdated = (updatedClient: any) => {
-    setClients(prev => prev.map(client => 
-      client.company === updatedClient.company ? updatedClient : client
-    ));
+  const handleClientAdded = async (newClient: any) => {
+    try {
+      const { error } = await supabase
+        .from('brovio-clients')
+        .insert({
+          company: newClient.company,
+          contact_name: newClient.contactName,
+          email: newClient.email,
+          phone: newClient.phone || null,
+          address: newClient.address || null,
+          currency: newClient.currency,
+          rate: Number(newClient.rate),
+          notes: newClient.notes || null,
+          website: newClient.website || null
+        });
+
+      if (error) throw error;
+      await fetchClients();
+    } catch (error) {
+      console.error('Add client error:', error);
+      showErrorToast(
+        "Failed to add client",
+        "Please try again or contact support if the problem persists"
+      );
+    }
   };
 
-  const handleClientDeleted = (deletedClient: any) => {
-    setClients(prev => prev.filter(client => client.company !== deletedClient.company));
+  const handleClientUpdated = async (updatedClient: any) => {
+    try {
+      const { error } = await supabase
+        .from('brovio-clients')
+        .update({
+          company: updatedClient.company,
+          contact_name: updatedClient.contactName,
+          email: updatedClient.email,
+          phone: updatedClient.phone || null,
+          address: updatedClient.address || null,
+          currency: updatedClient.currency,
+          rate: Number(updatedClient.rate),
+          notes: updatedClient.notes || null,
+          website: updatedClient.website || null
+        })
+        .eq('clientid', updatedClient.clientId);
+
+      if (error) throw error;
+      await fetchClients();
+    } catch (error) {
+      console.error('Update client error:', error);
+      showErrorToast(
+        "Failed to update client",
+        "Please try again or contact support if the problem persists"
+      );
+    }
   };
+
+  const handleClientDeleted = async (deletedClient: any) => {
+    try {
+      const { error } = await supabase
+        .from('brovio-clients')
+        .delete()
+        .eq('clientid', deletedClient.clientId);
+
+      if (error) throw error;
+      await fetchClients();
+    } catch (error) {
+      console.error('Delete client error:', error);
+      showErrorToast(
+        "Failed to delete client",
+        "Please try again or contact support if the problem persists"
+      );
+    }
+  };
+
+  if (isLoading) {
+    return <div className="flex justify-center items-center h-96">Loading...</div>;
+  }
 
   return (
     <div className="max-w-7xl mx-auto">
