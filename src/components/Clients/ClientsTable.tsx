@@ -32,7 +32,8 @@ export const ClientsTable = ({
     selectAllMode,
     handleSelectAll,
     handleRowSelect,
-    clearSelection
+    clearSelection,
+    isSelected
   } = useClientSelection();
 
   const [modalState, setModalState] = useState<{
@@ -148,7 +149,7 @@ export const ClientsTable = ({
               <ClientsRow 
                 key={item.company}
                 data={item}
-                isSelected={selectedClients.has(item.company) || selectAllMode}
+                isSelected={isSelected(item)}
                 onSelect={(selected) => handleRowSelect(item, selected)}
                 onView={(client) => setModalState({ isOpen: true, mode: 'view', client })}
                 onEdit={(client) => setModalState({ isOpen: true, mode: 'edit', client })}
