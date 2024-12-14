@@ -5,23 +5,12 @@ import { ClientsRow } from "./ClientsRow";
 import { ClientModal } from "./ClientModal";
 import { TableActions } from "./TableActions";
 import { TablePagination } from "./TablePagination";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { showClientDeletedToast } from "@/utils/toastUtils";
 import { useClientFilters } from "./hooks/useClientFilters";
 import { useClientSelection } from "./hooks/useClientSelection";
 import { ClientEntry, ClientsTableProps } from "./types/clients";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
+import { BulkEditDialog } from "./BulkEditDialog";
 
 export const ClientsTable = ({ 
   data,
@@ -180,94 +169,23 @@ export const ClientsTable = ({
         onSave={handleSave}
       />
 
-      <AlertDialog 
-        open={deleteConfirm.isOpen} 
+      <DeleteConfirmDialog 
+        isOpen={deleteConfirm.isOpen}
         onOpenChange={(open) => setDeleteConfirm(current => ({ ...current, isOpen: open }))}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete
-              {deleteConfirm.isMultiple 
-                ? " all selected clients"
-                : deleteConfirm.client 
-                  ? ` the client "${deleteConfirm.client.company}"` 
-                  : " all clients"
-              } from our servers.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setDeleteConfirm({ isOpen: false })}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                if (deleteConfirm.isMultiple) {
-                  const clientsToDelete = deleteConfirm.client 
-                    ? [deleteConfirm.client]
-                    : getSelectedClients();
-                  handleDelete(clientsToDelete);
-                } else if (deleteConfirm.client) {
-                  handleDelete(deleteConfirm.client);
-                }
-              }}
-              className="bg-red-500 hover:bg-red-600"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        onConfirm={handleDelete}
+        client={deleteConfirm.client}
+        isMultiple={deleteConfirm.isMultiple}
+        getSelectedClients={getSelectedClients}
+      />
 
-      <Dialog 
-        open={bulkEditDialog.isOpen} 
+      <BulkEditDialog 
+        isOpen={bulkEditDialog.isOpen}
         onOpenChange={(open) => setBulkEditDialog(current => ({ ...current, isOpen: open }))}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              Bulk Edit {bulkEditDialog.type === 'currency' ? 'Currency' : 'Rate'}
-            </DialogTitle>
-          </DialogHeader>
-          {bulkEditDialog.type === 'currency' ? (
-            <select
-              className="bg-[#252A38] border border-gray-800 text-gray-400 rounded-[10px] px-4 py-2 w-full"
-              value={bulkEditDialog.value}
-              onChange={(e) => setBulkEditDialog(current => ({ ...current, value: e.target.value }))}
-            >
-              <option value="">Select Currency</option>
-              <option value="AUD">AUD</option>
-              <option value="EUR">EUR</option>
-              <option value="GBP">GBP</option>
-              <option value="USD">USD</option>
-            </select>
-          ) : (
-            <Input
-              type="number"
-              placeholder="Enter new rate"
-              value={bulkEditDialog.value}
-              onChange={(e) => setBulkEditDialog(current => ({ ...current, value: e.target.value }))}
-              className="bg-[#252A38] border-gray-800 text-white"
-            />
-          )}
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setBulkEditDialog({ isOpen: false, type: 'currency', value: '' })}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleBulkEdit}
-              className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90"
-              disabled={!bulkEditDialog.value}
-            >
-              Update
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        type={bulkEditDialog.type}
+        value={bulkEditDialog.value}
+        onValueChange={(value) => setBulkEditDialog(current => ({ ...current, value }))}
+        onConfirm={handleBulkEdit}
+      />
     </>
   );
 };
