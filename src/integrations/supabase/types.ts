@@ -61,6 +61,7 @@ export type Database = {
           client: string
           date: string
           entry_type: string | null
+          flag_reason: string | null
           hours: number
           project: string
           staff_name: string | null
@@ -75,6 +76,7 @@ export type Database = {
           client: string
           date: string
           entry_type?: string | null
+          flag_reason?: string | null
           hours: number
           project: string
           staff_name?: string | null
@@ -89,6 +91,7 @@ export type Database = {
           client?: string
           date?: string
           entry_type?: string | null
+          flag_reason?: string | null
           hours?: number
           project?: string
           staff_name?: string | null

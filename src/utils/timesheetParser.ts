@@ -13,7 +13,7 @@ export interface TimesheetEntry {
   time?: string | null;
   break?: boolean;
   break_type?: string;
-  flagReason?: string;
+  flag_reason?: string | null;
 }
 
 const generateTsid = (): number => {
@@ -59,8 +59,7 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
       staff_name: rawEntry.fullname?.trim() || null,
       time: rawEntry.time && isValidTimeFormat(rawEntry.time) ? rawEntry.time : null,
       status: rawEntry.flagged === 'true' ? 'Error' : 'Success',
-      entry_type: rawEntry.flagreason || null,
-      flagReason: rawEntry.flagged === 'true' ? rawEntry.flagreason : undefined
+      flag_reason: rawEntry.flagged === 'true' ? rawEntry.flagreason : null
     };
 
     return entry;

@@ -35,11 +35,12 @@ const Timesheets = () => {
           task: entry.task,
           hours: entry.hours,
           status: entry.status || 'Pending',
-          staffName: entry.staff_name,
-          entryType: entry.entry_type,
+          staff_name: entry.staff_name,
+          entry_type: entry.entry_type,
           time: entry.time,
           break: entry.break,
-          breakType: entry.break_type
+          break_type: entry.break_type,
+          flag_reason: entry.flag_reason
         }));
         setTimesheetData(typedData);
       }
