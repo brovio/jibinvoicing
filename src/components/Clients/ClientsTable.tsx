@@ -5,6 +5,7 @@ import { ClientsRow } from "./ClientsRow";
 import { ClientModal } from "./ClientModal";
 import { TableActions } from "./TableActions";
 import { TablePagination } from "./TablePagination";
+import { toDatabase, fromDatabase } from "./utils/clientTransforms";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -68,21 +69,31 @@ export const ClientsTable = ({
 
   const handleSave = async (client: ClientEntry) => {
     try {
+      const dbClient = toDatabase(client);
+      
       if (modalState.mode === 'add') {
-        const { error } = await supabase
+        const { error, data: insertedData } = await supabase
           .from('clients')
-          .insert(client);
+          .insert(dbClient)
+          .select()
+          .single();
         
         if (error) throw error;
-        onClientAdded?.(client);
+        if (insertedData) {
+          onClientAdded?.(fromDatabase(insertedData));
+        }
       } else if (modalState.mode === 'edit') {
-        const { error } = await supabase
+        const { error, data: updatedData } = await supabase
           .from('clients')
-          .update(client)
-          .eq('company', client.company);
+          .update(dbClient)
+          .eq('company', client.company)
+          .select()
+          .single();
         
         if (error) throw error;
-        onClientUpdated?.(client);
+        if (updatedData) {
+          onClientUpdated?.(fromDatabase(updatedData));
+        }
       }
       setModalState({ isOpen: false, mode: 'add' });
     } catch (error) {
