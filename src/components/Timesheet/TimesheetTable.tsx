@@ -1,4 +1,3 @@
-import React from "react";
 import { Table, TableBody } from "@/components/ui/table";
 import { TimesheetRow } from "./TimesheetRow";
 import { TimesheetEntry } from "@/utils/timesheetParser";
@@ -86,7 +85,7 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
     setDeleteConfirm({ isOpen: false });
   };
 
-  const handleBulkAction = (action: string) => {
+  const handleBulkAction = (action: string, includeAll?: boolean) => {
     if (action === 'deleteSelected') {
       const selectedEntries = getSelectedItems(data);
       if (selectedEntries.length > 0) {
