@@ -68,12 +68,21 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
       const entries = Array.isArray(entriesToDelete) ? entriesToDelete : [entriesToDelete];
       const ids = entries.map(entry => entry.tsid);
       
-      const { error } = await supabase
+      // Delete from brovio-timesheets
+      const { error: timesheetsError } = await supabase
         .from('brovio-timesheets')
         .delete()
         .in('tsid', ids);
 
-      if (error) throw error;
+      if (timesheetsError) throw timesheetsError;
+
+      // Delete from imported_timesheets
+      const { error: importedError } = await supabase
+        .from('imported_timesheets')
+        .delete()
+        .in('timesheet_id', ids);
+
+      if (importedError) throw importedError;
 
       showSuccessToast(
         `Successfully deleted ${entries.length} timesheet ${entries.length === 1 ? 'entry' : 'entries'}`
@@ -87,7 +96,7 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
   };
 
   const handleBulkAction = (action: string) => {
-    if (action === 'deleteSelected') {
+    if (action === 'deleteAll' || action === 'deleteSelected') {
       const selectedEntries = getSelectedItems(data);
       if (selectedEntries.length > 0) {
         setDeleteConfirm({ 
@@ -98,7 +107,7 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
     }
   };
 
-  const handleTableSelectAll = (selected: boolean, includeAll: boolean) => {
+  const handleTableSelectAll = (selected: boolean, includeAll: boolean = false) => {
     handleSelectAll(selected, includeAll);
   };
 
