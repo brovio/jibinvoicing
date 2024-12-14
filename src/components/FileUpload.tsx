@@ -3,10 +3,9 @@ import { Upload } from "lucide-react";
 import { useRef } from "react";
 import { parseCSV, parseJSON, validateClients, ImportedClient } from "@/utils/importUtils";
 import { showImportSuccessToast, showImportErrorToast, showErrorToast } from "@/utils/toastUtils";
-import { ClientEntry } from "./Clients/types/clients";
 
 interface FileUploadProps {
-  onImportSuccess: (clients: ClientEntry[]) => void;
+  onImportSuccess: (clients: ImportedClient[]) => void;
 }
 
 export const FileUpload = ({ onImportSuccess }: FileUploadProps) => {
@@ -26,29 +25,16 @@ export const FileUpload = ({ onImportSuccess }: FileUploadProps) => {
     const reader = new FileReader();
     reader.onload = async (e) => {
       const content = e.target?.result as string;
-      let importedClients: ImportedClient[] = [];
+      let clients: ImportedClient[] = [];
 
       try {
         if (fileExtension === 'csv') {
-          importedClients = parseCSV(content);
+          clients = parseCSV(content);
         } else {
-          importedClients = parseJSON(content);
+          clients = parseJSON(content);
         }
 
-        if (validateClients(importedClients)) {
-          // Convert ImportedClient[] to ClientEntry[]
-          const clients: ClientEntry[] = importedClients.map(client => ({
-            company: client.company,
-            contactName: client.contactName,
-            email: client.email,
-            phone: client.phone || '',
-            address: client.address || '',
-            currency: client.currency,
-            rate: Number(client.rate),
-            notes: client.notes || '',
-            website: client.website || ''
-          }));
-
+        if (validateClients(clients)) {
           onImportSuccess(clients);
           showImportSuccessToast(clients.length);
           

@@ -1,67 +1,110 @@
-import { TableHead, TableHeader, TableRow, TableCell } from "@/components/ui/table";
-import { ClientEntry } from "./types/clients";
-import { BulkActions } from "./BulkActions";
+import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 interface ClientsHeaderProps {
   onSort: (key: string) => void;
   onSelectAll: (selectAll: boolean, includeAll?: boolean) => void;
   totalClients: number;
   visibleClients: number;
-  onClientsDeleted: (client: ClientEntry) => void;
-  selectedClients: Set<string>;
-  onBulkUpdate: (field: string, value: string | number, selectedClients: Set<string>) => void;
-  onBulkDelete: () => void;
 }
 
-export const ClientsHeader = ({
-  onSort,
-  onSelectAll,
-  totalClients,
-  visibleClients,
-  onClientsDeleted,
-  selectedClients,
-  onBulkUpdate,
-  onBulkDelete
-}: ClientsHeaderProps) => {
+export const ClientsHeader = ({ onSort, onSelectAll, totalClients, visibleClients }: ClientsHeaderProps) => {
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = e.target.checked;
+    setIsChecked(checked);
+    
+    if (checked && totalClients > visibleClients) {
+      setIsConfirmDialogOpen(true);
+    } else {
+      onSelectAll(checked);
+    }
+  };
+
   return (
-    <TableHeader>
-      <TableRow className="border-b border-gray-800 hover:bg-transparent">
-        <TableCell className="p-4">
-          <input
-            type="checkbox"
-            className="rounded-sm border-gray-700"
-            checked={selectedClients.size > 0}
-            onChange={(e) => onSelectAll(e.target.checked)}
-          />
-        </TableCell>
-        <TableCell className="font-medium text-gray-300 cursor-pointer hover:text-white" onClick={() => onSort('company')}>
-          Company
-        </TableCell>
-        <TableCell className="font-medium text-gray-300 cursor-pointer hover:text-white" onClick={() => onSort('contactName')}>
-          Contact Name
-        </TableCell>
-        <TableCell className="font-medium text-gray-300 cursor-pointer hover:text-white" onClick={() => onSort('email')}>
-          Email
-        </TableCell>
-        <TableCell className="font-medium text-gray-300 cursor-pointer hover:text-white" onClick={() => onSort('currency')}>
-          Currency
-        </TableCell>
-        <TableCell className="font-medium text-gray-300 text-right cursor-pointer hover:text-white" onClick={() => onSort('rate')}>
-          Rate
-        </TableCell>
-        <TableCell>
-          {selectedClients.size > 0 && (
-            <BulkActions
-              selectedCount={selectedClients.size}
-              totalCount={totalClients}
-              visibleCount={visibleClients}
-              onSelectAll={onSelectAll}
-              onBulkUpdate={onBulkUpdate}
-              onBulkDelete={onBulkDelete}
+    <>
+      <TableHeader>
+        <TableRow className="border-b border-gray-800 hover:bg-transparent">
+          <TableHead 
+            className="text-gray-400 font-medium cursor-pointer hover:bg-[#2A303F] transition-colors w-[40px] p-4"
+          >
+            <input 
+              type="checkbox" 
+              className="rounded-sm border-gray-700"
+              checked={isChecked}
+              onChange={handleCheckboxChange}
             />
-          )}
-        </TableCell>
-      </TableRow>
-    </TableHeader>
+          </TableHead>
+          <TableHead 
+            className="text-gray-400 font-medium cursor-pointer hover:bg-[#2A303F] transition-colors"
+            onClick={() => onSort('company')}
+          >
+            Company
+          </TableHead>
+          <TableHead 
+            className="text-gray-400 font-medium cursor-pointer hover:bg-[#2A303F] transition-colors"
+            onClick={() => onSort('contactName')}
+          >
+            Contact Name
+          </TableHead>
+          <TableHead 
+            className="text-gray-400 font-medium cursor-pointer hover:bg-[#2A303F] transition-colors"
+            onClick={() => onSort('email')}
+          >
+            Email
+          </TableHead>
+          <TableHead 
+            className="text-gray-400 font-medium cursor-pointer hover:bg-[#2A303F] transition-colors"
+            onClick={() => onSort('currency')}
+          >
+            Currency
+          </TableHead>
+          <TableHead 
+            className="text-gray-400 font-medium cursor-pointer hover:bg-[#2A303F] transition-colors text-right"
+            onClick={() => onSort('rate')}
+          >
+            Rate
+          </TableHead>
+          <TableHead 
+            className="text-gray-400 font-medium cursor-pointer hover:bg-[#2A303F] transition-colors w-[100px]"
+          >
+            Actions
+          </TableHead>
+        </TableRow>
+      </TableHeader>
+
+      <Dialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Select All Clients</DialogTitle>
+          </DialogHeader>
+          <p>Do you want to select all {totalClients} clients, including those not shown on this page?</p>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                onSelectAll(true, false);
+                setIsConfirmDialogOpen(false);
+              }}
+            >
+              Current Page Only
+            </Button>
+            <Button
+              className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90"
+              onClick={() => {
+                onSelectAll(true, true);
+                setIsConfirmDialogOpen(false);
+              }}
+            >
+              Select All {totalClients} Clients
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };

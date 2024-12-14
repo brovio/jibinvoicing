@@ -5,15 +5,20 @@ import { ClientsRow } from "./ClientsRow";
 import { ClientModal } from "./ClientModal";
 import { TableActions } from "./TableActions";
 import { TablePagination } from "./TablePagination";
-import { toDatabase, fromDatabase } from "./utils/clientTransforms";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { showClientDeletedToast } from "@/utils/toastUtils";
 import { useClientFilters } from "./hooks/useClientFilters";
 import { useClientSelection } from "./hooks/useClientSelection";
 import { ClientEntry, ClientsTableProps } from "./types/clients";
-import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
-import { useTableOperations } from "./TableOperations";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 
 export const ClientsTable = ({ 
   data,
@@ -27,25 +32,14 @@ export const ClientsTable = ({
     currencyFilter,
     setCurrencyFilter,
     requestSort,
-    filteredAndSortedData,
-    setData
+    filteredAndSortedData
   } = useClientFilters(data);
 
   const {
     selectedClients,
-    setSelectedClients,
-    handleSelectAll: baseHandleSelectAll,
+    handleSelectAll,
     handleRowSelect
   } = useClientSelection();
-
-  const handleClientDeleted = (client: ClientEntry) => {
-    setData(prevData => prevData.filter(c => c.company !== client.company));
-    onClientDeleted?.(client);
-  };
-
-  const { handleDelete, handleBulkDelete, handleBulkUpdate, handleDeleteAll } = useTableOperations({
-    onClientDeleted: handleClientDeleted
-  });
 
   const [modalState, setModalState] = useState<{
     isOpen: boolean;
@@ -57,62 +51,22 @@ export const ClientsTable = ({
     isOpen: false
   });
 
-  const handleSelectAll = (selectAll: boolean, includeAll?: boolean) => {
-    if (selectAll) {
-      const clientsToSelect = includeAll ? data : filteredAndSortedData;
-      const newSelected = new Set<string>();
-      clientsToSelect.forEach(client => newSelected.add(client.company));
-      setSelectedClients(newSelected);
-    } else {
-      setSelectedClients(new Set());
+  const handleSave = (client: ClientEntry) => {
+    if (modalState.mode === 'add') {
+      onClientAdded?.(client);
+    } else if (modalState.mode === 'edit') {
+      onClientUpdated?.(client);
     }
-    baseHandleSelectAll(selectAll, includeAll);
+    setModalState({ isOpen: false, mode: 'add' });
   };
 
-  const handleBulkDeleteAction = async () => {
-    if (selectedClients.size > 0) {
-      await handleBulkDelete(selectedClients);
-      setSelectedClients(new Set()); // Clear selection after deletion
-    }
-  };
-
-  const handleSave = async (client: ClientEntry) => {
-    try {
-      const dbClient = toDatabase(client);
-      
-      if (modalState.mode === 'add') {
-        const { error, data: insertedData } = await supabase
-          .from('brovio_clients')
-          .insert(dbClient)
-          .select()
-          .single();
-        
-        if (error) throw error;
-        if (insertedData) {
-          onClientAdded?.(fromDatabase(insertedData));
-        }
-      } else if (modalState.mode === 'edit') {
-        const { error, data: updatedData } = await supabase
-          .from('brovio_clients')
-          .update(dbClient)
-          .eq('company', client.company)
-          .select()
-          .single();
-        
-        if (error) throw error;
-        if (updatedData) {
-          onClientUpdated?.(fromDatabase(updatedData));
-        }
-      }
-      setModalState({ isOpen: false, mode: 'add' });
-    } catch (error) {
-      console.error('Error saving client:', error);
-      toast.error('Failed to save client');
-    }
+  const handleDelete = (client: ClientEntry) => {
+    setDeleteConfirm({ isOpen: false });
+    onClientDeleted?.(client);
+    showClientDeletedToast(client.company);
   };
 
   const handleImportSuccess = (importedClients: ClientEntry[]) => {
-    setData(prevData => [...importedClients, ...prevData]);
     importedClients.forEach(client => {
       onClientAdded?.(client);
     });
@@ -132,13 +86,9 @@ export const ClientsTable = ({
         <Table>
           <ClientsHeader 
             onSort={requestSort} 
-            onSelectAll={handleSelectAll}
+            onSelectAll={(selectAll) => handleSelectAll(selectAll, filteredAndSortedData)}
             totalClients={data.length}
             visibleClients={filteredAndSortedData.length}
-            onClientsDeleted={handleClientDeleted}
-            selectedClients={selectedClients}
-            onBulkUpdate={(field, value) => handleBulkUpdate(field, value, selectedClients)}
-            onBulkDelete={handleBulkDeleteAction}
           />
           <TableBody>
             {filteredAndSortedData.map((item, index) => (
@@ -166,15 +116,32 @@ export const ClientsTable = ({
         onSave={handleSave}
       />
 
-      <DeleteConfirmDialog
-        isOpen={deleteConfirm.isOpen}
-        client={deleteConfirm.client}
-        onClose={() => setDeleteConfirm({ isOpen: false })}
-        onConfirm={(client) => {
-          handleDelete(client);
-          setDeleteConfirm({ isOpen: false });
-        }}
-      />
+      <AlertDialog 
+        open={deleteConfirm.isOpen} 
+        onOpenChange={(open) => setDeleteConfirm(current => ({ ...current, isOpen: open }))}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the client
+              {deleteConfirm.client && ` "${deleteConfirm.client.company}"`} and remove their data
+              from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteConfirm({ isOpen: false })}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteConfirm.client && handleDelete(deleteConfirm.client)}
+              className="bg-red-500 hover:bg-red-600"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };
