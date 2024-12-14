@@ -7,7 +7,21 @@ const generateNextManualClientId = () => {
   return String(nextManualClientId++).padStart(4, '0');
 };
 
-export const useClientModal = (isOpen: boolean, onClose: () => void, onSave: (client: any) => void, client?: any, mode: 'add' | 'edit' | 'view') => {
+interface UseClientModalParams {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (client: any) => void;
+  client?: any;
+  mode?: 'add' | 'edit' | 'view';
+}
+
+export const useClientModal = ({
+  isOpen, 
+  onClose, 
+  onSave, 
+  client, 
+  mode = 'add'
+}: UseClientModalParams) => {
   const [formData, setFormData] = useState({
     clientId: '',
     company: '',

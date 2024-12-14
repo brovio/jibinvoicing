@@ -31,7 +31,13 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
     handleDiscardAndClose,
     showUnsavedDialog,
     hasUnsavedChanges
-  } = useClientModal(isOpen, onClose, onSave, client, mode);
+  } = useClientModal({
+    isOpen, 
+    onClose, 
+    onSave, 
+    client, 
+    mode
+  });
 
   return (
     <>
