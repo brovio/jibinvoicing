@@ -80,8 +80,10 @@ export const ClientsTable = ({
 
   const getSelectedClients = () => {
     if (selectAllMode) {
-      return data;
+      // When in selectAllMode, return all clients except the excluded ones
+      return data.filter(client => !excludedClients.has(client.company));
     }
+    // When not in selectAllMode, return only explicitly selected clients
     return data.filter(client => selectedClients.has(client.company));
   };
 
