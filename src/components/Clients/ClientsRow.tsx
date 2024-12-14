@@ -42,31 +42,31 @@ export const ClientsRow = ({
       </TableCell>
       <TableCell 
         className="text-gray-300 cursor-pointer hover:text-white"
-        onClick={() => onView(data)}
+        onClick={() => onEdit(data)}
       >
         {data.company}
       </TableCell>
       <TableCell 
         className="text-gray-300 cursor-pointer hover:text-white"
-        onClick={() => onView(data)}
+        onClick={() => onEdit(data)}
       >
         {data.contactName}
       </TableCell>
       <TableCell 
         className="text-gray-300 cursor-pointer hover:text-white"
-        onClick={() => onView(data)}
+        onClick={() => onEdit(data)}
       >
         {data.email}
       </TableCell>
       <TableCell 
         className="text-gray-300 cursor-pointer hover:text-white"
-        onClick={() => onView(data)}
+        onClick={() => onEdit(data)}
       >
         {data.currency}
       </TableCell>
       <TableCell 
         className="text-gray-300 text-right cursor-pointer hover:text-white"
-        onClick={() => onView(data)}
+        onClick={() => onEdit(data)}
       >
         {data.rate}
       </TableCell>
