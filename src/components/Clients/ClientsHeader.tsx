@@ -131,11 +131,11 @@ export const ClientsHeader = ({
       </TableHeader>
 
       <Dialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
-        <DialogContent>
+        <DialogContent className="bg-[#252A38] border border-gray-800 text-white">
           <DialogHeader>
-            <DialogTitle>Select All Clients</DialogTitle>
+            <DialogTitle className="text-white">Select All Clients</DialogTitle>
           </DialogHeader>
-          <p>Do you want to select all {totalClients} clients, including those not shown on this page?</p>
+          <p className="text-gray-300">Do you want to select all {totalClients} clients, including those not shown on this page?</p>
           <DialogFooter>
             <Button
               variant="outline"
@@ -143,6 +143,7 @@ export const ClientsHeader = ({
                 onSelectAll(true, false);
                 setIsConfirmDialogOpen(false);
               }}
+              className="bg-transparent border-gray-700 text-white hover:bg-gray-800"
             >
               Current Page Only
             </Button>
@@ -160,21 +161,23 @@ export const ClientsHeader = ({
       </Dialog>
 
       <Dialog open={isDeleteAllDialogOpen} onOpenChange={setIsDeleteAllDialogOpen}>
-        <DialogContent>
+        <DialogContent className="bg-[#252A38] border border-gray-800 text-white">
           <DialogHeader>
-            <DialogTitle>Delete All Clients</DialogTitle>
+            <DialogTitle className="text-white">Delete All Clients</DialogTitle>
           </DialogHeader>
-          <p>Are you sure you want to delete all clients? This action cannot be undone.</p>
+          <p className="text-gray-300">Are you sure you want to delete all clients? This action cannot be undone.</p>
           <DialogFooter>
             <Button
               variant="outline"
               onClick={() => setIsDeleteAllDialogOpen(false)}
+              className="bg-transparent border-gray-700 text-white hover:bg-gray-800"
             >
               Cancel
             </Button>
             <Button
               variant="destructive"
               onClick={handleDeleteAll}
+              className="bg-red-500 hover:bg-red-600"
             >
               Delete All
             </Button>
