@@ -36,25 +36,35 @@ export const useTableOperations = ({ onClientDeleted }: TableOperationsProps) =>
 
   const handleBulkDelete = async (selectedClients: Set<string>) => {
     try {
-      console.log('Bulk deleting clients:', Array.from(selectedClients));
+      const selectedArray = Array.from(selectedClients);
+      console.log('Bulk deleting clients:', selectedArray);
       
-      const { error } = await supabase
-        .from('brovio_clients')
-        .delete()
-        .in('company', Array.from(selectedClients));
+      // Delete each selected client individually to ensure proper error handling
+      const deletePromises = selectedArray.map(async (company) => {
+        const { error } = await supabase
+          .from('brovio_clients')
+          .delete()
+          .eq('company', company);
+          
+        if (error) {
+          throw new Error(`Failed to delete client ${company}: ${error.message}`);
+        }
+        return company;
+      });
 
-      if (error) {
-        console.error('Bulk delete error:', error);
-        toast.error('Failed to delete selected clients');
-        return;
-      }
-
+      const results = await Promise.all(deletePromises);
+      
       console.log('Clients deleted successfully');
-      toast.success(`Successfully deleted ${selectedClients.size} clients`);
-      window.location.reload();
+      toast.success(`Successfully deleted ${results.length} clients`);
+      
+      // Notify about each deleted client
+      results.forEach(company => {
+        onClientDeleted?.({ company } as ClientEntry);
+      });
+      
     } catch (error) {
       console.error('Error in bulk delete operation:', error);
-      toast.error('Failed to delete clients');
+      toast.error('Failed to delete some clients');
     }
   };
 
