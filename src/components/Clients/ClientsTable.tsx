@@ -76,7 +76,7 @@ export const ClientsTable = ({
       
       if (modalState.mode === 'add') {
         const { error, data: insertedData } = await supabase
-          .from('clients')
+          .from('brovio_clients')
           .insert(dbClient)
           .select()
           .single();
@@ -87,7 +87,7 @@ export const ClientsTable = ({
         }
       } else if (modalState.mode === 'edit') {
         const { error, data: updatedData } = await supabase
-          .from('clients')
+          .from('brovio_clients')
           .update(dbClient)
           .eq('company', client.company)
           .select()

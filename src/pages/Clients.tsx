@@ -5,48 +5,62 @@ import { UserPlus } from "lucide-react";
 import { FileUpload } from "@/components/FileUpload";
 import { ExportButton } from "@/components/ExportButton";
 import { Button } from "@/components/ui/button";
-import backupClients from "@/data/default-clients.json";
-
-const STORAGE_KEY = 'stored_clients';
+import { supabase } from "@/integrations/supabase/client";
+import { fromDatabase } from "@/components/Clients/utils/clientTransforms";
+import { ClientEntry } from "@/components/Clients/types/clients";
+import { toast } from "sonner";
 
 const Clients = () => {
-  const [clients, setClients] = useState(() => {
-    const storedClients = localStorage.getItem(STORAGE_KEY);
-    return storedClients ? JSON.parse(storedClients) : backupClients.clients;
-  });
+  const [clients, setClients] = useState<ClientEntry[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(clients));
-  }, [clients]);
+    const fetchClients = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('brovio_clients')
+          .select('*')
+          .order('created_at', { ascending: false });
 
-  const handleImportSuccess = (importedClients: ImportedClient[]) => {
-    const formattedClients = importedClients.map(client => ({
-      company: client.company,
-      contactName: client.contactName,
-      email: client.email,
-      phone: client.phone || '',
-      address: client.address || '',
-      currency: client.currency,
-      rate: Number(client.rate),
-      notes: client.notes || '',
-      website: client.website || ''
-    }));
-    setClients(prev => [...prev, ...formattedClients]);
+        if (error) {
+          console.error('Error fetching clients:', error);
+          toast.error('Failed to load clients');
+          return;
+        }
+
+        setClients(data.map(fromDatabase));
+      } catch (error) {
+        console.error('Error in fetchClients:', error);
+        toast.error('Failed to load clients');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchClients();
+  }, []);
+
+  const handleClientAdded = (newClient: ClientEntry) => {
+    setClients(prev => [newClient, ...prev]);
   };
 
-  const handleClientAdded = (newClient: any) => {
-    setClients(prev => [...prev, newClient]);
-  };
-
-  const handleClientUpdated = (updatedClient: any) => {
+  const handleClientUpdated = (updatedClient: ClientEntry) => {
     setClients(prev => prev.map(client => 
       client.company === updatedClient.company ? updatedClient : client
     ));
   };
 
-  const handleClientDeleted = (deletedClient: any) => {
+  const handleClientDeleted = (deletedClient: ClientEntry) => {
     setClients(prev => prev.filter(client => client.company !== deletedClient.company));
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-300"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -67,7 +81,7 @@ const Clients = () => {
               <ExportButton clients={clients} format="csv" />
               <ExportButton clients={clients} format="json" />
               <Button
-                onClick={() => handleClientAdded({})}
+                onClick={() => setModalState({ isOpen: true, mode: 'add' })}
                 className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white gap-2 rounded-[10px]"
               >
                 <UserPlus className="h-4 w-4" />

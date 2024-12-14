@@ -15,7 +15,7 @@ export const useTableOperations = ({ onClientDeleted }: TableOperationsProps) =>
       console.log('Deleting client:', client.company);
       
       const { error } = await supabase
-        .from('clients')
+        .from('brovio_clients')
         .delete()
         .eq('company', client.company);
 
@@ -28,7 +28,6 @@ export const useTableOperations = ({ onClientDeleted }: TableOperationsProps) =>
       console.log('Client deleted successfully');
       onClientDeleted?.(client);
       showClientDeletedToast(client.company);
-      window.location.reload();
     } catch (error) {
       console.error('Error in delete operation:', error);
       toast.error('Failed to delete client');
@@ -39,18 +38,15 @@ export const useTableOperations = ({ onClientDeleted }: TableOperationsProps) =>
     try {
       console.log('Bulk deleting clients:', Array.from(selectedClients));
       
-      // Delete all selected clients one by one to ensure proper deletion
-      for (const company of selectedClients) {
-        const { error } = await supabase
-          .from('clients')
-          .delete()
-          .eq('company', company);
+      const { error } = await supabase
+        .from('brovio_clients')
+        .delete()
+        .in('company', Array.from(selectedClients));
 
-        if (error) {
-          console.error(`Error deleting client ${company}:`, error);
-          toast.error(`Failed to delete client ${company}`);
-          return;
-        }
+      if (error) {
+        console.error('Bulk delete error:', error);
+        toast.error('Failed to delete selected clients');
+        return;
       }
 
       console.log('Clients deleted successfully');
@@ -67,9 +63,9 @@ export const useTableOperations = ({ onClientDeleted }: TableOperationsProps) =>
       console.log('Deleting all clients');
       
       const { error } = await supabase
-        .from('clients')
+        .from('brovio_clients')
         .delete()
-        .not('id', 'is', null); // This will delete all records
+        .neq('id', 'none'); // This will delete all records
 
       if (error) {
         console.error('Delete all error:', error);
@@ -90,18 +86,15 @@ export const useTableOperations = ({ onClientDeleted }: TableOperationsProps) =>
     try {
       console.log('Bulk updating clients:', Array.from(selectedClients));
       
-      // Update all selected clients one by one to ensure proper update
-      for (const company of selectedClients) {
-        const { error } = await supabase
-          .from('clients')
-          .update({ [field]: value })
-          .eq('company', company);
+      const { error } = await supabase
+        .from('brovio_clients')
+        .update({ [field]: value })
+        .in('company', Array.from(selectedClients));
 
-        if (error) {
-          console.error(`Error updating client ${company}:`, error);
-          toast.error(`Failed to update client ${company}`);
-          return;
-        }
+      if (error) {
+        console.error('Bulk update error:', error);
+        toast.error('Failed to update selected clients');
+        return;
       }
 
       console.log('Clients updated successfully');
