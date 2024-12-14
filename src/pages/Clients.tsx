@@ -113,7 +113,19 @@ const Clients = () => {
         throw new Error('Client ID is required for update');
       }
 
-      const { error } = await supabase
+      // First, verify the client exists and get its current data
+      const { data: existingClient, error: fetchError } = await supabase
+        .from('brovio-clients')
+        .select('clientid')
+        .eq('clientid', parseInt(updatedClient.clientId, 10))
+        .single();
+
+      if (fetchError || !existingClient) {
+        throw new Error('Client not found');
+      }
+
+      // Now perform the update only on the verified client
+      const { error: updateError } = await supabase
         .from('brovio-clients')
         .update({
           company: updatedClient.company,
@@ -126,9 +138,9 @@ const Clients = () => {
           notes: updatedClient.notes || null,
           website: updatedClient.website || null
         })
-        .eq('clientid', parseInt(updatedClient.clientId, 10)); // Convert clientId to integer and use eq
+        .eq('clientid', existingClient.clientid); // Use the verified clientid from the database
 
-      if (error) throw error;
+      if (updateError) throw updateError;
       
       await fetchClients();
     } catch (error) {
