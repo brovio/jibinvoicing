@@ -14,7 +14,7 @@ interface BulkActionsProps {
   totalCount: number;
   visibleCount: number;
   onSelectAll: (selectAll: boolean, includeAll?: boolean) => void;
-  onBulkUpdate: (field: string, value: string | number) => void;
+  onBulkUpdate: (field: string, value: string | number, selectedClients: Set<string>) => void;
   onBulkDelete: () => void;
 }
 
@@ -64,13 +64,13 @@ export const BulkActions = ({
           
           <DropdownMenuItem
             className="text-gray-300 focus:text-white focus:bg-[#2A303F]"
-            onClick={() => onBulkUpdate('currency', 'USD')}
+            onClick={() => onBulkUpdate('currency', 'USD', new Set())}
           >
             Set Currency to USD
           </DropdownMenuItem>
           <DropdownMenuItem
             className="text-gray-300 focus:text-white focus:bg-[#2A303F]"
-            onClick={() => onBulkUpdate('currency', 'EUR')}
+            onClick={() => onBulkUpdate('currency', 'EUR', new Set())}
           >
             Set Currency to EUR
           </DropdownMenuItem>
