@@ -66,6 +66,31 @@ export const ClientsTable = ({
     baseHandleSelectAll(selectAll, includeAll);
   };
 
+  const handleSave = async (client: ClientEntry) => {
+    try {
+      if (modalState.mode === 'add') {
+        const { error } = await supabase
+          .from('clients')
+          .insert(client);
+        
+        if (error) throw error;
+        onClientAdded?.(client);
+      } else if (modalState.mode === 'edit') {
+        const { error } = await supabase
+          .from('clients')
+          .update(client)
+          .eq('company', client.company);
+        
+        if (error) throw error;
+        onClientUpdated?.(client);
+      }
+      setModalState({ isOpen: false, mode: 'add' });
+    } catch (error) {
+      console.error('Error saving client:', error);
+      toast.error('Failed to save client');
+    }
+  };
+
   const handleDelete = async (client: ClientEntry) => {
     try {
       const { error } = await supabase
