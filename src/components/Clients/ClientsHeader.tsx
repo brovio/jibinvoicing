@@ -8,15 +8,28 @@ interface ClientsHeaderProps {
   onSelectAll: (selectAll: boolean, includeAll?: boolean) => void;
   totalClients: number;
   visibleClients: number;
+  selectedCount: number;
+  excludedCount: number;
+  selectAllMode: boolean;
 }
 
-export const ClientsHeader = ({ onSort, onSelectAll, totalClients, visibleClients }: ClientsHeaderProps) => {
+export const ClientsHeader = ({ 
+  onSort, 
+  onSelectAll, 
+  totalClients, 
+  visibleClients,
+  selectedCount,
+  excludedCount,
+  selectAllMode
+}: ClientsHeaderProps) => {
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
+
+  const isChecked = selectAllMode ? 
+    excludedCount === 0 : 
+    selectedCount > 0 && selectedCount === visibleClients;
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
-    setIsChecked(checked);
     
     if (checked && totalClients > visibleClients) {
       setIsConfirmDialogOpen(true);
@@ -24,11 +37,6 @@ export const ClientsHeader = ({ onSort, onSelectAll, totalClients, visibleClient
       onSelectAll(checked, checked);
     }
   };
-
-  // Reset checkbox state when total clients changes
-  useEffect(() => {
-    setIsChecked(false);
-  }, [totalClients]);
 
   return (
     <>

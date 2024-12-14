@@ -55,6 +55,7 @@ export const useClientSelection = () => {
     handleSelectAll,
     handleRowSelect,
     clearSelection,
-    isSelected
+    isSelected,
+    excludedClients
   };
 };

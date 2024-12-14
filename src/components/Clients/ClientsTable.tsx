@@ -33,7 +33,8 @@ export const ClientsTable = ({
     handleSelectAll,
     handleRowSelect,
     clearSelection,
-    isSelected
+    isSelected,
+    excludedClients
   } = useClientSelection();
 
   const [modalState, setModalState] = useState<{
@@ -143,6 +144,9 @@ export const ClientsTable = ({
             onSelectAll={handleSelectAll}
             totalClients={data.length}
             visibleClients={filteredAndSortedData.length}
+            selectedCount={selectAllMode ? data.length - excludedClients.size : selectedClients.size}
+            excludedCount={excludedClients.size}
+            selectAllMode={selectAllMode}
           />
           <TableBody>
             {filteredAndSortedData.map((item) => (
