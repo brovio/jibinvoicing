@@ -12,32 +12,23 @@ interface TableOperationsProps {
 export const useTableOperations = ({ onClientDeleted }: TableOperationsProps) => {
   const handleDelete = async (client: ClientEntry) => {
     try {
-      const { data: clientData, error: fetchError } = await supabase
-        .from('clients')
-        .select('id')
-        .eq('company', client.company)
-        .single();
-
-      if (fetchError) {
-        console.error('Error fetching client:', fetchError);
-        toast.error('Failed to delete client');
-        return;
-      }
-
-      const { error: deleteError } = await supabase
+      console.log('Deleting client:', client.company);
+      
+      const { error } = await supabase
         .from('clients')
         .delete()
-        .eq('id', clientData.id);
+        .eq('company', client.company);
 
-      if (deleteError) {
-        console.error('Error deleting client:', deleteError);
+      if (error) {
+        console.error('Delete error:', error);
         toast.error('Failed to delete client');
         return;
       }
 
+      console.log('Client deleted successfully');
       onClientDeleted?.(client);
       showClientDeletedToast(client.company);
-      window.location.reload(); // Ensure UI is updated
+      window.location.reload();
     } catch (error) {
       console.error('Error in delete operation:', error);
       toast.error('Failed to delete client');
@@ -46,33 +37,22 @@ export const useTableOperations = ({ onClientDeleted }: TableOperationsProps) =>
 
   const handleBulkDelete = async (selectedClients: Set<string>) => {
     try {
-      // First get the IDs of all selected clients
-      const { data: clientsData, error: fetchError } = await supabase
-        .from('clients')
-        .select('id')
-        .in('company', Array.from(selectedClients));
-
-      if (fetchError) {
-        console.error('Error fetching clients:', fetchError);
-        toast.error('Failed to delete clients');
-        return;
-      }
-
-      const clientIds = clientsData.map(client => client.id);
-
-      const { error: deleteError } = await supabase
+      console.log('Bulk deleting clients:', Array.from(selectedClients));
+      
+      const { error } = await supabase
         .from('clients')
         .delete()
-        .in('id', clientIds);
+        .in('company', Array.from(selectedClients));
 
-      if (deleteError) {
-        console.error('Error deleting clients:', deleteError);
+      if (error) {
+        console.error('Bulk delete error:', error);
         toast.error('Failed to delete clients');
         return;
       }
 
+      console.log('Clients deleted successfully');
       toast.success(`Successfully deleted ${selectedClients.size} clients`);
-      window.location.reload(); // Ensure UI is updated
+      window.location.reload();
     } catch (error) {
       console.error('Error in bulk delete operation:', error);
       toast.error('Failed to delete clients');
@@ -81,33 +61,22 @@ export const useTableOperations = ({ onClientDeleted }: TableOperationsProps) =>
 
   const handleBulkUpdate = async (field: string, value: string | number, selectedClients: Set<string>) => {
     try {
-      // First get the IDs of all selected clients
-      const { data: clientsData, error: fetchError } = await supabase
-        .from('clients')
-        .select('id')
-        .in('company', Array.from(selectedClients));
-
-      if (fetchError) {
-        console.error('Error fetching clients:', fetchError);
-        toast.error('Failed to update clients');
-        return;
-      }
-
-      const clientIds = clientsData.map(client => client.id);
-
-      const { error: updateError } = await supabase
+      console.log('Bulk updating clients:', Array.from(selectedClients));
+      
+      const { error } = await supabase
         .from('clients')
         .update({ [field]: value })
-        .in('id', clientIds);
+        .in('company', Array.from(selectedClients));
 
-      if (updateError) {
-        console.error('Error updating clients:', updateError);
+      if (error) {
+        console.error('Bulk update error:', error);
         toast.error('Failed to update clients');
         return;
       }
 
+      console.log('Clients updated successfully');
       toast.success(`Successfully updated ${selectedClients.size} clients`);
-      window.location.reload(); // Ensure UI is updated
+      window.location.reload();
     } catch (error) {
       console.error('Error in bulk update operation:', error);
       toast.error('Failed to update clients');
