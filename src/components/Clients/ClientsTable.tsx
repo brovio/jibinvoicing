@@ -10,8 +10,6 @@ import { showClientDeletedToast } from "@/utils/toastUtils";
 import { useClientFilters } from "./hooks/useClientFilters";
 import { useClientSelection } from "./hooks/useClientSelection";
 import { ClientEntry, ClientsTableProps } from "./types/clients";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 import { useTableOperations } from "./TableOperations";
 
@@ -63,45 +61,11 @@ export const ClientsTable = ({
     baseHandleSelectAll(selectAll, includeAll);
   };
 
-  const handleSave = async (client: ClientEntry) => {
-    try {
-      const dbClient = toDatabase(client);
-      
-      if (modalState.mode === 'add') {
-        const { error, data: insertedData } = await supabase
-          .from('clients')
-          .insert(dbClient)
-          .select()
-          .single();
-        
-        if (error) throw error;
-        if (insertedData) {
-          onClientAdded?.(fromDatabase(insertedData));
-        }
-      } else if (modalState.mode === 'edit') {
-        const { error, data: updatedData } = await supabase
-          .from('clients')
-          .update(dbClient)
-          .eq('company', client.company)
-          .select()
-          .single();
-        
-        if (error) throw error;
-        if (updatedData) {
-          onClientUpdated?.(fromDatabase(updatedData));
-        }
-      }
-      setModalState({ isOpen: false, mode: 'add' });
-    } catch (error) {
-      console.error('Error saving client:', error);
-      toast.error('Failed to save client');
+  const handleBulkDeleteAction = async () => {
+    if (selectedClients.size > 0) {
+      await handleBulkDelete(selectedClients);
+      setSelectedClients(new Set()); // Clear selection after deletion
     }
-  };
-
-  const handleImportSuccess = (importedClients: ClientEntry[]) => {
-    importedClients.forEach(client => {
-      onClientAdded?.(client);
-    });
   };
 
   return (
@@ -124,7 +88,7 @@ export const ClientsTable = ({
             onClientsDeleted={() => window.location.reload()}
             selectedClients={selectedClients}
             onBulkUpdate={(field, value) => handleBulkUpdate(field, value, selectedClients)}
-            onBulkDelete={() => handleBulkDelete(selectedClients)}
+            onBulkDelete={handleBulkDeleteAction}
           />
           <TableBody>
             {filteredAndSortedData.map((item, index) => (
