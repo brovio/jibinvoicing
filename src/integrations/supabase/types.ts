@@ -21,6 +21,18 @@ export type Database = {
         }
         Relationships: []
       }
+      "brovio-timesheets": {
+        Row: {
+          tsid: number
+        }
+        Insert: {
+          tsid?: number
+        }
+        Update: {
+          tsid?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
