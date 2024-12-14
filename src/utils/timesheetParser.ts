@@ -21,13 +21,26 @@ const generateTsid = (): number => {
 };
 
 const isValidTimeFormat = (time: string): boolean => {
-  // Check if time matches HH:MM or HH:MM:SS format
   const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/;
   return timeRegex.test(time);
 };
 
+const isValidDate = (dateStr: string): boolean => {
+  const date = new Date(dateStr);
+  return date instanceof Date && !isNaN(date.getTime());
+};
+
+const formatDate = (dateStr: string): string => {
+  if (!dateStr) return new Date().toISOString().split('T')[0];
+  
+  const date = new Date(dateStr);
+  if (isValidDate(dateStr)) {
+    return date.toISOString().split('T')[0];
+  }
+  return new Date().toISOString().split('T')[0];
+};
+
 const parseDuration = (duration: string): number => {
-  // Parse duration in format "Xh YYm" to hours
   const match = duration.match(/(\d+)h\s*(\d+)m/);
   if (match) {
     const hours = parseInt(match[1]);
@@ -51,7 +64,7 @@ export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
 
     const entry: TimesheetEntry = {
       tsid: generateTsid(),
-      date: rawEntry.date || new Date().toISOString().split('T')[0],
+      date: formatDate(rawEntry.date),
       client: rawEntry.client?.trim() || 'Unknown Client',
       project: rawEntry.activity?.trim() || 'Unknown Project',
       task: rawEntry.notes?.trim() || 'No Description',
