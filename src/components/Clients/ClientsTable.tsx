@@ -128,10 +128,16 @@ export const ClientsTable = ({
     handleSelectAll(false);
   };
 
+  const handleImportSuccess = (importedClients: any[]) => {
+    importedClients.forEach(client => {
+      onClientAdded?.(client);
+    });
+  };
+
   return (
     <>
       <TableActions
-        onImportSuccess={onClientAdded}
+        onImportSuccess={handleImportSuccess}
         clients={data}
         onAddClick={() => setModalState({ isOpen: true, mode: 'add' })}
         onRateFilterChange={setRateFilter}
