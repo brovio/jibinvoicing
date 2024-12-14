@@ -29,6 +29,7 @@ interface ClientsHeaderProps {
   onClientsDeleted?: () => void;
   selectedClients: Set<string>;
   onBulkUpdate?: (field: string, value: string | number) => void;
+  onBulkDelete?: () => void;
 }
 
 export const ClientsHeader = ({ 
@@ -38,7 +39,8 @@ export const ClientsHeader = ({
   visibleClients,
   onClientsDeleted,
   selectedClients,
-  onBulkUpdate
+  onBulkUpdate,
+  onBulkDelete
 }: ClientsHeaderProps) => {
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [isDeleteAllDialogOpen, setIsDeleteAllDialogOpen] = useState(false);
@@ -167,6 +169,13 @@ export const ClientsHeader = ({
                       >
                         <FileEdit className="mr-2 h-4 w-4" />
                         Edit Rate ({selectedCount} selected)
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="text-red-500 focus:text-red-500 cursor-pointer"
+                        onClick={onBulkDelete}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete Selected ({selectedCount})
                       </DropdownMenuItem>
                       <DropdownMenuSeparator className="bg-gray-800" />
                     </>

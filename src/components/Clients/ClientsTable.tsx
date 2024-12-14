@@ -78,6 +78,24 @@ export const ClientsTable = ({
     window.location.reload();
   };
 
+  const handleBulkDelete = async () => {
+    try {
+      const selectedCompanies = Array.from(selectedClients);
+      const { error } = await supabase
+        .from('clients')
+        .delete()
+        .in('company', selectedCompanies);
+
+      if (error) throw error;
+
+      toast.success(`Successfully deleted ${selectedCompanies.length} clients`);
+      window.location.reload();
+    } catch (error) {
+      console.error('Error deleting clients:', error);
+      toast.error('Failed to delete clients');
+    }
+  };
+
   const handleBulkUpdate = async (field: string, value: string | number) => {
     try {
       const selectedCompanies = Array.from(selectedClients);
@@ -88,7 +106,6 @@ export const ClientsTable = ({
 
       if (error) throw error;
 
-      // Refresh the data after bulk update
       window.location.reload();
     } catch (error) {
       console.error('Error updating clients:', error);
@@ -116,6 +133,7 @@ export const ClientsTable = ({
             onClientsDeleted={handleClientsDeleted}
             selectedClients={selectedClients}
             onBulkUpdate={handleBulkUpdate}
+            onBulkDelete={handleBulkDelete}
           />
           <TableBody>
             {filteredAndSortedData.map((item, index) => (
