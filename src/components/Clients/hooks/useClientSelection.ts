@@ -4,16 +4,13 @@ import { ClientEntry } from '../types/clients';
 export const useClientSelection = () => {
   const [selectedClients, setSelectedClients] = useState<Set<string>>(new Set());
 
-  const handleSelectAll = (selectAll: boolean, includeAll?: boolean) => {
+  const handleSelectAll = (selectAll: boolean, clients: ClientEntry[]) => {
     if (selectAll) {
-      // Return the new Set but also update the state
       const newSelected = new Set<string>();
+      clients.forEach(client => newSelected.add(client.company));
       setSelectedClients(newSelected);
-      return newSelected;
     } else {
-      // Clear selection and return empty Set
       setSelectedClients(new Set());
-      return new Set<string>();
     }
   };
 
@@ -29,7 +26,6 @@ export const useClientSelection = () => {
 
   return {
     selectedClients,
-    setSelectedClients,
     handleSelectAll,
     handleRowSelect
   };

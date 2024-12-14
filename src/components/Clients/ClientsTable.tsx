@@ -37,7 +37,6 @@ export const ClientsTable = ({
 
   const {
     selectedClients,
-    setSelectedClients,
     handleSelectAll,
     handleRowSelect
   } = useClientSelection();
@@ -48,11 +47,7 @@ export const ClientsTable = ({
     client?: ClientEntry;
   }>({ isOpen: false, mode: 'add' });
 
-  const [deleteConfirm, setDeleteConfirm] = useState<{ 
-    isOpen: boolean; 
-    client?: ClientEntry;
-    isBulkDelete?: boolean;
-  }>({
+  const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; client?: ClientEntry }>({
     isOpen: false
   });
 
@@ -65,43 +60,10 @@ export const ClientsTable = ({
     setModalState({ isOpen: false, mode: 'add' });
   };
 
-  const handleDelete = (client?: ClientEntry) => {
+  const handleDelete = (client: ClientEntry) => {
     setDeleteConfirm({ isOpen: false });
-    if (deleteConfirm.isBulkDelete) {
-      // Handle bulk delete
-      Array.from(selectedClients).forEach(clientCompany => {
-        const clientToDelete = data.find(c => c.company === clientCompany);
-        if (clientToDelete) {
-          onClientDeleted?.(clientToDelete);
-        }
-      });
-      setSelectedClients(new Set()); // Clear selection after bulk delete
-      showClientDeletedToast("Selected clients");
-    } else if (client) {
-      onClientDeleted?.(client);
-      showClientDeletedToast(client.company);
-    }
-  };
-
-  const handleBulkUpdate = (updates: { currency?: string; rate?: number }) => {
-    Array.from(selectedClients).forEach(clientCompany => {
-      const clientToUpdate = data.find(c => c.company === clientCompany);
-      if (clientToUpdate) {
-        const updatedClient = {
-          ...clientToUpdate,
-          ...updates
-        };
-        onClientUpdated?.(updatedClient);
-      }
-    });
-    setSelectedClients(new Set()); // Clear selection after bulk update
-  };
-
-  const handleBulkDelete = () => {
-    setDeleteConfirm({ 
-      isOpen: true, 
-      isBulkDelete: true 
-    });
+    onClientDeleted?.(client);
+    showClientDeletedToast(client.company);
   };
 
   const handleImportSuccess = (importedClients: ClientEntry[]) => {
@@ -124,22 +86,9 @@ export const ClientsTable = ({
         <Table>
           <ClientsHeader 
             onSort={requestSort} 
-            onSelectAll={(selectAll) => {
-              if (selectAll) {
-                // When selecting all, add all visible clients to selection
-                const newSelected = new Set<string>();
-                filteredAndSortedData.forEach(client => newSelected.add(client.company));
-                setSelectedClients(newSelected);
-              } else {
-                // When deselecting, clear the selection
-                setSelectedClients(new Set());
-              }
-            }}
+            onSelectAll={(selectAll) => handleSelectAll(selectAll, filteredAndSortedData)}
             totalClients={data.length}
             visibleClients={filteredAndSortedData.length}
-            selectedClients={selectedClients}
-            onBulkUpdate={handleBulkUpdate}
-            onBulkDelete={handleBulkDelete}
           />
           <TableBody>
             {filteredAndSortedData.map((item, index) => (
@@ -171,28 +120,21 @@ export const ClientsTable = ({
         open={deleteConfirm.isOpen} 
         onOpenChange={(open) => setDeleteConfirm(current => ({ ...current, isOpen: open }))}
       >
-        <AlertDialogContent className="bg-[#252A38] border border-gray-800 text-white">
+        <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription className="text-gray-400">
-              This action cannot be undone. This will permanently delete
-              {deleteConfirm.isBulkDelete 
-                ? ` ${selectedClients.size} selected clients`
-                : deleteConfirm.client 
-                  ? ` the client "${deleteConfirm.client.company}"` 
-                  : ' the client'} 
-              and remove their data from our servers.
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the client
+              {deleteConfirm.client && ` "${deleteConfirm.client.company}"`} and remove their data
+              from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel 
-              onClick={() => setDeleteConfirm({ isOpen: false })}
-              className="bg-transparent text-white hover:bg-[#2A303F] border-gray-700"
-            >
+            <AlertDialogCancel onClick={() => setDeleteConfirm({ isOpen: false })}>
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => handleDelete(deleteConfirm.client)}
+              onClick={() => deleteConfirm.client && handleDelete(deleteConfirm.client)}
               className="bg-red-500 hover:bg-red-600"
             >
               Delete
