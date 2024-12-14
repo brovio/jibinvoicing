@@ -85,10 +85,6 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
     setDeleteConfirm({ isOpen: false, entry: undefined });
   };
 
-  const handleTableSelectAll = (selected: boolean) => {
-    handleSelectAll(selected, false);
-  };
-
   return (
     <>
       <TimesheetActions />
@@ -98,7 +94,7 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
           <SharedTableHeader 
             columns={timesheetColumns}
             onSort={requestSort}
-            onSelectAll={handleTableSelectAll}
+            onSelectAll={handleSelectAll}
             totalItems={data.length}
             visibleItems={sortedData.length}
             selectedCount={selectAllMode ? data.length - excludedItems.size : getSelectedItems(data).length}
