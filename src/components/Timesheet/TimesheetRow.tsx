@@ -36,9 +36,9 @@ export const TimesheetRow = ({ data }: { data: TimesheetEntry }) => {
                 )}
               </div>
             </TooltipTrigger>
-            {isError && data.flagReason && (
+            {isError && data.flag_reason && (
               <TooltipContent>
-                <p>{data.flagReason}</p>
+                <p>{data.flag_reason}</p>
               </TooltipContent>
             )}
           </Tooltip>
