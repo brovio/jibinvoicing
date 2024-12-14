@@ -98,7 +98,7 @@ export const useTableOperations = ({ onClientDeleted }: TableOperationsProps) =>
       console.log('All clients deleted successfully');
       toast.success('All clients have been deleted');
 
-      // Notify about each deleted client
+      // Notify about each deleted client immediately
       allClients?.forEach(client => {
         onClientDeleted?.({ company: client.company } as ClientEntry);
       });
