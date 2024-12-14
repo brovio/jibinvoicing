@@ -1,5 +1,5 @@
 import { TableCell, TableRow } from "@/components/ui/table";
-import { Eye, FileEdit, Trash2 } from "lucide-react";
+import { Eye, FileEdit, Trash2, Info } from "lucide-react";
 import { TimesheetEntry } from "@/utils/timesheetParser";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -18,21 +18,19 @@ export const TimesheetRow = ({ data }: { data: TimesheetEntry }) => {
       <TableCell className="text-gray-300">{data.project}</TableCell>
       <TableCell className="text-gray-300">{data.task}</TableCell>
       <TableCell className="text-gray-300 text-right">{data.hours}</TableCell>
-      <TableCell className="text-gray-300">
-        {isError ? (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <span className="text-red-400">{data.status}</span>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{data.flag_reason}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        ) : (
-          <span className="text-green-400">{data.status}</span>
-        )}
+      <TableCell>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <Info 
+                className={`w-4 h-4 ${isError ? 'text-red-400' : 'text-green-400'}`}
+              />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{isError ? data.flag_reason : 'Success'}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </TableCell>
       <TableCell>
         <div className="flex items-center gap-2 justify-end">
