@@ -28,10 +28,16 @@ export const useClientSelection = () => {
     }
   };
 
+  const clearSelection = () => {
+    setSelectedClients(new Set());
+    setSelectAllMode(false);
+  };
+
   return {
     selectedClients,
     selectAllMode,
     handleSelectAll,
-    handleRowSelect
+    handleRowSelect,
+    clearSelection
   };
 };

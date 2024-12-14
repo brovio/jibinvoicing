@@ -42,7 +42,8 @@ export const ClientsTable = ({
     selectedClients,
     selectAllMode,
     handleSelectAll,
-    handleRowSelect
+    handleRowSelect,
+    clearSelection
   } = useClientSelection();
 
   const [modalState, setModalState] = useState<{
@@ -83,7 +84,7 @@ export const ClientsTable = ({
       showClientDeletedToast(clientsToDelete.company);
     }
     setDeleteConfirm({ isOpen: false });
-    handleSelectAll(false);
+    clearSelection();
   };
 
   const getSelectedClients = () => {
@@ -96,12 +97,13 @@ export const ClientsTable = ({
   const handleBulkAction = (action: 'deleteAll' | 'editCurrency' | 'editRate' | 'deleteSelected') => {
     switch (action) {
       case 'deleteAll':
-        setDeleteConfirm({ isOpen: true, isMultiple: true });
+        const allClients = [...data];
+        handleDelete(allClients);
         break;
       case 'deleteSelected':
         const selectedClientsList = getSelectedClients();
         if (selectedClientsList.length > 0) {
-          setDeleteConfirm({ isOpen: true, isMultiple: true });
+          handleDelete(selectedClientsList);
         }
         break;
       case 'editCurrency':
@@ -125,7 +127,7 @@ export const ClientsTable = ({
       onClientUpdated?.(updatedClient);
     });
     setBulkEditDialog({ isOpen: false, type: 'currency', value: '' });
-    handleSelectAll(false);
+    clearSelection();
   };
 
   const handleImportSuccess = (importedClients: any[]) => {
