@@ -86,7 +86,7 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
     setDeleteConfirm({ isOpen: false });
   };
 
-  const handleBulkAction = (action: string, includeAll: boolean = false) => {
+  const handleBulkAction = (action: string) => {
     if (action === 'deleteSelected') {
       const selectedEntries = getSelectedItems(data);
       if (selectedEntries.length > 0) {
@@ -104,7 +104,7 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
         <SharedTableHeader 
           columns={timesheetColumns}
           onSort={requestSort}
-          onSelectAll={(selected: boolean, includeAll: boolean) => handleSelectAll(selected, includeAll)}
+          onSelectAll={handleSelectAll}
           totalItems={data.length}
           visibleItems={sortedData.length}
           selectedCount={selectAllMode ? data.length - excludedItems.size : getSelectedItems(data).length}
