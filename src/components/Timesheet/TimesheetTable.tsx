@@ -4,7 +4,7 @@ import { TimesheetRow } from "./TimesheetRow";
 import { TimesheetEntry } from "@/utils/timesheetParser";
 import { SharedTableHeader } from "@/components/shared/TableHeader";
 import { useTableSelection } from "@/hooks/useTableSelection";
-import { DeleteConfirmDialog } from "@/components/Clients/DeleteConfirmDialog";
+import { TimesheetDeleteDialog } from "./TimesheetDeleteDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { showErrorToast, showSuccessToast } from "@/utils/toastUtils";
 
@@ -124,7 +124,7 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
         </TableBody>
       </Table>
 
-      <DeleteConfirmDialog
+      <TimesheetDeleteDialog
         isOpen={deleteConfirm.isOpen}
         onOpenChange={(open) => setDeleteConfirm({ isOpen: open })}
         onConfirm={handleDelete}
