@@ -7,10 +7,19 @@ interface TimesheetRowProps {
   data: TimesheetEntry;
   isSelected: boolean;
   onSelect: (selected: boolean) => void;
-  onDelete: () => void;
+  onDelete: (entry: TimesheetEntry) => void;
+  onView: (entry: TimesheetEntry) => void;
+  onEdit: (entry: TimesheetEntry) => void;
 }
 
-export const TimesheetRow = ({ data, isSelected, onSelect, onDelete }: TimesheetRowProps) => {
+export const TimesheetRow = ({ 
+  data, 
+  isSelected, 
+  onSelect, 
+  onDelete,
+  onView,
+  onEdit
+}: TimesheetRowProps) => {
   const isError = data.status?.startsWith('Error');
 
   return (
@@ -25,11 +34,36 @@ export const TimesheetRow = ({ data, isSelected, onSelect, onDelete }: Timesheet
           onChange={(e) => onSelect(e.target.checked)}
         />
       </TableCell>
-      <TableCell className="text-gray-300">{data.date}</TableCell>
-      <TableCell className="text-gray-300">{data.client}</TableCell>
-      <TableCell className="text-gray-300">{data.project}</TableCell>
-      <TableCell className="text-gray-300">{data.task}</TableCell>
-      <TableCell className="text-gray-300 text-right">{Number(data.hours).toFixed(2)}</TableCell>
+      <TableCell 
+        className="text-gray-300 cursor-pointer hover:text-white"
+        onClick={() => onView(data)}
+      >
+        {data.date}
+      </TableCell>
+      <TableCell 
+        className="text-gray-300 cursor-pointer hover:text-white"
+        onClick={() => onView(data)}
+      >
+        {data.client}
+      </TableCell>
+      <TableCell 
+        className="text-gray-300 cursor-pointer hover:text-white"
+        onClick={() => onView(data)}
+      >
+        {data.project}
+      </TableCell>
+      <TableCell 
+        className="text-gray-300 cursor-pointer hover:text-white"
+        onClick={() => onView(data)}
+      >
+        {data.task}
+      </TableCell>
+      <TableCell 
+        className="text-gray-300 text-right cursor-pointer hover:text-white"
+        onClick={() => onView(data)}
+      >
+        {Number(data.hours).toFixed(2)}
+      </TableCell>
       <TableCell>
         <TooltipProvider>
           <Tooltip>
@@ -46,15 +80,21 @@ export const TimesheetRow = ({ data, isSelected, onSelect, onDelete }: Timesheet
       </TableCell>
       <TableCell>
         <div className="flex items-center gap-2 justify-end">
-          <button className="p-1 hover:bg-gray-700 rounded-md transition-colors">
+          <button 
+            className="p-1 hover:bg-gray-700 rounded-md transition-colors"
+            onClick={() => onView(data)}
+          >
             <Eye className="w-4 h-4 text-gray-400" />
           </button>
-          <button className="p-1 hover:bg-gray-700 rounded-md transition-colors">
+          <button 
+            className="p-1 hover:bg-gray-700 rounded-md transition-colors"
+            onClick={() => onEdit(data)}
+          >
             <FileEdit className="w-4 h-4 text-gray-400" />
           </button>
           <button 
             className="p-1 hover:bg-gray-700 rounded-md transition-colors"
-            onClick={onDelete}
+            onClick={() => onDelete(data)}
           >
             <Trash2 className="w-4 h-4 text-gray-400" />
           </button>

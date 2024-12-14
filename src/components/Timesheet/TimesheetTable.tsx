@@ -5,6 +5,7 @@ import { TimesheetEntry } from "@/utils/timesheetParser";
 import { SharedTableHeader } from "@/components/shared/TableHeader";
 import { useTableSelection } from "@/hooks/useTableSelection";
 import { TimesheetDeleteDialog } from "./TimesheetDeleteDialog";
+import { TimesheetModal } from "./TimesheetModal";
 import { supabase } from "@/integrations/supabase/client";
 import { showErrorToast, showSuccessToast } from "@/utils/toastUtils";
 
@@ -27,6 +28,10 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
     isOpen: boolean; 
     entry?: TimesheetEntry; 
     isMultiple?: boolean 
+  }>({ isOpen: false });
+  const [modalState, setModalState] = React.useState<{
+    isOpen: boolean;
+    entry?: TimesheetEntry;
   }>({ isOpen: false });
 
   const {
@@ -131,7 +136,9 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
               data={item}
               isSelected={isSelected(item)}
               onSelect={(selected) => handleRowSelect(item, selected)}
-              onDelete={() => setDeleteConfirm({ isOpen: true, entry: item })}
+              onDelete={(entry) => setDeleteConfirm({ isOpen: true, entry })}
+              onView={(entry) => setModalState({ isOpen: true, entry })}
+              onEdit={(entry) => setModalState({ isOpen: true, entry })}
             />
           ))}
         </TableBody>
@@ -139,11 +146,17 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
 
       <TimesheetDeleteDialog
         isOpen={deleteConfirm.isOpen}
-        onOpenChange={(open) => setDeleteConfirm({ isOpen: open })}
+        onOpenChange={(open) => setDeleteConfirm(current => ({ ...current, isOpen: open }))}
         onConfirm={handleDelete}
         entry={deleteConfirm.entry}
         isMultiple={deleteConfirm.isMultiple}
         getSelectedEntries={() => getSelectedItems(data)}
+      />
+
+      <TimesheetModal
+        isOpen={modalState.isOpen}
+        onClose={() => setModalState({ isOpen: false })}
+        entry={modalState.entry}
       />
     </div>
   );
