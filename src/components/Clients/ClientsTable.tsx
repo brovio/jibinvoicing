@@ -72,6 +72,11 @@ export const ClientsTable = ({
     });
   };
 
+  const handleClientsDeleted = () => {
+    // Refresh the data after bulk deletion
+    window.location.reload();
+  };
+
   return (
     <>
       <TableActions
@@ -89,6 +94,7 @@ export const ClientsTable = ({
             onSelectAll={(selectAll) => handleSelectAll(selectAll, filteredAndSortedData)}
             totalClients={data.length}
             visibleClients={filteredAndSortedData.length}
+            onClientsDeleted={handleClientsDeleted}
           />
           <TableBody>
             {filteredAndSortedData.map((item, index) => (
