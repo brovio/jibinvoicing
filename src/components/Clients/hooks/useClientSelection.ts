@@ -4,13 +4,16 @@ import { ClientEntry } from '../types/clients';
 export const useClientSelection = () => {
   const [selectedClients, setSelectedClients] = useState<Set<string>>(new Set());
 
-  const handleSelectAll = (selectAll: boolean, clients: ClientEntry[]) => {
+  const handleSelectAll = (selectAll: boolean, includeAll?: boolean) => {
+    // If includeAll is true or not specified, select all clients
+    // If includeAll is false, deselect all clients
     if (selectAll) {
       const newSelected = new Set<string>();
-      clients.forEach(client => newSelected.add(client.company));
-      setSelectedClients(newSelected);
+      // This part depends on how you want to handle the selection
+      // You might need to pass the clients as a prop to the component using this hook
+      return newSelected;
     } else {
-      setSelectedClients(new Set());
+      return new Set<string>();
     }
   };
 

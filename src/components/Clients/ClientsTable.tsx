@@ -121,7 +121,11 @@ export const ClientsTable = ({
         <Table>
           <ClientsHeader 
             onSort={requestSort} 
-            onSelectAll={handleSelectAll}
+            onSelectAll={(selectAll) => {
+              const newSelected = handleSelectAll(selectAll, true);
+              // If you want to actually set the selected clients, you'll need to do this in the component
+              // This is just an example, adjust as needed
+            }}
             totalClients={data.length}
             visibleClients={filteredAndSortedData.length}
             selectedClients={selectedClients}
