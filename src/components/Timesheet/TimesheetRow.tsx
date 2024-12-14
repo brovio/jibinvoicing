@@ -3,7 +3,13 @@ import { Eye, FileEdit, Trash2, Info } from "lucide-react";
 import { TimesheetEntry } from "@/utils/timesheetParser";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-export const TimesheetRow = ({ data }: { data: TimesheetEntry }) => {
+interface TimesheetRowProps {
+  data: TimesheetEntry;
+  isSelected: boolean;
+  onSelect: (selected: boolean) => void;
+}
+
+export const TimesheetRow = ({ data, isSelected, onSelect }: TimesheetRowProps) => {
   const isError = data.status.startsWith('Error');
 
   return (
@@ -11,7 +17,12 @@ export const TimesheetRow = ({ data }: { data: TimesheetEntry }) => {
       isError ? 'bg-red-900/20' : ''
     }`}>
       <TableCell className="p-4">
-        <input type="checkbox" className="rounded-sm border-gray-700" />
+        <input 
+          type="checkbox" 
+          className="rounded-sm border-gray-700"
+          checked={isSelected}
+          onChange={(e) => onSelect(e.target.checked)}
+        />
       </TableCell>
       <TableCell className="text-gray-300">{data.date}</TableCell>
       <TableCell className="text-gray-300">{data.client}</TableCell>
