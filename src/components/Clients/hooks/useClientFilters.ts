@@ -1,45 +1,40 @@
-import { useState, useMemo } from 'react';
-import { ClientEntry } from '../types/clients';
+import { useState, useMemo } from "react";
+import { ClientEntry } from "../types/clients";
 
-export const useClientFilters = (data: ClientEntry[]) => {
+export const useClientFilters = (initialData: ClientEntry[]) => {
+  const [data, setData] = useState<ClientEntry[]>(initialData);
   const [rateFilter, setRateFilter] = useState("");
   const [currencyFilter, setCurrencyFilter] = useState("");
-  const [sortConfig, setSortConfig] = useState<{ key: string; direction: string } | null>(null);
+  const [sortConfig, setSortConfig] = useState<{
+    key: string;
+    direction: "ascending" | "descending";
+  }>({ key: "", direction: "ascending" });
 
   const requestSort = (key: string) => {
-    let direction = "ascending";
-    if (sortConfig?.key === key && sortConfig.direction === "ascending") {
+    let direction: "ascending" | "descending" = "ascending";
+    if (sortConfig.key === key && sortConfig.direction === "ascending") {
       direction = "descending";
     }
     setSortConfig({ key, direction });
   };
 
-  const filterData = (items: ClientEntry[]) => {
-    return items.filter(item => {
-      // Apply rate filter
-      if (rateFilter) {
-        const [min, max] = rateFilter.split('-').map(Number);
-        if (item.rate < min || item.rate > max) return false;
-      }
-
-      // Apply currency filter
-      if (currencyFilter && item.currency !== currencyFilter) {
-        return false;
-      }
-
-      return true;
-    });
-  };
-
   const filteredAndSortedData = useMemo(() => {
-    let sortableItems = [...data];
-    
-    // Apply filters first
-    sortableItems = filterData(sortableItems);
-    
-    // Then apply sorting
-    if (sortConfig !== null) {
-      sortableItems.sort((a, b) => {
+    let filteredData = [...data];
+
+    if (rateFilter) {
+      filteredData = filteredData.filter(client => 
+        client.rate.toString() === rateFilter
+      );
+    }
+
+    if (currencyFilter) {
+      filteredData = filteredData.filter(client => 
+        client.currency === currencyFilter
+      );
+    }
+
+    if (sortConfig.key) {
+      filteredData.sort((a: any, b: any) => {
         if (a[sortConfig.key] < b[sortConfig.key]) {
           return sortConfig.direction === "ascending" ? -1 : 1;
         }
@@ -49,8 +44,9 @@ export const useClientFilters = (data: ClientEntry[]) => {
         return 0;
       });
     }
-    return sortableItems;
-  }, [data, sortConfig, rateFilter, currencyFilter]);
+
+    return filteredData;
+  }, [data, rateFilter, currencyFilter, sortConfig]);
 
   return {
     rateFilter,
@@ -59,6 +55,7 @@ export const useClientFilters = (data: ClientEntry[]) => {
     setCurrencyFilter,
     sortConfig,
     requestSort,
-    filteredAndSortedData
+    filteredAndSortedData,
+    setData
   };
 };
