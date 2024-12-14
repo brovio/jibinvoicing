@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label";
 
 interface BasicInfoFieldsProps {
   formData: {
+    clientId?: string;
     company: string;
     contactName: string;
     email: string;
@@ -14,6 +15,18 @@ interface BasicInfoFieldsProps {
 export const BasicInfoFields = ({ formData, handleChange, mode }: BasicInfoFieldsProps) => {
   return (
     <>
+      {formData.clientId && (
+        <div className="space-y-2">
+          <Label htmlFor="clientId" className="text-gray-300">Client ID</Label>
+          <Input
+            id="clientId"
+            name="clientId"
+            value={formData.clientId}
+            disabled={true}
+            className="bg-[#1A1F2C] border-gray-700 text-gray-400"
+          />
+        </div>
+      )}
       <div className="space-y-2">
         <Label htmlFor="company" className="text-gray-300">Company Name *</Label>
         <Input

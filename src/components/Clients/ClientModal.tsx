@@ -22,6 +22,7 @@ interface ClientModalProps {
 
 export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientModalProps) => {
   const [formData, setFormData] = useState({
+    clientId: '',
     company: '',
     contactName: '',
     email: '',
@@ -35,9 +36,17 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
 
   useEffect(() => {
     if (client) {
-      setFormData(client);
+      setFormData({
+        ...client,
+        clientId: client.clientId || `client_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      });
+    } else if (mode === 'add') {
+      setFormData(prev => ({
+        ...prev,
+        clientId: `client_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      }));
     }
-  }, [client]);
+  }, [client, mode]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,6 +1,7 @@
 import { toast } from "@/components/ui/use-toast";
 
 export interface ImportedClient {
+  clientId: string;
   company: string;
   contactName: string;
   email: string;
@@ -30,7 +31,9 @@ export const parseCSV = (content: string): ImportedClient[] => {
       .filter(line => line.trim())
       .map(line => {
         const values = line.split(',').map(value => value.trim());
-        const client: Partial<ImportedClient> = {};
+        const client: Partial<ImportedClient> = {
+          clientId: `client_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+        };
         
         headers.forEach((header, index) => {
           switch(header) {
@@ -88,8 +91,8 @@ export const parseJSON = (content: string): ImportedClient[] => {
       return [];
     }
 
-    // Map the JSON data to match our ImportedClient interface
     return data.map(item => ({
+      clientId: `client_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       company: item.company,
       contactName: item.contactName,
       email: item.email,
