@@ -4,7 +4,7 @@ import { Search, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ExportButton } from "@/components/ExportButton";
 import { useRef, useState, useEffect } from "react";
-import { processTimesheetZip, TimesheetEntry } from "@/utils/timesheetParser";
+import { processTimesheetZip, parseTimesheetCSV, TimesheetEntry } from "@/utils/timesheetParser";
 import { showImportSuccessToast, showImportErrorToast } from "@/utils/toastUtils";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -55,24 +55,49 @@ const Timesheets = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    if (file.type !== 'application/zip') {
-      showImportErrorToast('Please upload a ZIP file');
-      return;
-    }
-
     try {
-      const entries = await processTimesheetZip(file);
-      
-      // Insert entries into Supabase
-      const { data, error } = await supabase
-        .from('brovio-timesheets')
-        .insert(entries)
-        .select();
+      let entries: TimesheetEntry[] = [];
 
-      if (error) throw error;
+      if (file.type === 'text/csv') {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          try {
+            const content = e.target?.result as string;
+            entries = parseTimesheetCSV(content);
+            
+            // Insert entries into Supabase
+            const { data, error } = await supabase
+              .from('brovio-timesheets')
+              .insert(entries)
+              .select();
 
-      await fetchTimesheets(); // Refresh the table
-      showImportSuccessToast(entries.length);
+            if (error) throw error;
+
+            await fetchTimesheets(); // Refresh the table
+            showImportSuccessToast(entries.length);
+          } catch (error) {
+            console.error('Error importing CSV:', error);
+            showImportErrorToast();
+          }
+        };
+        reader.readAsText(file);
+      } else if (file.type === 'application/zip') {
+        entries = await processTimesheetZip(file);
+        
+        // Insert entries into Supabase
+        const { data, error } = await supabase
+          .from('brovio-timesheets')
+          .insert(entries)
+          .select();
+
+        if (error) throw error;
+
+        await fetchTimesheets(); // Refresh the table
+        showImportSuccessToast(entries.length);
+      } else {
+        showImportErrorToast('Please upload a CSV or ZIP file');
+        return;
+      }
       
       // Reset file input
       if (fileInputRef.current) {
@@ -103,7 +128,7 @@ const Timesheets = () => {
             <div className="flex gap-4">
               <input
                 type="file"
-                accept=".zip"
+                accept=".csv,.zip"
                 onChange={handleFileChange}
                 className="hidden"
                 ref={fileInputRef}
@@ -113,7 +138,7 @@ const Timesheets = () => {
                 className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white gap-2 rounded-[10px]"
               >
                 <Upload className="h-4 w-4" />
-                Import Timesheets (ZIP)
+                Import Timesheets (CSV/ZIP)
               </Button>
               <ExportButton format="csv" clients={[]} />
               <ExportButton format="json" clients={[]} />
