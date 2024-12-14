@@ -12,6 +12,7 @@ import { showErrorToast, showClientSavedToast } from "@/utils/toastUtils";
 import { BasicInfoFields } from "./FormFields/BasicInfoFields";
 import { ContactFields } from "./FormFields/ContactFields";
 import { BillingFields } from "./FormFields/BillingFields";
+import { UnsavedChangesDialog } from "./UnsavedChangesDialog";
 
 let nextManualClientId = 1;
 
@@ -41,9 +42,11 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
     website: ''
   });
 
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
+
   useEffect(() => {
     if (client) {
-      // Ensure we're creating a new object instance for the form data
       setFormData({
         clientId: client.clientId || generateNextManualClientId(),
         company: client.company || '',
@@ -57,7 +60,6 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
         website: client.website || ''
       });
     } else if (mode === 'add') {
-      // Reset form data for new clients
       setFormData({
         clientId: generateNextManualClientId(),
         company: '',
@@ -71,7 +73,8 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
         website: ''
       });
     }
-  }, [client, mode, isOpen]); // Added isOpen to dependencies to ensure reset on modal close
+    setHasUnsavedChanges(false);
+  }, [client, mode, isOpen]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,13 +87,13 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
       return;
     }
 
-    // Create a new object for the saved client data
     const clientData = {
       ...formData,
       rate: formData.rate ? Number(formData.rate) : null
     };
 
     onSave(clientData);
+    setHasUnsavedChanges(false);
     onClose();
     if (mode !== 'view') {
       showClientSavedToast(mode, formData.company);
@@ -103,34 +106,62 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
       ...prev,
       [name]: value
     }));
+    setHasUnsavedChanges(true);
+  };
+
+  const handleClose = () => {
+    if (hasUnsavedChanges && mode !== 'view') {
+      setShowUnsavedDialog(true);
+    } else {
+      onClose();
+    }
+  };
+
+  const handleSaveAndClose = () => {
+    handleSubmit(new Event('submit') as any);
+    setShowUnsavedDialog(false);
+  };
+
+  const handleDiscardAndClose = () => {
+    setShowUnsavedDialog(false);
+    setHasUnsavedChanges(false);
+    onClose();
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] bg-[#252A38] border border-gray-800 text-white dialog-content">
-        <DialogHeader>
-          <DialogTitle className="text-white">
-            {mode === 'add' ? 'Add New Client' : mode === 'edit' ? 'Edit Client' : 'View Client'}
-          </DialogTitle>
-          <DialogDescription className="text-gray-400">
-            {mode === 'view' ? 'View client details below.' : 'Fill in the client details below.'}
-          </DialogDescription>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <BasicInfoFields formData={formData} handleChange={handleChange} mode={mode} />
-            <ContactFields formData={formData} handleChange={handleChange} mode={mode} />
-            <BillingFields formData={formData} handleChange={handleChange} mode={mode} />
-          </div>
-          <DialogFooter>
-            {mode !== 'view' && (
-              <Button type="submit" className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90">
-                {mode === 'add' ? 'Add Client' : 'Save Changes'}
-              </Button>
-            )}
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <>
+      <Dialog open={isOpen} onOpenChange={handleClose}>
+        <DialogContent className="sm:max-w-[600px] bg-[#252A38] border border-gray-800 text-white dialog-content">
+          <DialogHeader>
+            <DialogTitle className="text-white">
+              {mode === 'add' ? 'Add New Client' : mode === 'edit' ? 'Edit Client' : 'View Client'}
+            </DialogTitle>
+            <DialogDescription className="text-gray-400">
+              {mode === 'view' ? 'View client details below.' : 'Fill in the client details below.'}
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <BasicInfoFields formData={formData} handleChange={handleChange} mode={mode} />
+              <ContactFields formData={formData} handleChange={handleChange} mode={mode} />
+              <BillingFields formData={formData} handleChange={handleChange} mode={mode} />
+            </div>
+            <DialogFooter>
+              {mode !== 'view' && (
+                <Button type="submit" className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90">
+                  {mode === 'add' ? 'Add Client' : 'Save Changes'}
+                </Button>
+              )}
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <UnsavedChangesDialog
+        isOpen={showUnsavedDialog}
+        onClose={handleDiscardAndClose}
+        onConfirm={handleSaveAndClose}
+      />
+    </>
   );
 };
