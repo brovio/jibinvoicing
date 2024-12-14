@@ -10,9 +10,6 @@ export interface TimesheetEntry {
   hours: number;
   status?: string;
   staff_name?: string;
-  entry_type?: string;
-  break?: boolean;
-  break_type?: string;
   flag_reason?: string;
 }
 
@@ -25,7 +22,6 @@ export const fetchTimesheets = async (): Promise<TimesheetEntry[]> => {
 
     if (error) throw error;
 
-    // Map the imported_timesheets data to match TimesheetEntry interface
     return (timesheets || []).map(timesheet => ({
       tsid: timesheet.timesheet_id,
       date: timesheet.date,
@@ -38,8 +34,6 @@ export const fetchTimesheets = async (): Promise<TimesheetEntry[]> => {
       staff_name: timesheet.full_name,
       flag_reason: timesheet.flag_reason
     }));
-
-    return timesheets || [];
   } catch (error) {
     console.error('Error fetching timesheets:', error);
     throw error;

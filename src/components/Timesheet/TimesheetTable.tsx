@@ -25,8 +25,8 @@ interface TimesheetTableProps {
 
 export const TimesheetTable = ({ data }: TimesheetTableProps) => {
   const [sortConfig, setSortConfig] = React.useState<{ key: string; direction: string } | null>(null);
-  const [deleteConfirm, setDeleteConfirm] = React.useState({ isOpen: false });
-  const [modalState, setModalState] = React.useState({ isOpen: false });
+  const [deleteConfirm, setDeleteConfirm] = React.useState({ isOpen: false, entry: undefined as TimesheetEntry | undefined });
+  const [modalState, setModalState] = React.useState({ isOpen: false, entry: undefined as TimesheetEntry | undefined });
 
   const {
     handleSelectAll,
@@ -82,7 +82,7 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
       console.error('Error deleting timesheet entries:', error);
       showErrorToast('Failed to delete timesheet entries');
     }
-    setDeleteConfirm({ isOpen: false });
+    setDeleteConfirm({ isOpen: false, entry: undefined });
   };
 
   const handleTableSelectAll = (selected: boolean) => {
@@ -112,9 +112,9 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
                 data={item}
                 isSelected={isSelected(item)}
                 onSelect={(selected) => handleRowSelect(item, selected)}
-                onDelete={(entry) => setDeleteConfirm({ isOpen: true })}
-                onView={(entry) => setModalState({ isOpen: true })}
-                onEdit={(entry) => setModalState({ isOpen: true })}
+                onDelete={(entry) => setDeleteConfirm({ isOpen: true, entry })}
+                onView={(entry) => setModalState({ isOpen: true, entry })}
+                onEdit={(entry) => setModalState({ isOpen: true, entry })}
               />
             ))}
           </TableBody>
@@ -123,15 +123,15 @@ export const TimesheetTable = ({ data }: TimesheetTableProps) => {
 
       <TimesheetDeleteDialog 
         isOpen={deleteConfirm.isOpen}
-        onOpenChange={(open) => setDeleteConfirm({ isOpen: open })}
+        onOpenChange={(open) => setDeleteConfirm({ isOpen: open, entry: open ? deleteConfirm.entry : undefined })}
         onConfirm={handleDelete}
         getSelectedEntries={() => getSelectedItems(data)}
       />
 
       <TimesheetModal
         isOpen={modalState.isOpen}
-        onClose={() => setModalState({ isOpen: false })}
-        entry={undefined}
+        onClose={() => setModalState({ isOpen: false, entry: undefined })}
+        entry={modalState.entry}
       />
     </>
   );
