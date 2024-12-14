@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -42,17 +43,35 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
 
   useEffect(() => {
     if (client) {
+      // Ensure we're creating a new object instance for the form data
       setFormData({
-        ...client,
-        clientId: client.clientId || generateNextManualClientId()
+        clientId: client.clientId || generateNextManualClientId(),
+        company: client.company || '',
+        contactName: client.contactName || '',
+        email: client.email || '',
+        phone: client.phone || '',
+        address: client.address || '',
+        rate: client.rate?.toString() || '',
+        currency: client.currency || 'USD',
+        notes: client.notes || '',
+        website: client.website || ''
       });
     } else if (mode === 'add') {
-      setFormData(prev => ({
-        ...prev,
-        clientId: generateNextManualClientId()
-      }));
+      // Reset form data for new clients
+      setFormData({
+        clientId: generateNextManualClientId(),
+        company: '',
+        contactName: '',
+        email: '',
+        phone: '',
+        address: '',
+        rate: '',
+        currency: 'USD',
+        notes: '',
+        website: ''
+      });
     }
-  }, [client, mode]);
+  }, [client, mode, isOpen]); // Added isOpen to dependencies to ensure reset on modal close
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,7 +84,13 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
       return;
     }
 
-    onSave(formData);
+    // Create a new object for the saved client data
+    const clientData = {
+      ...formData,
+      rate: formData.rate ? Number(formData.rate) : null
+    };
+
+    onSave(clientData);
     onClose();
     if (mode !== 'view') {
       showClientSavedToast(mode, formData.company);
@@ -73,9 +98,10 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [name]: value
     }));
   };
 
@@ -86,6 +112,9 @@ export const ClientModal = ({ isOpen, onClose, onSave, client, mode }: ClientMod
           <DialogTitle className="text-white">
             {mode === 'add' ? 'Add New Client' : mode === 'edit' ? 'Edit Client' : 'View Client'}
           </DialogTitle>
+          <DialogDescription className="text-gray-400">
+            {mode === 'view' ? 'View client details below.' : 'Fill in the client details below.'}
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
