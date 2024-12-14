@@ -20,6 +20,7 @@ import { useClientFilters } from "./hooks/useClientFilters";
 import { useClientSelection } from "./hooks/useClientSelection";
 import { ClientEntry, ClientsTableProps } from "./types/clients";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const ClientsTable = ({ 
   data,
@@ -109,7 +110,7 @@ export const ClientsTable = ({
         <Table>
           <ClientsHeader 
             onSort={requestSort} 
-            onSelectAll={handleSelectAll}
+            onSelectAll={(selectAll: boolean) => handleSelectAll(selectAll, filteredAndSortedData)}
             totalClients={data.length}
             visibleClients={filteredAndSortedData.length}
             onClientsDeleted={handleClientsDeleted}
