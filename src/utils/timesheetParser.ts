@@ -1,81 +1,75 @@
 import JSZip from 'jszip';
 
 export interface TimesheetEntry {
-  tsid?: number;
   date: string;
-  client: string;
   project: string;
+  client: string;
   task: string;
   hours: number;
   status?: string;
-  staff_name?: string;
-  entry_type?: string;
-  time?: string | null;
+  staffName?: string;
+  entryType?: string;
+  time?: string;
   break?: boolean;
-  break_type?: string;
-  flag_reason?: string | null;
+  breakType?: string;
 }
-
-const generateTsid = (): number => {
-  return Math.floor(10000000 + Math.random() * 90000000);
-};
-
-const isValidTimeFormat = (time: string): boolean => {
-  const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/;
-  return timeRegex.test(time);
-};
-
-const isValidDate = (dateStr: string): boolean => {
-  const date = new Date(dateStr);
-  return date instanceof Date && !isNaN(date.getTime());
-};
-
-const formatDate = (dateStr: string): string => {
-  if (!dateStr) return new Date().toISOString().split('T')[0];
-  
-  const date = new Date(dateStr);
-  if (isValidDate(dateStr)) {
-    return date.toISOString().split('T')[0];
-  }
-  return new Date().toISOString().split('T')[0];
-};
-
-const parseDuration = (duration: string): number => {
-  const match = duration.match(/(\d+)h\s*(\d+)m/);
-  if (match) {
-    const hours = parseInt(match[1]);
-    const minutes = parseInt(match[2]);
-    return hours + (minutes / 60);
-  }
-  return 0;
-};
 
 export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
   const lines = csvContent.trim().split('\n');
-  const headers = lines[0].toLowerCase().split(',');
+  const headers = lines[0].split(',');
   
   return lines.slice(1).map(line => {
     const values = line.split(',');
-    const rawEntry: Record<string, string> = {};
+    const entry: Record<string, any> = {};
     
     headers.forEach((header, index) => {
-      rawEntry[header.trim()] = values[index]?.trim() || '';
+      const value = values[index]?.trim();
+      switch(header.trim().toLowerCase()) {
+        case 'date':
+          entry.date = value;
+          break;
+        case 'activity':
+        case 'project':
+          entry.project = value;
+          break;
+        case 'client':
+          entry.client = value;
+          break;
+        case 'notes':
+        case 'task':
+          entry.task = value;
+          break;
+        case 'duration':
+        case 'hours':
+          entry.hours = parseFloat(value) || 0;
+          break;
+        case 'full name':
+        case 'staff name':
+          entry.staffName = value;
+          break;
+        case 'entrytype':
+          entry.entryType = value;
+          break;
+        case 'time':
+          entry.time = value;
+          break;
+        case 'break':
+          entry.break = value?.toLowerCase() === 'yes';
+          break;
+        case 'break type':
+          entry.breakType = value;
+          break;
+      }
     });
 
-    const entry: TimesheetEntry = {
-      tsid: generateTsid(),
-      date: formatDate(rawEntry.date),
-      client: rawEntry.client?.trim() || 'Unknown Client',
-      project: rawEntry.activity?.trim() || 'Unknown Project',
-      task: rawEntry.notes?.trim() || 'No Description',
-      hours: parseDuration(rawEntry.duration || '0h 0m'),
-      staff_name: rawEntry.fullname?.trim() || null,
-      time: rawEntry.time && isValidTimeFormat(rawEntry.time) ? rawEntry.time : null,
-      status: rawEntry.flagged === 'true' ? 'Error' : 'Success',
-      flag_reason: rawEntry.flagged === 'true' ? rawEntry.flagreason : null
-    };
+    // Set default values for required fields if they're missing
+    entry.project = entry.project || 'Unspecified Project';
+    entry.client = entry.client || 'Unspecified Client';
+    entry.task = entry.task || 'General Task';
+    entry.hours = entry.hours || 0;
+    entry.status = 'Pending';
 
-    return entry;
+    return entry as TimesheetEntry;
   });
 };
 
@@ -84,6 +78,7 @@ export const processTimesheetZip = async (zipFile: File): Promise<TimesheetEntry
     const zip = new JSZip();
     const zipContent = await zip.loadAsync(zipFile);
     
+    // Find the first CSV file in the ZIP
     const csvFile = Object.values(zipContent.files).find(file => 
       file.name.toLowerCase().endsWith('.csv')
     );
@@ -92,7 +87,10 @@ export const processTimesheetZip = async (zipFile: File): Promise<TimesheetEntry
       throw new Error('No CSV file found in the ZIP archive');
     }
 
+    // Read the CSV content
     const csvContent = await csvFile.async('string');
+    console.log('CSV Content:', csvContent); // Debug log
+    
     return parseTimesheetCSV(csvContent);
   } catch (error) {
     console.error('Error processing ZIP file:', error);

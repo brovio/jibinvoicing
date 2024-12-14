@@ -56,48 +56,12 @@ export type Database = {
       }
       "brovio-timesheets": {
         Row: {
-          break: boolean | null
-          break_type: string | null
-          client: string
-          date: string
-          entry_type: string | null
-          flag_reason: string | null
-          hours: number
-          project: string
-          staff_name: string | null
-          status: string | null
-          task: string
-          time: string | null
           tsid: number
         }
         Insert: {
-          break?: boolean | null
-          break_type?: string | null
-          client: string
-          date: string
-          entry_type?: string | null
-          flag_reason?: string | null
-          hours: number
-          project: string
-          staff_name?: string | null
-          status?: string | null
-          task: string
-          time?: string | null
           tsid?: number
         }
         Update: {
-          break?: boolean | null
-          break_type?: string | null
-          client?: string
-          date?: string
-          entry_type?: string | null
-          flag_reason?: string | null
-          hours?: number
-          project?: string
-          staff_name?: string | null
-          status?: string | null
-          task?: string
-          time?: string | null
           tsid?: number
         }
         Relationships: []

@@ -3,102 +3,54 @@ import { Input } from "@/components/ui/input";
 import { Search, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ExportButton } from "@/components/ExportButton";
-import { useRef, useState, useEffect } from "react";
-import { processTimesheetZip, parseTimesheetCSV, TimesheetEntry } from "@/utils/timesheetParser";
+import { useRef, useState } from "react";
+import { processTimesheetZip, TimesheetEntry } from "@/utils/timesheetParser";
 import { showImportSuccessToast, showImportErrorToast } from "@/utils/toastUtils";
-import { supabase } from "@/integrations/supabase/client";
+
+const sampleData = [
+  {
+    date: "2024-02-20",
+    project: "Website Redesign",
+    client: "Google",
+    task: "UI Development",
+    hours: 6.5,
+    status: "Approved"
+  },
+  {
+    date: "2024-02-19",
+    project: "Mobile App",
+    client: "Microsoft",
+    task: "API Integration",
+    hours: 8.0,
+    status: "Pending"
+  },
+  {
+    date: "2024-02-18",
+    project: "Cloud Migration",
+    client: "Apple",
+    task: "Database Setup",
+    hours: 7.5,
+    status: "Approved"
+  }
+];
 
 const Timesheets = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [timesheetData, setTimesheetData] = useState<TimesheetEntry[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    fetchTimesheets();
-  }, []);
-
-  const fetchTimesheets = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('brovio-timesheets')
-        .select('*')
-        .order('date', { ascending: false });
-
-      if (error) throw error;
-      
-      if (data) {
-        const typedData: TimesheetEntry[] = data.map(entry => ({
-          tsid: entry.tsid,
-          date: entry.date,
-          client: entry.client,
-          project: entry.project,
-          task: entry.task,
-          hours: entry.hours,
-          status: entry.status || 'Pending',
-          staff_name: entry.staff_name,
-          entry_type: entry.entry_type,
-          time: entry.time,
-          break: entry.break,
-          break_type: entry.break_type,
-          flag_reason: entry.flag_reason
-        }));
-        setTimesheetData(typedData);
-      }
-    } catch (error) {
-      console.error('Error fetching timesheets:', error);
-      showImportErrorToast('Failed to load timesheets');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [timesheetData, setTimesheetData] = useState<TimesheetEntry[]>(sampleData);
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    if (file.type !== 'application/zip') {
+      showImportErrorToast('Please upload a ZIP file');
+      return;
+    }
+
     try {
-      let entries: TimesheetEntry[] = [];
-
-      if (file.type === 'text/csv') {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          try {
-            const content = e.target?.result as string;
-            entries = parseTimesheetCSV(content);
-            
-            // Insert entries into Supabase
-            const { data, error } = await supabase
-              .from('brovio-timesheets')
-              .insert(entries)
-              .select();
-
-            if (error) throw error;
-
-            await fetchTimesheets(); // Refresh the table
-            showImportSuccessToast(entries.length);
-          } catch (error) {
-            console.error('Error importing CSV:', error);
-            showImportErrorToast();
-          }
-        };
-        reader.readAsText(file);
-      } else if (file.type === 'application/zip') {
-        entries = await processTimesheetZip(file);
-        
-        // Insert entries into Supabase
-        const { data, error } = await supabase
-          .from('brovio-timesheets')
-          .insert(entries)
-          .select();
-
-        if (error) throw error;
-
-        await fetchTimesheets(); // Refresh the table
-        showImportSuccessToast(entries.length);
-      } else {
-        showImportErrorToast('Please upload a CSV or ZIP file');
-        return;
-      }
+      const entries = await processTimesheetZip(file);
+      setTimesheetData(entries);
+      showImportSuccessToast(entries.length);
       
       // Reset file input
       if (fileInputRef.current) {
@@ -109,10 +61,6 @@ const Timesheets = () => {
       showImportErrorToast();
     }
   };
-
-  if (isLoading) {
-    return <div className="flex justify-center items-center h-96">Loading...</div>;
-  }
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -129,7 +77,7 @@ const Timesheets = () => {
             <div className="flex gap-4">
               <input
                 type="file"
-                accept=".csv,.zip"
+                accept=".zip"
                 onChange={handleFileChange}
                 className="hidden"
                 ref={fileInputRef}
@@ -139,7 +87,7 @@ const Timesheets = () => {
                 className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white gap-2 rounded-[10px]"
               >
                 <Upload className="h-4 w-4" />
-                Import Timesheets (CSV/ZIP)
+                Import Timesheets (ZIP)
               </Button>
               <ExportButton format="csv" clients={[]} />
               <ExportButton format="json" clients={[]} />
@@ -169,7 +117,7 @@ const Timesheets = () => {
       <TimesheetTable data={timesheetData} />
 
       <div className="mt-4 flex justify-between items-center text-gray-400">
-        <span>Showing 1 to {Math.min(10, timesheetData.length)} of {timesheetData.length} results</span>
+        <span>Showing 1 to 10 of 20 results</span>
         <div className="flex items-center gap-2">
           <select className="bg-[#252A38] border border-gray-800 text-gray-400 rounded-[10px] px-4 py-2">
             <option>25 entries</option>
