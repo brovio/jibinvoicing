@@ -82,7 +82,7 @@ const Clients = () => {
 
   const handleClientAdded = async (newClient: any) => {
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('brovio-clients')
         .insert({
           company: newClient.company,
@@ -94,10 +94,28 @@ const Clients = () => {
           rate: Number(newClient.rate),
           notes: newClient.notes || null,
           website: newClient.website || null
-        });
+        })
+        .select()
+        .single();
 
       if (error) throw error;
-      await fetchClients();
+      
+      // Update local state with the new client data
+      if (data) {
+        const transformedNewClient = {
+          clientId: data.clientid,
+          company: data.company,
+          contactName: data.contact_name,
+          email: data.email,
+          phone: data.phone,
+          address: data.address,
+          currency: data.currency,
+          rate: data.rate,
+          notes: data.notes,
+          website: data.website
+        };
+        setClients(prevClients => [...prevClients, transformedNewClient]);
+      }
     } catch (error) {
       console.error('Add client error:', error);
       showErrorToast(
@@ -113,19 +131,7 @@ const Clients = () => {
         throw new Error('Client ID is required for update');
       }
 
-      // First, verify the client exists and get its current data
-      const { data: existingClient, error: fetchError } = await supabase
-        .from('brovio-clients')
-        .select('clientid')
-        .eq('clientid', parseInt(updatedClient.clientId, 10))
-        .single();
-
-      if (fetchError || !existingClient) {
-        throw new Error('Client not found');
-      }
-
-      // Now perform the update only on the verified client
-      const { error: updateError } = await supabase
+      const { data, error } = await supabase
         .from('brovio-clients')
         .update({
           company: updatedClient.company,
@@ -138,11 +144,33 @@ const Clients = () => {
           notes: updatedClient.notes || null,
           website: updatedClient.website || null
         })
-        .eq('clientid', existingClient.clientid); // Use the verified clientid from the database
+        .eq('clientid', parseInt(updatedClient.clientId, 10))
+        .select()
+        .single();
 
-      if (updateError) throw updateError;
+      if (error) throw error;
       
-      await fetchClients();
+      // Update local state by replacing only the updated client
+      if (data) {
+        setClients(prevClients => 
+          prevClients.map(client => 
+            client.clientId === parseInt(updatedClient.clientId, 10)
+              ? {
+                  clientId: data.clientid,
+                  company: data.company,
+                  contactName: data.contact_name,
+                  email: data.email,
+                  phone: data.phone,
+                  address: data.address,
+                  currency: data.currency,
+                  rate: data.rate,
+                  notes: data.notes,
+                  website: data.website
+                }
+              : client
+          )
+        );
+      }
     } catch (error) {
       console.error('Update client error:', error);
       showErrorToast(
@@ -164,7 +192,11 @@ const Clients = () => {
         .eq('clientid', deletedClient.clientId);
 
       if (error) throw error;
-      await fetchClients();
+      
+      // Update local state by removing the deleted client
+      setClients(prevClients => 
+        prevClients.filter(client => client.clientId !== deletedClient.clientId)
+      );
     } catch (error) {
       console.error('Delete client error:', error);
       showErrorToast(
