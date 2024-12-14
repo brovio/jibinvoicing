@@ -1,17 +1,17 @@
 import JSZip from 'jszip';
+import { supabase } from "@/integrations/supabase/client";
 
 export interface TimesheetEntry {
+  tsid: number;
   date: string;
-  project: string;
   client: string;
+  project: string;
   task: string;
   hours: number;
-  status?: string;
-  staffName?: string;
-  entryType?: string;
   time?: string;
-  break?: boolean;
-  breakType?: string;
+  staff_name?: string;
+  status: string;
+  flag_reason?: string;
 }
 
 export const parseTimesheetCSV = (csvContent: string): TimesheetEntry[] => {
@@ -95,5 +95,35 @@ export const processTimesheetZip = async (zipFile: File): Promise<TimesheetEntry
   } catch (error) {
     console.error('Error processing ZIP file:', error);
     throw new Error('Invalid timesheet format');
+  }
+};
+
+export const fetchTimesheets = async (): Promise<TimesheetEntry[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('imported_timesheets')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching timesheets:', error);
+      throw error;
+    }
+
+    return data.map(entry => ({
+      tsid: entry.timesheet_id,
+      date: entry.date,
+      client: entry.client,
+      project: entry.activity || 'Unspecified Project',
+      task: entry.notes || 'General Task',
+      hours: parseFloat(entry.duration) || 0,
+      time: entry.time,
+      staff_name: entry.full_name,
+      status: entry.flagged ? `Error: ${entry.flag_reason}` : 'Success',
+      flag_reason: entry.flagged ? entry.flag_reason : undefined
+    }));
+  } catch (error) {
+    console.error('Error in fetchTimesheets:', error);
+    throw error;
   }
 };

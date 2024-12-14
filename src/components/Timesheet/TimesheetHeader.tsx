@@ -44,6 +44,12 @@ export const TimesheetHeader = ({ onSort }: TimesheetHeaderProps) => {
           Hours
         </TableHead>
         <TableHead 
+          className="text-gray-400 font-medium cursor-pointer hover:bg-[#2A303F] transition-colors"
+          onClick={() => onSort('status')}
+        >
+          Status
+        </TableHead>
+        <TableHead 
           className="text-gray-400 font-medium cursor-pointer hover:bg-[#2A303F] transition-colors w-[100px]"
         >
           Actions
