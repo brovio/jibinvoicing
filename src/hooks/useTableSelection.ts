@@ -30,6 +30,7 @@ export const useTableSelection = <T extends SelectableItem>() => {
     const itemId = getItemIdentifier(item);
     
     if (selectAllMode) {
+      // If in "select all" mode, manage exclusions
       setExcludedItems(prev => {
         const newExcluded = new Set(prev);
         if (!selected) {
@@ -40,6 +41,7 @@ export const useTableSelection = <T extends SelectableItem>() => {
         return newExcluded;
       });
     } else {
+      // If in individual selection mode, manage selections
       setSelectedItems(prev => {
         const newSelected = new Set(prev);
         if (selected) {
