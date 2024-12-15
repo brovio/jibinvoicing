@@ -1,7 +1,7 @@
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export interface Column {
   key: string;
@@ -32,10 +32,21 @@ export const SharedTableHeader = ({
   selectAllMode
 }: TableHeaderProps) => {
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const checkboxRef = useRef<HTMLInputElement>(null);
 
   const isChecked = selectAllMode ? 
     excludedCount === 0 : 
     selectedCount > 0 && selectedCount === visibleItems;
+
+  const isIndeterminate = selectAllMode ?
+    excludedCount > 0 :
+    selectedCount > 0 && selectedCount < visibleItems;
+
+  useEffect(() => {
+    if (checkboxRef.current) {
+      checkboxRef.current.indeterminate = isIndeterminate;
+    }
+  }, [isIndeterminate]);
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
@@ -55,6 +66,7 @@ export const SharedTableHeader = ({
             className="text-gray-400 font-medium cursor-pointer hover:bg-[#2A303F] transition-colors w-[40px] p-4"
           >
             <input 
+              ref={checkboxRef}
               type="checkbox" 
               className="rounded-sm border-gray-700"
               checked={isChecked}
