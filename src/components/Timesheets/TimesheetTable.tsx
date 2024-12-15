@@ -6,6 +6,8 @@ import { useTableSelection } from "@/hooks/useTableSelection";
 import { TimesheetEntry, TimesheetTableProps } from "./types/timesheet";
 import { TimesheetDetailsDialog } from "./TimesheetDetailsDialog";
 import { useToast } from "@/components/ui/use-toast";
+import { useTimesheetFilters } from "./hooks/useTimesheetFilters";
+import { TimesheetTableActions } from "./TimesheetTableActions";
 
 const timesheetColumns = [
   { key: 'date', label: 'Date', width: '120px' },
@@ -26,6 +28,19 @@ export const TimesheetTable = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const { toast } = useToast();
+
+  const {
+    searchQuery,
+    setSearchQuery,
+    clientFilter,
+    setClientFilter,
+    activityFilter,
+    setActivityFilter,
+    requestSort,
+    filteredAndSortedData,
+    uniqueClients,
+    uniqueActivities
+  } = useTimesheetFilters(data);
 
   const {
     handleSelectAll,
@@ -95,20 +110,28 @@ export const TimesheetTable = ({
 
   return (
     <>
+      <TimesheetTableActions
+        onSearchChange={setSearchQuery}
+        onClientFilterChange={setClientFilter}
+        onActivityFilterChange={setActivityFilter}
+        uniqueClients={uniqueClients}
+        uniqueActivities={uniqueActivities}
+      />
+
       <div className="bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">
         <Table>
           <SharedTableHeader 
             columns={timesheetColumns}
-            onSort={() => {}}
+            onSort={requestSort}
             onSelectAll={handleSelectAll}
             totalItems={data.length}
-            visibleItems={data.length}
+            visibleItems={filteredAndSortedData.length}
             selectedCount={selectedCount}
             excludedCount={excludedItems.size}
             selectAllMode={selectAllMode}
           />
           <TableBody>
-            {data.map((item) => (
+            {filteredAndSortedData.map((item) => (
               <TimesheetRow 
                 key={item.timesheet_id || item.date}
                 data={item}
