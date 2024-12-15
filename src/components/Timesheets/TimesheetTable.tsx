@@ -96,31 +96,33 @@ export const TimesheetTable = ({
   return (
     <>
       <div className="w-full bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">
-        <Table>
-          <SharedTableHeader 
-            columns={timesheetColumns}
-            onSort={() => {}}
-            onSelectAll={handleSelectAll}
-            totalItems={data.length}
-            visibleItems={data.length}
-            selectedCount={selectedCount}
-            excludedCount={excludedItems.size}
-            selectAllMode={selectAllMode}
-          />
-          <TableBody>
-            {data.map((item) => (
-              <TimesheetRow 
-                key={item.timesheet_id || item.date}
-                data={item}
-                isSelected={isSelected(item)}
-                onSelect={(selected) => handleRowSelect(item, selected)}
-                onView={handleRowClick}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
-            ))}
-          </TableBody>
-        </Table>
+        <div className="overflow-x-auto">
+          <Table>
+            <SharedTableHeader 
+              columns={timesheetColumns}
+              onSort={() => {}}
+              onSelectAll={handleSelectAll}
+              totalItems={data.length}
+              visibleItems={data.length}
+              selectedCount={selectedCount}
+              excludedCount={excludedItems.size}
+              selectAllMode={selectAllMode}
+            />
+            <TableBody>
+              {data.map((item) => (
+                <TimesheetRow 
+                  key={item.timesheet_id || item.date}
+                  data={item}
+                  isSelected={isSelected(item)}
+                  onSelect={(selected) => handleRowSelect(item, selected)}
+                  onView={handleRowClick}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
       <TimesheetDetailsDialog
