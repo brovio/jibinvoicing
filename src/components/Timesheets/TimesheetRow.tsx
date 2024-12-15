@@ -32,7 +32,7 @@ export const TimesheetRow = ({
     <TableRow className="border-b border-gray-800 hover:bg-[#2A303F] transition-colors">
       <ResizablePanelGroup direction="horizontal">
         <ResizablePanel defaultSize={5} minSize={5}>
-          <TableCell className="py-2 pl-2">
+          <TableCell className="flex items-center justify-center py-2">
             <input 
               type="checkbox" 
               className="rounded-sm border-gray-700"
@@ -41,9 +41,9 @@ export const TimesheetRow = ({
             />
           </TableCell>
         </ResizablePanel>
-        <ResizablePanel defaultSize={10} minSize={10}>
+        <ResizablePanel defaultSize={12} minSize={12}>
           <TableCell 
-            className="text-gray-300 cursor-pointer hover:text-white py-2 pl-2"
+            className="text-gray-300 cursor-pointer hover:text-white py-2 pl-4"
             onClick={() => onEdit(data)}
           >
             {data.date}
@@ -51,38 +51,38 @@ export const TimesheetRow = ({
         </ResizablePanel>
         <ResizablePanel defaultSize={15} minSize={15}>
           <TableCell 
-            className="text-gray-300 cursor-pointer hover:text-white py-2 pl-2"
+            className="text-gray-300 cursor-pointer hover:text-white py-2 pl-4"
             onClick={() => onEdit(data)}
           >
             {data.client}
           </TableCell>
         </ResizablePanel>
-        <ResizablePanel defaultSize={15} minSize={10}>
+        <ResizablePanel defaultSize={15} minSize={15}>
           <TableCell 
-            className="text-gray-300 cursor-pointer hover:text-white py-2 pl-2"
+            className="text-gray-300 cursor-pointer hover:text-white py-2 pl-4"
             onClick={() => onEdit(data)}
           >
             {data.activity}
           </TableCell>
         </ResizablePanel>
-        <ResizablePanel defaultSize={35} minSize={20}>
+        <ResizablePanel defaultSize={30} minSize={20}>
           <TableCell 
-            className="text-gray-300 cursor-pointer hover:text-white py-2 pl-2"
+            className="text-gray-300 cursor-pointer hover:text-white py-2 pl-4"
             onClick={() => onEdit(data)}
           >
             {data.notes}
           </TableCell>
         </ResizablePanel>
-        <ResizablePanel defaultSize={8} minSize={8}>
+        <ResizablePanel defaultSize={10} minSize={10}>
           <TableCell 
-            className="text-gray-300 cursor-pointer hover:text-white py-2 pl-2"
+            className="text-gray-300 cursor-pointer hover:text-white py-2 text-center"
             onClick={() => onEdit(data)}
           >
             {data.duration}
           </TableCell>
         </ResizablePanel>
         <ResizablePanel defaultSize={10} minSize={10}>
-          <TableCell className="py-2 pl-2">
+          <TableCell className="py-2 flex items-center justify-center">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
@@ -103,9 +103,9 @@ export const TimesheetRow = ({
             </TooltipProvider>
           </TableCell>
         </ResizablePanel>
-        <ResizablePanel defaultSize={7} minSize={7}>
+        <ResizablePanel defaultSize={8} minSize={8}>
           <TableCell>
-            <div className="flex items-center gap-2 pr-2">
+            <div className="flex items-center justify-center gap-2">
               <button 
                 className="p-1 hover:bg-gray-700 rounded-md transition-colors"
                 onClick={() => onEdit(data)}
