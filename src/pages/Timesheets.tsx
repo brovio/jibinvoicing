@@ -26,7 +26,7 @@ const Timesheets = () => {
       .eq('timesheet_id', updatedTimesheet.timesheet_id);
 
     if (error) throw error;
-    queryClient.invalidateQueries({ queryKey: ['timesheets'] });
+    await queryClient.invalidateQueries({ queryKey: ['timesheets'] });
   };
 
   const handleTimesheetDeleted = async (timesheet: TimesheetEntry) => {
@@ -36,7 +36,7 @@ const Timesheets = () => {
       .eq('timesheet_id', timesheet.timesheet_id);
 
     if (error) throw error;
-    queryClient.invalidateQueries({ queryKey: ['timesheets'] });
+    await queryClient.invalidateQueries({ queryKey: ['timesheets'] });
   };
 
   if (isLoading) {
