@@ -8,12 +8,12 @@ import { TimesheetDetailsDialog } from "./TimesheetDetailsDialog";
 import { useToast } from "@/components/ui/use-toast";
 
 const timesheetColumns = [
-  { key: 'date', label: 'Date' },
-  { key: 'client', label: 'Client' },
-  { key: 'activity', label: 'Activity' },
-  { key: 'notes', label: 'Task' },
-  { key: 'duration', label: 'Hours', align: 'right' as const },
-  { key: 'status', label: 'Status' },
+  { key: 'date', label: 'Date', width: 15, minWidth: 10 },
+  { key: 'client', label: 'Client', width: 20, minWidth: 15 },
+  { key: 'activity', label: 'Activity', width: 15, minWidth: 10 },
+  { key: 'notes', label: 'Task', width: 25, minWidth: 15 },
+  { key: 'duration', label: 'Hours', width: 10, minWidth: 8, align: 'right' as const },
+  { key: 'status', label: 'Status', width: 15, minWidth: 10 },
 ];
 
 export const TimesheetTable = ({ 
@@ -95,7 +95,7 @@ export const TimesheetTable = ({
 
   return (
     <>
-      <div className="bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">
+      <div className="w-full bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">
         <Table>
           <SharedTableHeader 
             columns={timesheetColumns}

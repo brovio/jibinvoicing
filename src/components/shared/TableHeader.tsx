@@ -2,11 +2,13 @@ import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 
 export interface Column {
   key: string;
   label: string;
-  width?: string;
+  width?: number;
+  minWidth?: number;
   align?: 'left' | 'right';
 }
 
@@ -51,32 +53,39 @@ export const SharedTableHeader = ({
     <>
       <TableHeader>
         <TableRow className="border-b border-gray-800 hover:bg-transparent">
-          <TableHead 
-            className="text-gray-400 font-medium cursor-pointer hover:bg-[#2A303F] transition-colors w-[40px] p-4"
-          >
-            <input 
-              type="checkbox" 
-              className="rounded-sm border-gray-700"
-              checked={isChecked}
-              onChange={handleCheckboxChange}
-            />
-          </TableHead>
-          {columns.map((column) => (
-            <TableHead 
-              key={column.key}
-              className={`text-gray-400 font-medium cursor-pointer hover:bg-[#2A303F] transition-colors ${
-                column.width ? `w-[${column.width}]` : ''
-              } ${column.align === 'right' ? 'text-right' : ''}`}
-              onClick={() => onSort(column.key)}
-            >
-              {column.label}
-            </TableHead>
-          ))}
-          <TableHead 
-            className="text-gray-400 font-medium cursor-pointer hover:bg-[#2A303F] transition-colors w-[100px]"
-          >
-            Actions
-          </TableHead>
+          <ResizablePanelGroup direction="horizontal">
+            <ResizablePanel defaultSize={5} minSize={5}>
+              <TableHead className="text-gray-400 font-medium w-[40px] p-4">
+                <input 
+                  type="checkbox" 
+                  className="rounded-sm border-gray-700"
+                  checked={isChecked}
+                  onChange={handleCheckboxChange}
+                />
+              </TableHead>
+            </ResizablePanel>
+            {columns.map((column) => (
+              <ResizablePanel 
+                key={column.key} 
+                defaultSize={column.width || 100 / columns.length}
+                minSize={column.minWidth || 10}
+              >
+                <TableHead 
+                  className={`text-gray-400 font-medium cursor-pointer hover:bg-[#2A303F] transition-colors ${
+                    column.align === 'right' ? 'text-right' : ''
+                  }`}
+                  onClick={() => onSort(column.key)}
+                >
+                  {column.label}
+                </TableHead>
+              </ResizablePanel>
+            ))}
+            <ResizablePanel defaultSize={10} minSize={10}>
+              <TableHead className="text-gray-400 font-medium">
+                Actions
+              </TableHead>
+            </ResizablePanel>
+          </ResizablePanelGroup>
         </TableRow>
       </TableHeader>
 
