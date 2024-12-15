@@ -3,8 +3,8 @@ import { useState } from 'react';
 export interface SelectableItem {
   [key: string]: any;
   id?: string;
-  company?: string; // for clients
-  date?: string;    // for timesheets
+  company?: string;
+  date?: string;
 }
 
 export const useTableSelection = <T extends SelectableItem>() => {
@@ -17,35 +17,30 @@ export const useTableSelection = <T extends SelectableItem>() => {
   };
 
   const handleSelectAll = (selectAll: boolean, includeAll?: boolean) => {
-    setSelectAllMode(selectAll && !!includeAll);
-    setSelectedItems(new Set());
+    setSelectAllMode(false);
+    if (selectAll) {
+      const newSelectedItems = new Set<string>();
+      if (includeAll) {
+        setSelectAllMode(true);
+      }
+      setSelectedItems(newSelectedItems);
+    } else {
+      setSelectedItems(new Set());
+    }
     setExcludedItems(new Set());
   };
 
   const handleRowSelect = (item: T, selected: boolean) => {
     const itemId = getItemIdentifier(item);
-    
-    if (selectAllMode) {
-      setExcludedItems(prev => {
-        const newExcluded = new Set(prev);
-        if (!selected) {
-          newExcluded.add(itemId);
-        } else {
-          newExcluded.delete(itemId);
-        }
-        return newExcluded;
-      });
-    } else {
-      setSelectedItems(prev => {
-        const newSelected = new Set(prev);
-        if (selected) {
-          newSelected.add(itemId);
-        } else {
-          newSelected.delete(itemId);
-        }
-        return newSelected;
-      });
-    }
+    setSelectedItems(prev => {
+      const newSelected = new Set(prev);
+      if (selected) {
+        newSelected.add(itemId);
+      } else {
+        newSelected.delete(itemId);
+      }
+      return newSelected;
+    });
   };
 
   const isSelected = (item: T): boolean => {
