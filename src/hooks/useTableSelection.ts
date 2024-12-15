@@ -17,7 +17,11 @@ export const useTableSelection = <T extends SelectableItem>() => {
   };
 
   const handleSelectAll = (selectAll: boolean, includeAll?: boolean) => {
-    setSelectAllMode(selectAll && !!includeAll);
+    if (selectAll) {
+      setSelectAllMode(!!includeAll);
+    } else {
+      setSelectAllMode(false);
+    }
     setSelectedItems(new Set());
     setExcludedItems(new Set());
   };
