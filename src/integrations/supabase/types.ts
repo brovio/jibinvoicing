@@ -56,13 +56,94 @@ export type Database = {
       }
       "brovio-timesheets": {
         Row: {
+          break: boolean | null
+          break_type: string | null
+          client: string
+          date: string
+          entry_type: string | null
+          flag_reason: string | null
+          hours: number
+          project: string
+          staff_name: string | null
+          status: string | null
+          task: string
+          time: string | null
           tsid: number
         }
         Insert: {
+          break?: boolean | null
+          break_type?: string | null
+          client: string
+          date: string
+          entry_type?: string | null
+          flag_reason?: string | null
+          hours: number
+          project: string
+          staff_name?: string | null
+          status?: string | null
+          task: string
+          time?: string | null
           tsid?: number
         }
         Update: {
+          break?: boolean | null
+          break_type?: string | null
+          client?: string
+          date?: string
+          entry_type?: string | null
+          flag_reason?: string | null
+          hours?: number
+          project?: string
+          staff_name?: string | null
+          status?: string | null
+          task?: string
+          time?: string | null
           tsid?: number
+        }
+        Relationships: []
+      }
+      imported_timesheets: {
+        Row: {
+          activity: string | null
+          client: string
+          created_at: string | null
+          date: string
+          duration: number
+          flag_reason: string | null
+          flagged: boolean | null
+          full_name: string
+          notes: string | null
+          time: string | null
+          timesheet_id: number
+          updated_at: string | null
+        }
+        Insert: {
+          activity?: string | null
+          client: string
+          created_at?: string | null
+          date: string
+          duration: number
+          flag_reason?: string | null
+          flagged?: boolean | null
+          full_name: string
+          notes?: string | null
+          time?: string | null
+          timesheet_id?: number
+          updated_at?: string | null
+        }
+        Update: {
+          activity?: string | null
+          client?: string
+          created_at?: string | null
+          date?: string
+          duration?: number
+          flag_reason?: string | null
+          flagged?: boolean | null
+          full_name?: string
+          notes?: string | null
+          time?: string | null
+          timesheet_id?: number
+          updated_at?: string | null
         }
         Relationships: []
       }

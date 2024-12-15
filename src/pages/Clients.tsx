@@ -8,13 +8,10 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { showErrorToast } from "@/utils/toastUtils";
 
-const Clients = () => {
+// Move the client fetching logic to a separate component
+const useClientsData = () => {
   const [clients, setClients] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    fetchClients();
-  }, []);
 
   const fetchClients = async () => {
     try {
@@ -50,13 +47,22 @@ const Clients = () => {
     }
   };
 
+  useEffect(() => {
+    fetchClients();
+  }, []);
+
+  return { clients, isLoading, setClients, fetchClients };
+};
+
+// Move client operations to a separate component
+const useClientOperations = (setClients: React.Dispatch<React.SetStateAction<any[]>>, fetchClients: () => Promise<void>) => {
   const handleImportSuccess = async (importedClients: ImportedClient[]) => {
     try {
       const { data, error } = await supabase
         .from('brovio-clients')
         .insert(
           importedClients.map(client => ({
-            company: client.company,
+            company: client.company || 'Unnamed Company', // Provide default value
             contact_name: client.contactName,
             email: client.email,
             phone: client.phone || null,
@@ -82,6 +88,11 @@ const Clients = () => {
 
   const handleClientAdded = async (newClient: any) => {
     try {
+      if (!newClient.company) {
+        showErrorToast("Validation Error", "Company name is required");
+        return;
+      }
+
       const { data, error } = await supabase
         .from('brovio-clients')
         .insert({
@@ -100,7 +111,6 @@ const Clients = () => {
 
       if (error) throw error;
       
-      // Update local state with the new client data
       if (data) {
         const transformedNewClient = {
           clientId: data.clientid,
@@ -131,6 +141,11 @@ const Clients = () => {
         throw new Error('Client ID is required for update');
       }
 
+      if (!updatedClient.company) {
+        showErrorToast("Validation Error", "Company name is required");
+        return;
+      }
+
       const { data, error } = await supabase
         .from('brovio-clients')
         .update({
@@ -150,7 +165,6 @@ const Clients = () => {
 
       if (error) throw error;
       
-      // Update local state by replacing only the updated client
       if (data) {
         setClients(prevClients => 
           prevClients.map(client => 
@@ -193,7 +207,6 @@ const Clients = () => {
 
       if (error) throw error;
       
-      // Update local state by removing the deleted client
       setClients(prevClients => 
         prevClients.filter(client => client.clientId !== deletedClient.clientId)
       );
@@ -205,6 +218,23 @@ const Clients = () => {
       );
     }
   };
+
+  return {
+    handleImportSuccess,
+    handleClientAdded,
+    handleClientUpdated,
+    handleClientDeleted
+  };
+};
+
+const Clients = () => {
+  const { clients, isLoading, setClients, fetchClients } = useClientsData();
+  const { 
+    handleImportSuccess, 
+    handleClientAdded, 
+    handleClientUpdated, 
+    handleClientDeleted 
+  } = useClientOperations(setClients, fetchClients);
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-96">Loading...</div>;
