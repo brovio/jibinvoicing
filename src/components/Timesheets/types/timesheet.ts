@@ -1,14 +1,10 @@
 export interface TimesheetEntry {
-  timesheet_id: number;
+  id?: string;
   date: string;
-  time?: string;
-  full_name: string;
   client: string;
-  activity?: string;
-  notes?: string;
-  duration: number;
-  flagged?: boolean;
-  flag_reason?: string;
+  activity: string;
+  task: string;
+  hours: number;
 }
 
 export interface TimesheetTableProps {
@@ -16,10 +12,4 @@ export interface TimesheetTableProps {
   onTimesheetAdded?: (timesheet: TimesheetEntry) => void;
   onTimesheetUpdated?: (timesheet: TimesheetEntry) => void;
   onTimesheetDeleted?: (timesheet: TimesheetEntry) => void;
-}
-
-export interface TimesheetDetailsDialogProps {
-  timesheet: TimesheetEntry | null;
-  open: boolean;
-  onClose: () => void;
 }
