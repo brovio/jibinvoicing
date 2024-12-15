@@ -29,48 +29,50 @@ export const TimesheetRow = ({
   
   return (
     <TableRow className="border-b border-gray-800 hover:bg-[#2A303F] transition-colors">
-      <TableCell className="p-4">
-        <input 
-          type="checkbox" 
-          className="rounded-sm border-gray-700"
-          checked={isSelected}
-          onChange={(e) => onSelect(e.target.checked)}
-        />
+      <TableCell className="w-[40px] p-0">
+        <div className="h-full flex items-center justify-center px-4">
+          <input 
+            type="checkbox" 
+            className="rounded-sm border-gray-700"
+            checked={isSelected}
+            onChange={(e) => onSelect(e.target.checked)}
+          />
+        </div>
       </TableCell>
       <TableCell 
-        className="text-gray-300 cursor-pointer hover:text-white"
+        className="text-gray-300 cursor-pointer hover:text-white py-2 pl-2"
         onClick={() => onEdit(data)}
       >
         {data.date}
       </TableCell>
       <TableCell 
-        className="text-gray-300 cursor-pointer hover:text-white"
+        className="text-gray-300 cursor-pointer hover:text-white py-2 pl-2"
         onClick={() => onEdit(data)}
       >
         {data.client}
       </TableCell>
       <TableCell 
-        className="text-gray-300 cursor-pointer hover:text-white"
+        className="text-gray-300 cursor-pointer hover:text-white py-2 pl-2"
         onClick={() => onEdit(data)}
       >
         {data.activity}
       </TableCell>
       <TableCell 
-        className="text-gray-300 cursor-pointer hover:text-white"
+        className="text-gray-300 cursor-pointer hover:text-white py-2 pl-2"
         onClick={() => onEdit(data)}
       >
         {data.notes}
       </TableCell>
       <TableCell 
-        className="text-gray-300 text-right cursor-pointer hover:text-white"
+        className="text-gray-300 cursor-pointer hover:text-white py-2 text-center"
         onClick={() => onEdit(data)}
       >
         {data.duration}
       </TableCell>
-      <TableCell>
+      <TableCell className="py-2 text-center">
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger className="mx-auto">
               {isFlagged ? (
                 <XCircle className="w-5 h-5 text-red-500" />
               ) : (
@@ -87,8 +89,8 @@ export const TimesheetRow = ({
           </Tooltip>
         </TooltipProvider>
       </TableCell>
-      <TableCell>
-        <div className="flex items-center gap-2 justify-end">
+      <TableCell className="py-2 pr-2">
+        <div className="flex items-center gap-2">
           <button 
             className="p-1 hover:bg-gray-700 rounded-md transition-colors"
             onClick={() => onEdit(data)}
