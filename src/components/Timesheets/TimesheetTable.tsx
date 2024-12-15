@@ -13,8 +13,8 @@ const timesheetColumns = [
   { key: 'activity', label: 'Activity', width: 15, minWidth: 10 },
   { key: 'notes', label: 'Task', width: 35, minWidth: 20 },
   { key: 'duration', label: 'Hours', width: 8, minWidth: 8, align: 'right' as const },
-  { key: 'status', label: 'Status', width: 10, minWidth: 10 },
-};
+  { key: 'status', label: 'Status', width: 10, minWidth: 10 }
+]
 
 export const TimesheetTable = ({ 
   data,
