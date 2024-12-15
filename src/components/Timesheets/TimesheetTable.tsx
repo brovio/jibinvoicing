@@ -8,12 +8,12 @@ import { TimesheetDetailsDialog } from "./TimesheetDetailsDialog";
 import { useToast } from "@/components/ui/use-toast";
 
 const timesheetColumns = [
-  { key: 'date', label: 'Date', width: 10, minWidth: 10 },
-  { key: 'client', label: 'Client', width: 15, minWidth: 15 },
-  { key: 'activity', label: 'Activity', width: 15, minWidth: 10 },
-  { key: 'notes', label: 'Task', width: 35, minWidth: 20 },
-  { key: 'duration', label: 'Hours', width: 8, minWidth: 8, align: 'right' as const },
-  { key: 'status', label: 'Status', width: 10, minWidth: 10 }
+  { key: 'date', label: 'Date', width: 10, minWidth: 10, align: 'left' as const },
+  { key: 'client', label: 'Client', width: 15, minWidth: 15, align: 'left' as const },
+  { key: 'activity', label: 'Activity', width: 15, minWidth: 10, align: 'left' as const },
+  { key: 'notes', label: 'Task', width: 35, minWidth: 20, align: 'left' as const },
+  { key: 'duration', label: 'Hours', width: 8, minWidth: 8, align: 'left' as const },
+  { key: 'status', label: 'Status', width: 10, minWidth: 10, align: 'left' as const }
 ]
 
 export const TimesheetTable = ({ 
