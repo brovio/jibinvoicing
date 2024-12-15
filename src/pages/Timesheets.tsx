@@ -1,9 +1,11 @@
 import { TimesheetTable } from "@/components/Timesheets/TimesheetTable";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { TimesheetEntry } from "@/components/Timesheets/types/timesheet";
 
 const Timesheets = () => {
+  const queryClient = useQueryClient();
+
   const { data: timesheets = [], isLoading } = useQuery({
     queryKey: ['timesheets'],
     queryFn: async () => {
@@ -17,6 +19,26 @@ const Timesheets = () => {
     },
   });
 
+  const handleTimesheetUpdated = async (updatedTimesheet: TimesheetEntry) => {
+    const { error } = await supabase
+      .from('imported_timesheets')
+      .update(updatedTimesheet)
+      .eq('timesheet_id', updatedTimesheet.timesheet_id);
+
+    if (error) throw error;
+    queryClient.invalidateQueries({ queryKey: ['timesheets'] });
+  };
+
+  const handleTimesheetDeleted = async (timesheet: TimesheetEntry) => {
+    const { error } = await supabase
+      .from('imported_timesheets')
+      .delete()
+      .eq('timesheet_id', timesheet.timesheet_id);
+
+    if (error) throw error;
+    queryClient.invalidateQueries({ queryKey: ['timesheets'] });
+  };
+
   if (isLoading) {
     return (
       <div className="max-w-7xl mx-auto p-4">
@@ -27,7 +49,11 @@ const Timesheets = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-4">
-      <TimesheetTable data={timesheets} />
+      <TimesheetTable 
+        data={timesheets} 
+        onTimesheetUpdated={handleTimesheetUpdated}
+        onTimesheetDeleted={handleTimesheetDeleted}
+      />
     </div>
   );
 };

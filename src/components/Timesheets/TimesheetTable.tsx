@@ -5,6 +5,7 @@ import { SharedTableHeader } from "@/components/shared/TableHeader";
 import { useTableSelection } from "@/hooks/useTableSelection";
 import { TimesheetEntry, TimesheetTableProps } from "./types/timesheet";
 import { TimesheetDetailsDialog } from "./TimesheetDetailsDialog";
+import { useToast } from "@/components/ui/use-toast";
 
 const timesheetColumns = [
   { key: 'date', label: 'Date' },
@@ -23,6 +24,8 @@ export const TimesheetTable = ({
 }: TimesheetTableProps) => {
   const [selectedTimesheet, setSelectedTimesheet] = useState<TimesheetEntry | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const { toast } = useToast();
 
   const {
     handleSelectAll,
@@ -40,16 +43,54 @@ export const TimesheetTable = ({
   const handleRowClick = (timesheet: TimesheetEntry) => {
     setSelectedTimesheet(timesheet);
     setIsDialogOpen(true);
+    setEditMode(false);
+  };
+
+  const handleEdit = (timesheet: TimesheetEntry) => {
+    setSelectedTimesheet(timesheet);
+    setIsDialogOpen(true);
+    setEditMode(true);
+  };
+
+  const handleDelete = async (timesheet: TimesheetEntry) => {
+    try {
+      await onTimesheetDeleted?.(timesheet);
+      toast({
+        title: "Timesheet deleted",
+        description: "The timesheet entry has been successfully deleted.",
+      });
+    } catch (error) {
+      console.error('Error deleting timesheet:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete the timesheet entry. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
     setSelectedTimesheet(null);
+    setEditMode(false);
   };
 
-  const handleTimesheetUpdate = (updatedTimesheet: TimesheetEntry) => {
-    onTimesheetUpdated?.(updatedTimesheet);
-    handleDialogClose();
+  const handleTimesheetUpdate = async (updatedTimesheet: TimesheetEntry) => {
+    try {
+      await onTimesheetUpdated?.(updatedTimesheet);
+      toast({
+        title: "Timesheet updated",
+        description: "The timesheet entry has been successfully updated.",
+      });
+      handleDialogClose();
+    } catch (error) {
+      console.error('Error updating timesheet:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update the timesheet entry. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -74,8 +115,8 @@ export const TimesheetTable = ({
                 isSelected={isSelected(item)}
                 onSelect={(selected) => handleRowSelect(item, selected)}
                 onView={handleRowClick}
-                onEdit={handleRowClick}
-                onDelete={(timesheet) => onTimesheetDeleted?.(timesheet)}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
               />
             ))}
           </TableBody>
@@ -87,6 +128,7 @@ export const TimesheetTable = ({
         isOpen={isDialogOpen}
         onClose={handleDialogClose}
         onSave={handleTimesheetUpdate}
+        isEditMode={editMode}
       />
     </>
   );
