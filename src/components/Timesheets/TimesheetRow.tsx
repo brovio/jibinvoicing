@@ -31,33 +31,33 @@ export const TimesheetRow = ({
       </TableCell>
       <TableCell 
         className="text-gray-300 cursor-pointer hover:text-white"
-        onClick={() => onEdit(data)}
+        onClick={() => onView(data)}
       >
         {data.date}
       </TableCell>
       <TableCell 
         className="text-gray-300 cursor-pointer hover:text-white"
-        onClick={() => onEdit(data)}
+        onClick={() => onView(data)}
       >
         {data.client}
       </TableCell>
       <TableCell 
         className="text-gray-300 cursor-pointer hover:text-white"
-        onClick={() => onEdit(data)}
+        onClick={() => onView(data)}
       >
-        {data.activity}
+        {data.activity || 'N/A'}
       </TableCell>
       <TableCell 
         className="text-gray-300 cursor-pointer hover:text-white"
-        onClick={() => onEdit(data)}
+        onClick={() => onView(data)}
       >
-        {data.task}
+        {data.notes || 'N/A'}
       </TableCell>
       <TableCell 
         className="text-gray-300 text-right cursor-pointer hover:text-white"
-        onClick={() => onEdit(data)}
+        onClick={() => onView(data)}
       >
-        {data.hours}
+        {data.duration}
       </TableCell>
       <TableCell>
         <div className="flex items-center gap-2 justify-end">
