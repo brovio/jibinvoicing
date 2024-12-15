@@ -1,6 +1,12 @@
 import { TableCell, TableRow } from "@/components/ui/table";
-import { FileEdit, Trash2 } from "lucide-react";
+import { FileEdit, Trash2, CheckCircle, XCircle } from "lucide-react";
 import { TimesheetEntry } from "./types/timesheet";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface TimesheetRowProps {
   data: TimesheetEntry;
@@ -19,6 +25,8 @@ export const TimesheetRow = ({
   isSelected,
   onSelect
 }: TimesheetRowProps) => {
+  const isFlagged = data.flagged || false;
+  
   return (
     <TableRow className="border-b border-gray-800 hover:bg-[#2A303F] transition-colors">
       <TableCell className="p-4">
@@ -51,13 +59,33 @@ export const TimesheetRow = ({
         className="text-gray-300 cursor-pointer hover:text-white"
         onClick={() => onEdit(data)}
       >
-        {data.task}
+        {data.notes}
       </TableCell>
       <TableCell 
         className="text-gray-300 text-right cursor-pointer hover:text-white"
         onClick={() => onEdit(data)}
       >
-        {data.hours}
+        {data.duration}
+      </TableCell>
+      <TableCell>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              {isFlagged ? (
+                <XCircle className="w-5 h-5 text-red-500" />
+              ) : (
+                <CheckCircle className="w-5 h-5 text-green-500" />
+              )}
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>
+                {isFlagged
+                  ? `Flagged: ${data.flag_reason || 'No reason provided'}`
+                  : 'Entry Approved'}
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </TableCell>
       <TableCell>
         <div className="flex items-center gap-2 justify-end">

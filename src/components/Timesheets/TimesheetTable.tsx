@@ -9,8 +9,9 @@ const timesheetColumns = [
   { key: 'date', label: 'Date' },
   { key: 'client', label: 'Client' },
   { key: 'activity', label: 'Activity' },
-  { key: 'task', label: 'Task' },
-  { key: 'hours', label: 'Hours', align: 'right' as const },
+  { key: 'notes', label: 'Notes' },
+  { key: 'duration', label: 'Hours', align: 'right' as const },
+  { key: 'status', label: 'Status' },
 ];
 
 export const TimesheetTable = ({ 
@@ -48,7 +49,7 @@ export const TimesheetTable = ({
         <TableBody>
           {data.map((item) => (
             <TimesheetRow 
-              key={item.id || item.date}
+              key={item.timesheet_id || item.date}
               data={item}
               isSelected={isSelected(item)}
               onSelect={(selected) => handleRowSelect(item, selected)}
