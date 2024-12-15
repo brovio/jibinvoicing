@@ -7,7 +7,7 @@ export interface Column {
   key: string;
   label: string;
   width?: string;
-  align?: 'left' | 'right';
+  align?: 'left' | 'right' | 'center';
 }
 
 interface TableHeaderProps {
@@ -66,7 +66,7 @@ export const SharedTableHeader = ({
               key={column.key}
               className={`text-gray-400 font-medium cursor-pointer hover:bg-[#2A303F] transition-colors ${
                 column.width ? `w-[${column.width}]` : ''
-              } ${column.align === 'right' ? 'text-right' : ''}`}
+              } ${column.align ? `text-${column.align}` : ''}`}
               onClick={() => onSort(column.key)}
             >
               {column.label}
