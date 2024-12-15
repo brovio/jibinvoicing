@@ -5,6 +5,7 @@ export interface SelectableItem {
   id?: string;
   company?: string;
   date?: string;
+  timesheet_id?: number;
 }
 
 export const useTableSelection = <T extends SelectableItem>() => {
@@ -13,15 +14,11 @@ export const useTableSelection = <T extends SelectableItem>() => {
   const [excludedItems, setExcludedItems] = useState<Set<string>>(new Set());
 
   const getItemIdentifier = (item: T): string => {
-    return item.id || item.company || item.date || '';
+    return String(item.timesheet_id || item.id || item.company || item.date || '');
   };
 
   const handleSelectAll = (selectAll: boolean, includeAll?: boolean) => {
-    if (selectAll) {
-      setSelectAllMode(!!includeAll);
-    } else {
-      setSelectAllMode(false);
-    }
+    setSelectAllMode(selectAll && !!includeAll);
     setSelectedItems(new Set());
     setExcludedItems(new Set());
   };
@@ -30,7 +27,6 @@ export const useTableSelection = <T extends SelectableItem>() => {
     const itemId = getItemIdentifier(item);
     
     if (selectAllMode) {
-      // If in "select all" mode, manage exclusions
       setExcludedItems(prev => {
         const newExcluded = new Set(prev);
         if (!selected) {
@@ -41,7 +37,6 @@ export const useTableSelection = <T extends SelectableItem>() => {
         return newExcluded;
       });
     } else {
-      // If in individual selection mode, manage selections
       setSelectedItems(prev => {
         const newSelected = new Set(prev);
         if (selected) {
