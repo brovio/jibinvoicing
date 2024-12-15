@@ -9,7 +9,7 @@ export interface Column {
   label: string;
   width?: number;
   minWidth?: number;
-  align?: 'left' | 'right';
+  align?: 'left' | 'right' | 'center';
 }
 
 interface TableHeaderProps {
