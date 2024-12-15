@@ -22,6 +22,10 @@ export const TimesheetDetailsDialog = ({
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
+              <h4 className="text-sm font-medium text-gray-400">ID</h4>
+              <p>{timesheet.timesheet_id}</p>
+            </div>
+            <div>
               <h4 className="text-sm font-medium text-gray-400">Date</h4>
               <p>{timesheet.date}</p>
             </div>
@@ -31,10 +35,6 @@ export const TimesheetDetailsDialog = ({
                 <p>{timesheet.time}</p>
               </div>
             )}
-            <div>
-              <h4 className="text-sm font-medium text-gray-400">Staff Name</h4>
-              <p>{timesheet.full_name}</p>
-            </div>
             <div>
               <h4 className="text-sm font-medium text-gray-400">Client</h4>
               <p>{timesheet.client}</p>

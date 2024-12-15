@@ -10,7 +10,7 @@ const timesheetColumns = [
   { key: 'date', label: 'Date' },
   { key: 'client', label: 'Client' },
   { key: 'activity', label: 'Activity' },
-  { key: 'task', label: 'Task' },
+  { key: 'notes', label: 'Notes' },
   { key: 'duration', label: 'Hours', align: 'right' as const },
 ];
 
