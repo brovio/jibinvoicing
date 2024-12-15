@@ -8,9 +8,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
       <Header />
       <Navigation />
       <main className="pt-[130px] flex-grow">
-        <div className="px-6">
-          {children}
-        </div>
+        {children}
       </main>
       <Footer />
     </div>
