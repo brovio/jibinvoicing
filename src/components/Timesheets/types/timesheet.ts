@@ -2,6 +2,7 @@ export interface TimesheetEntry {
   timesheet_id: number;
   date: string;
   time?: string;
+  full_name: string;
   client: string;
   activity?: string;
   notes?: string;

@@ -36,6 +36,10 @@ export const TimesheetDetailsDialog = ({
               </div>
             )}
             <div>
+              <h4 className="text-sm font-medium text-gray-400">Staff Member</h4>
+              <p>{timesheet.full_name}</p>
+            </div>
+            <div>
               <h4 className="text-sm font-medium text-gray-400">Client</h4>
               <p>{timesheet.client}</p>
             </div>
