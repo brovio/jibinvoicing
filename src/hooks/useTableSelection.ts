@@ -13,34 +13,39 @@ export const useTableSelection = <T extends SelectableItem>() => {
   const [excludedItems, setExcludedItems] = useState<Set<string>>(new Set());
 
   const getItemIdentifier = (item: T): string => {
-    return item.company || item.date || item.id || '';
+    return item.id || item.company || item.date || '';
   };
 
   const handleSelectAll = (selectAll: boolean, includeAll?: boolean) => {
-    setSelectAllMode(false);
-    if (selectAll) {
-      const newSelectedItems = new Set<string>();
-      if (includeAll) {
-        setSelectAllMode(true);
-      }
-      setSelectedItems(newSelectedItems);
-    } else {
-      setSelectedItems(new Set());
-    }
+    setSelectAllMode(selectAll && !!includeAll);
+    setSelectedItems(new Set());
     setExcludedItems(new Set());
   };
 
   const handleRowSelect = (item: T, selected: boolean) => {
     const itemId = getItemIdentifier(item);
-    setSelectedItems(prev => {
-      const newSelected = new Set(prev);
-      if (selected) {
-        newSelected.add(itemId);
-      } else {
-        newSelected.delete(itemId);
-      }
-      return newSelected;
-    });
+    
+    if (selectAllMode) {
+      setExcludedItems(prev => {
+        const newExcluded = new Set(prev);
+        if (!selected) {
+          newExcluded.add(itemId);
+        } else {
+          newExcluded.delete(itemId);
+        }
+        return newExcluded;
+      });
+    } else {
+      setSelectedItems(prev => {
+        const newSelected = new Set(prev);
+        if (selected) {
+          newSelected.add(itemId);
+        } else {
+          newSelected.delete(itemId);
+        }
+        return newSelected;
+      });
+    }
   };
 
   const isSelected = (item: T): boolean => {
