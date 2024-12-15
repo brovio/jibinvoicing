@@ -6,14 +6,14 @@ const Timesheets = () => {
 
   if (isLoading) {
     return (
-      <div className="w-full px-4">
+      <div className="max-w-7xl mx-auto p-4">
         <div className="animate-pulse bg-gray-700 h-96 rounded-lg" />
       </div>
     );
   }
 
   return (
-    <div className="w-full px-4">
+    <div className="max-w-7xl mx-auto p-4">
       <TimesheetTable 
         data={timesheets} 
         onTimesheetUpdated={updateTimesheet}
