@@ -1,50 +1,80 @@
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface TimesheetTableActionsProps {
-  onSearchChange: (query: string) => void;
-  onClientFilterChange: (client: string) => void;
-  onActivityFilterChange: (activity: string) => void;
+  onSearchChange: (value: string) => void;
+  onClientFilterChange: (value: string) => void;
+  onActivityFilterChange: (value: string) => void;
+  onStaffFilterChange: (value: string) => void;
   uniqueClients: string[];
   uniqueActivities: string[];
+  uniqueStaffNames: string[];
 }
 
-export const TimesheetTableActions = ({ 
+export const TimesheetTableActions = ({
   onSearchChange,
   onClientFilterChange,
   onActivityFilterChange,
+  onStaffFilterChange,
   uniqueClients,
-  uniqueActivities
+  uniqueActivities,
+  uniqueStaffNames,
 }: TimesheetTableActionsProps) => {
   return (
-    <div className="flex justify-between items-center gap-4 mb-4">
-      <div className="relative flex-1">
-        <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
-        <Input
-          placeholder="Search timesheets..."
-          className="pl-9 bg-[#252A38] border-gray-800 text-white placeholder:text-gray-500 rounded-[10px]"
-          onChange={(e) => onSearchChange(e.target.value)}
-        />
-      </div>
-      <div className="flex items-center gap-4">
-        <select 
-          className="bg-[#252A38] border border-gray-800 text-gray-400 rounded-[10px] px-4 py-2"
-          onChange={(e) => onClientFilterChange(e.target.value)}
-        >
-          <option value="">All Clients</option>
-          {uniqueClients.map(client => (
-            <option key={client} value={client}>{client}</option>
-          ))}
-        </select>
-        <select 
-          className="bg-[#252A38] border border-gray-800 text-gray-400 rounded-[10px] px-4 py-2"
-          onChange={(e) => onActivityFilterChange(e.target.value)}
-        >
-          <option value="">All Activities</option>
-          {uniqueActivities.map(activity => (
-            <option key={activity} value={activity}>{activity}</option>
-          ))}
-        </select>
+    <div className="flex flex-col gap-4 mb-4 sm:flex-row sm:items-center">
+      <Input
+        placeholder="Search timesheets..."
+        onChange={(e) => onSearchChange(e.target.value)}
+        className="w-full sm:w-[300px] bg-[#1F2937] border-gray-700 text-white"
+      />
+      <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
+        <Select onValueChange={onClientFilterChange}>
+          <SelectTrigger className="w-full sm:w-[180px] bg-[#1F2937] border-gray-700 text-white">
+            <SelectValue placeholder="Filter by client" />
+          </SelectTrigger>
+          <SelectContent className="bg-[#1F2937] border-gray-700">
+            <SelectItem value="">All Clients</SelectItem>
+            {uniqueClients.map((client) => (
+              <SelectItem key={client} value={client}>
+                {client}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select onValueChange={onActivityFilterChange}>
+          <SelectTrigger className="w-full sm:w-[180px] bg-[#1F2937] border-gray-700 text-white">
+            <SelectValue placeholder="Filter by activity" />
+          </SelectTrigger>
+          <SelectContent className="bg-[#1F2937] border-gray-700">
+            <SelectItem value="">All Activities</SelectItem>
+            {uniqueActivities.map((activity) => (
+              <SelectItem key={activity} value={activity}>
+                {activity}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select onValueChange={onStaffFilterChange}>
+          <SelectTrigger className="w-full sm:w-[180px] bg-[#1F2937] border-gray-700 text-white">
+            <SelectValue placeholder="Filter by staff" />
+          </SelectTrigger>
+          <SelectContent className="bg-[#1F2937] border-gray-700">
+            <SelectItem value="">All Staff</SelectItem>
+            {uniqueStaffNames.map((name) => (
+              <SelectItem key={name} value={name}>
+                {name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );

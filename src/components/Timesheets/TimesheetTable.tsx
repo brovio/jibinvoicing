@@ -36,10 +36,13 @@ export const TimesheetTable = ({
     setClientFilter,
     activityFilter,
     setActivityFilter,
+    staffFilter,
+    setStaffFilter,
     requestSort,
     filteredAndSortedData,
     uniqueClients,
-    uniqueActivities
+    uniqueActivities,
+    uniqueStaffNames
   } = useTimesheetFilters(data);
 
   const {
@@ -114,8 +117,10 @@ export const TimesheetTable = ({
         onSearchChange={setSearchQuery}
         onClientFilterChange={setClientFilter}
         onActivityFilterChange={setActivityFilter}
+        onStaffFilterChange={setStaffFilter}
         uniqueClients={uniqueClients}
         uniqueActivities={uniqueActivities}
+        uniqueStaffNames={uniqueStaffNames}
       />
 
       <div className="bg-[#252A38] rounded-[10px] overflow-hidden border border-gray-800">

@@ -5,6 +5,7 @@ export const useTimesheetFilters = (data: TimesheetEntry[]) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [clientFilter, setClientFilter] = useState("");
   const [activityFilter, setActivityFilter] = useState("");
+  const [staffFilter, setStaffFilter] = useState("");
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: string } | null>(null);
 
   const requestSort = (key: string) => {
@@ -26,8 +27,9 @@ export const useTimesheetFilters = (data: TimesheetEntry[]) => {
 
       const matchesClient = !clientFilter || item.client === clientFilter;
       const matchesActivity = !activityFilter || item.activity === activityFilter;
+      const matchesStaff = !staffFilter || item.full_name === staffFilter;
 
-      return matchesSearch && matchesClient && matchesActivity;
+      return matchesSearch && matchesClient && matchesActivity && matchesStaff;
     });
   };
 
@@ -50,7 +52,7 @@ export const useTimesheetFilters = (data: TimesheetEntry[]) => {
       });
     }
     return sortableItems;
-  }, [data, sortConfig, searchQuery, clientFilter, activityFilter]);
+  }, [data, sortConfig, searchQuery, clientFilter, activityFilter, staffFilter]);
 
   // Get unique values for filters
   const uniqueClients = useMemo(() => 
@@ -63,6 +65,11 @@ export const useTimesheetFilters = (data: TimesheetEntry[]) => {
     [data]
   );
 
+  const uniqueStaffNames = useMemo(() => 
+    Array.from(new Set(data.map(item => item.full_name))).filter(Boolean),
+    [data]
+  );
+
   return {
     searchQuery,
     setSearchQuery,
@@ -70,10 +77,13 @@ export const useTimesheetFilters = (data: TimesheetEntry[]) => {
     setClientFilter,
     activityFilter,
     setActivityFilter,
+    staffFilter,
+    setStaffFilter,
     sortConfig,
     requestSort,
     filteredAndSortedData,
     uniqueClients,
-    uniqueActivities
+    uniqueActivities,
+    uniqueStaffNames
   };
 };
