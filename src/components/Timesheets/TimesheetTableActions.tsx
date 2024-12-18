@@ -39,9 +39,15 @@ export const TimesheetTableActions = ({
             <SelectValue placeholder="Filter by client" />
           </SelectTrigger>
           <SelectContent className="bg-[#1F2937] border-gray-700">
-            <SelectItem value="">All Clients</SelectItem>
+            <SelectItem value="all_clients" className="text-white hover:bg-[#2A303F] cursor-pointer">
+              All Clients
+            </SelectItem>
             {uniqueClients.map((client) => (
-              <SelectItem key={client} value={client}>
+              <SelectItem 
+                key={client} 
+                value={client}
+                className="text-white hover:bg-[#2A303F] cursor-pointer"
+              >
                 {client}
               </SelectItem>
             ))}
@@ -53,9 +59,15 @@ export const TimesheetTableActions = ({
             <SelectValue placeholder="Filter by activity" />
           </SelectTrigger>
           <SelectContent className="bg-[#1F2937] border-gray-700">
-            <SelectItem value="">All Activities</SelectItem>
+            <SelectItem value="all_activities" className="text-white hover:bg-[#2A303F] cursor-pointer">
+              All Activities
+            </SelectItem>
             {uniqueActivities.map((activity) => (
-              <SelectItem key={activity} value={activity}>
+              <SelectItem 
+                key={activity} 
+                value={activity}
+                className="text-white hover:bg-[#2A303F] cursor-pointer"
+              >
                 {activity}
               </SelectItem>
             ))}
@@ -67,9 +79,15 @@ export const TimesheetTableActions = ({
             <SelectValue placeholder="Filter by staff" />
           </SelectTrigger>
           <SelectContent className="bg-[#1F2937] border-gray-700">
-            <SelectItem value="">All Staff</SelectItem>
+            <SelectItem value="all_staff" className="text-white hover:bg-[#2A303F] cursor-pointer">
+              All Staff
+            </SelectItem>
             {uniqueStaffNames.map((name) => (
-              <SelectItem key={name} value={name}>
+              <SelectItem 
+                key={name} 
+                value={name}
+                className="text-white hover:bg-[#2A303F] cursor-pointer"
+              >
                 {name}
               </SelectItem>
             ))}

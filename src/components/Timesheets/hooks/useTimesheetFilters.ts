@@ -3,9 +3,9 @@ import { TimesheetEntry } from '../types/timesheet';
 
 export const useTimesheetFilters = (data: TimesheetEntry[]) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [clientFilter, setClientFilter] = useState("");
-  const [activityFilter, setActivityFilter] = useState("");
-  const [staffFilter, setStaffFilter] = useState("");
+  const [clientFilter, setClientFilter] = useState("all_clients");
+  const [activityFilter, setActivityFilter] = useState("all_activities");
+  const [staffFilter, setStaffFilter] = useState("all_staff");
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: string } | null>(null);
 
   const requestSort = (key: string) => {
@@ -25,9 +25,9 @@ export const useTimesheetFilters = (data: TimesheetEntry[]) => {
         item.notes?.toLowerCase().includes(searchLower) ||
         item.full_name?.toLowerCase().includes(searchLower);
 
-      const matchesClient = !clientFilter || item.client === clientFilter;
-      const matchesActivity = !activityFilter || item.activity === activityFilter;
-      const matchesStaff = !staffFilter || item.full_name === staffFilter;
+      const matchesClient = clientFilter === "all_clients" || item.client === clientFilter;
+      const matchesActivity = activityFilter === "all_activities" || item.activity === activityFilter;
+      const matchesStaff = staffFilter === "all_staff" || item.full_name === staffFilter;
 
       return matchesSearch && matchesClient && matchesActivity && matchesStaff;
     });
