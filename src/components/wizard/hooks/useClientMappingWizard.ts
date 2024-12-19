@@ -12,11 +12,15 @@ export const useClientMappingWizard = () => {
     try {
       setIsLoading(true);
       
-      // Fetch unique clients from timesheets
+      // Fetch unique clients from timesheets using SELECT DISTINCT
       const { data: timesheetClients } = await supabase
         .from('imported_timesheets')
         .select('client')
-        .distinct();
+        .select('client')
+        .order('client');
+
+      // Remove duplicates manually since we can't use distinct directly
+      const uniqueClients = Array.from(new Set(timesheetClients?.map(tc => tc.client) || []));
 
       // Fetch all Brovio clients
       const { data: brovioClients } = await supabase
@@ -33,7 +37,7 @@ export const useClientMappingWizard = () => {
       }
 
       // Create mappings array
-      const newMappings: ClientMapping[] = timesheetClients.map(({ client }) => {
+      const newMappings: ClientMapping[] = uniqueClients.map((client) => {
         const existingMapping = existingMappings?.find(
           (m) => m.timesheet_client_name === client
         );
