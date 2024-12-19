@@ -22,20 +22,21 @@ export const ClientMappingWizard = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl">
+      <DialogContent className="max-w-5xl bg-dashboard-card border-dashboard-border">
         <DialogHeader>
-          <DialogTitle>Client Mapping Wizard</DialogTitle>
+          <DialogTitle className="text-white text-xl">Client Mapping Wizard</DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-400">
               {unmappedCount} clients need to be mapped
             </p>
             <Button 
               variant="outline" 
               onClick={handleVerifyAll}
               disabled={isLoading || unmappedCount === 0}
+              className="bg-dashboard-hover border-dashboard-border text-white hover:bg-dashboard-primary hover:text-white"
             >
               Verify All Suggested Matches
             </Button>
@@ -43,13 +44,15 @@ export const ClientMappingWizard = ({
 
           {isLoading ? (
             <div className="flex justify-center items-center h-[400px]">
-              <Loader2 className="h-8 w-8 animate-spin" />
+              <Loader2 className="h-8 w-8 animate-spin text-dashboard-primary" />
             </div>
           ) : (
-            <ClientMappingTable 
-              mappings={mappings} 
-              onUpdateMapping={handleUpdateMapping} 
-            />
+            <div className="max-h-[60vh] overflow-y-auto">
+              <ClientMappingTable 
+                mappings={mappings} 
+                onUpdateMapping={handleUpdateMapping} 
+              />
+            </div>
           )}
         </div>
       </DialogContent>

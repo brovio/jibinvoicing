@@ -28,21 +28,24 @@ export const ClientMappingTable = ({
   onUpdateMapping,
 }: ClientMappingTableProps) => {
   return (
-    <div className="border rounded-lg">
+    <div className="border border-dashboard-border rounded-lg">
       <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Timesheet Client</TableHead>
-            <TableHead>Suggested Match</TableHead>
-            <TableHead>Confidence</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Actions</TableHead>
+        <TableHeader className="bg-dashboard-hover">
+          <TableRow className="hover:bg-dashboard-hover border-b border-dashboard-border">
+            <TableHead className="text-gray-400 font-medium">Timesheet Client</TableHead>
+            <TableHead className="text-gray-400 font-medium">Suggested Match</TableHead>
+            <TableHead className="text-gray-400 font-medium">Confidence</TableHead>
+            <TableHead className="text-gray-400 font-medium">Status</TableHead>
+            <TableHead className="text-gray-400 font-medium">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {mappings.map((mapping) => (
-            <TableRow key={mapping.mapping_id}>
-              <TableCell>{mapping.timesheet_client_name}</TableCell>
+            <TableRow 
+              key={mapping.mapping_id}
+              className="hover:bg-dashboard-hover border-b border-dashboard-border"
+            >
+              <TableCell className="text-white">{mapping.timesheet_client_name}</TableCell>
               <TableCell>
                 <Select
                   value={mapping.brovio_client_id?.toString() || ""}
@@ -54,14 +57,15 @@ export const ClientMappingTable = ({
                     })
                   }
                 >
-                  <SelectTrigger className="w-[200px]">
+                  <SelectTrigger className="w-[200px] bg-dashboard-card border-dashboard-border text-white">
                     <SelectValue placeholder="Select a client..." />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-dashboard-card border-dashboard-border">
                     {mapping.available_clients.map((client) => (
                       <SelectItem
                         key={client.clientid}
                         value={client.clientid.toString()}
+                        className="text-white hover:bg-dashboard-hover cursor-pointer"
                       >
                         {client.company}
                       </SelectItem>
@@ -69,7 +73,7 @@ export const ClientMappingTable = ({
                   </SelectContent>
                 </Select>
               </TableCell>
-              <TableCell>
+              <TableCell className="text-white">
                 {mapping.confidence_score ? 
                   `${(mapping.confidence_score * 100).toFixed(0)}%` : 
                   'N/A'
@@ -93,7 +97,7 @@ export const ClientMappingTable = ({
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="h-8 w-8 p-0"
+                      className="h-8 w-8 p-0 text-green-500 hover:text-green-400 hover:bg-dashboard-hover"
                       onClick={() =>
                         onUpdateMapping({
                           ...mapping,
@@ -106,7 +110,7 @@ export const ClientMappingTable = ({
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="h-8 w-8 p-0"
+                      className="h-8 w-8 p-0 text-red-500 hover:text-red-400 hover:bg-dashboard-hover"
                       onClick={() =>
                         onUpdateMapping({
                           ...mapping,
