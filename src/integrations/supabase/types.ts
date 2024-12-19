@@ -102,6 +102,44 @@ export type Database = {
         }
         Relationships: []
       }
+      client_mappings: {
+        Row: {
+          brovio_client_id: number | null
+          confidence_score: number | null
+          created_at: string
+          manually_verified: boolean | null
+          mapping_id: number
+          timesheet_client_name: string
+          updated_at: string
+        }
+        Insert: {
+          brovio_client_id?: number | null
+          confidence_score?: number | null
+          created_at?: string
+          manually_verified?: boolean | null
+          mapping_id?: number
+          timesheet_client_name: string
+          updated_at?: string
+        }
+        Update: {
+          brovio_client_id?: number | null
+          confidence_score?: number | null
+          created_at?: string
+          manually_verified?: boolean | null
+          mapping_id?: number
+          timesheet_client_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_mappings_brovio_client_id_fkey"
+            columns: ["brovio_client_id"]
+            isOneToOne: false
+            referencedRelation: "brovio-clients"
+            referencedColumns: ["clientid"]
+          },
+        ]
+      }
       imported_timesheets: {
         Row: {
           activity: string | null
